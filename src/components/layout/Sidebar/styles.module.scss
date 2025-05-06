@@ -1,0 +1,58 @@
+.drawerContainer {
+    width: 240px;
+    flex-shrink: 0;
+
+    @media (max-width: 600px) {
+        width: auto;
+    }
+}
+
+:global(.MuiDrawer-root).temporaryDrawer {
+    display: block;
+
+    @media (min-width: 600px) {
+        display: none;
+    }
+
+    :global(.MuiDrawer-paper) {
+        width: 240px;
+        background-color: white;
+        margin-top: 64px;
+        height: calc(100% - 64px);
+        border-right: 1px solid #e0e0e0;
+    }
+}
+
+:global(.MuiDrawer-root).permanentDrawer {
+    display: none;
+
+    @media (min-width: 600px) {
+        display: block;
+    }
+
+    :global(.MuiDrawer-paper) {
+        width: 240px;
+        background-color: white;
+        margin-top: 64px;
+        height: calc(100% - 64px);
+        border-right: 1px solid #e0e0e0;
+    }
+}
+
+.drawerContent {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.topList {
+    flex-grow: 1;
+}
+
+:global(.MuiListItem-root).listItem {
+    padding: 0;
+}
+
+:global(.MuiListItemIcon-root).listItemIcon {
+    min-width: 40px;
+}

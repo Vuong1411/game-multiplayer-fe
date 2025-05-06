@@ -1,0 +1,56 @@
+:global(.MuiCard-root).card {
+    min-width: 200px;
+    max-width: 200px;
+    height: 320px;
+    color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    display: inline-block;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: transform 0.2s;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+}
+
+.imageContainer {
+    height: 220px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.content {
+    height: 100px;
+    padding: 12px !important;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.contentWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+}
+
+.title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.description {
+    font-size: 0.75rem;
+    line-height: 1.3;
+}

@@ -1,0 +1,37 @@
+.section {
+    text-align: center;
+}
+
+.sectionContent {
+    margin-bottom: 24px;
+    padding: 24px 0;
+}
+
+:global(.MuiTypography-root).title {
+    margin-bottom: 32px;
+    font-weight: 600;
+    font-size: 1.5rem;
+    position: relative;
+    text-align: left;
+    padding-left: 16px;
+
+    &:after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 16px;
+        transform: none;
+        width: 40px;
+        height: 3px;
+        background-color: var(--primary-color);
+        border-radius: 2px;
+    }
+
+    @media (min-width: 900px) {
+        padding-left: 32px;
+        
+        &:after {
+            left: 32px;
+        }
+    }
+}

@@ -1,0 +1,90 @@
+:global(.MuiCard-root).card {
+    background: linear-gradient(45deg, #FF3366 30%, #FF9933 90%);
+    color: white;
+    position: relative;
+    overflow: hidden;
+    margin: 0 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.decorativeCircle {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 120px;
+    height: 120px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+}
+
+:global(.MuiCardContent-root).content {
+    padding: 32px 0;
+
+    @media (min-width: 900px) {
+        padding: 48px 0;
+    }
+}
+
+.contentWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+
+    @media (min-width: 900px) {
+        flex-direction: row;
+    }
+}
+
+.textSection {
+    flex: 1;
+}
+
+:global(.MuiTypography-root).title {
+    font-weight: 700;
+    margin-bottom: 16px;
+    font-size: 1.75rem;
+
+    @media (min-width: 900px) {
+        font-size: 2.5rem;
+    }
+}
+
+:global(.MuiTypography-root).subtitle {
+    font-weight: 400;
+    margin-bottom: 24px;
+    opacity: 0.9;
+}
+
+:global(.MuiButton-root).button {
+    background-color: white;
+    color: #FF3366;
+    padding: 12px 32px;
+    font-weight: 600;
+
+    &:hover {
+        background-color: rgba(255,255,255,0.9);
+    }
+}
+
+.imageSection {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 8px;
+
+    @media (min-width: 900px) {
+        width: 40%;
+    }
+}
+
+.image {
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 8px;
+}
