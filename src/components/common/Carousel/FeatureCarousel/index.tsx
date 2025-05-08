@@ -13,18 +13,14 @@ import "slick-carousel/slick/slick-theme.css";
 // @project
 import styles from './styles.module.scss';
 import FeatureCard from '../../Card/FeatureCard';
-
-const colors = [
-    '#f97316', '#2563eb', '#a855f7', '#eab308',
-    '#16a34a', '#dc2626', '#0891b2', '#ec4899'
-];
+import { getColor } from '../../../../utils/getColor';
 
 const features = [
     {
         title: 'Tạo câu hỏi',
         description: 'Tạo câu hỏi trắc nghiệm dễ dàng',
         icon: <QuestionAnswer />,
-        path: '/create-question'
+        path: '/creator'
     },
     {
         title: 'Lecture Mode',
@@ -36,7 +32,7 @@ const features = [
         title: 'Trình tạo AI',
         description: 'Tạo câu hỏi tự động với AI',
         icon: <SmartToy />,
-        path: '/ai-generator'
+        path: '/creator/ai'
     },
     {
         title: 'Google Slides',
@@ -49,7 +45,6 @@ const features = [
 const FeatureCarousel = () => {
     const navigate = useNavigate();
     const [isDragging, setIsDragging] = useState(false);
-    const shuffledColors = [...colors].sort(() => Math.random() - 0.5);
 
     const settings = {
         dots: true,
@@ -74,7 +69,7 @@ const FeatureCarousel = () => {
                 }
             },
             {
-                breakpoint: 600,
+                breakpoint: 800,
                 settings: {
                     slidesToShow: 1,
                     centerPadding: '30px',
@@ -85,7 +80,7 @@ const FeatureCarousel = () => {
         afterChange: () => setTimeout(() => setIsDragging(false), 100),
     };
 
-    const handleClick = (path: string) => {
+    const handleNavigation = (path: string) => {
         if (!isDragging) {
             navigate(path);
         }
@@ -101,8 +96,8 @@ const FeatureCarousel = () => {
                     >
                         <FeatureCard
                             {...feature}
-                            color={shuffledColors[index]}
-                            onClick={() => handleClick(feature.path)}
+                            color={getColor(index)}
+                            onClick={() => handleNavigation(feature.path)}
                         />
                     </Box>
                 ))}

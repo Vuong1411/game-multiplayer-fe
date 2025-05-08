@@ -14,7 +14,11 @@ const FeatureCard = ({ title, description, icon, color, onClick }: FeatureCardPr
         <Card 
             onClick={onClick}
             className={styles.card}
-            sx={{ backgroundColor: color }}
+            sx={{ 
+                '&.MuiCard-root': {
+                    backgroundColor: color
+                }
+            }}
         >
             <CardContent className={styles.cardContent}>
                 <Box className={styles.contentWrapper}>

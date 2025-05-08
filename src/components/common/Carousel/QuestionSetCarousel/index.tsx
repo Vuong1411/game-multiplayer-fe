@@ -6,40 +6,18 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 // @project
 import styles from './styles.module.scss';
-import QuizCard from '../../Card/QuizCard';
+import QuestionSetCard from '../../Card/QuestionSetCard';
 import PlusCard from '../../Card/PlusCard';
-import img from '../../../../assets/images/quiz/history.png';
+import { questionSets } from '../../../../mocks/QuestionSet';
+import { getColor } from '../../../../utils/getColor';
 
-const quizData = [
-    {
-        id: '1',
-        title: 'Game lịch sử',
-        author: 'Morkaths',
-        questions: 19,
-        image: img,
-    },
-    {
-        id: '2',
-        title: 'Game lịch sử 2',
-        author: 'Morkaths',
-        questions: 19,
-        image: img,
-    },
-];
-
-const QuizCarousel = () => {
+const QuestionSetCarousel = () => {
     const navigate = useNavigate();
     const [isDragging, setIsDragging] = useState(false);
 
-    const handleQuizClick = (id: string) => {
+    const handleNavigation = (path: string) => {
         if (!isDragging) {
-            navigate(`/quiz/${id}`);
-        }
-    };
-
-    const handleCreateQuiz = () => {
-        if (!isDragging) {
-            navigate('/creator');
+            navigate(path);
         }
     };
 
@@ -74,15 +52,19 @@ const QuizCarousel = () => {
         afterChange: () => setTimeout(() => setIsDragging(false), 100),
     };
 
-    const quizCards = quizData.map(quiz => (
-        <Box key={quiz.id} className={styles.slideWrapper}>
-            <QuizCard quiz={quiz} onClick={() => handleQuizClick(quiz.id)} />
+    const quizCards = questionSets.map((quiz, index) => (
+        <Box key={index} className={styles.slideWrapper}>
+            <QuestionSetCard 
+                quiz={quiz} 
+                onClick={() => handleNavigation(`/details/${quiz.id}`)} 
+                color={getColor(index)}
+            />
         </Box>
     ));
 
-    const plusCards = Array.from({ length: 6 }, (_, index) => (
+    const plusCards = Array.from({ length: 5 }, (_, index) => (
         <Box key={`plus-${index}`} className={styles.slideWrapper}>
-            <PlusCard onClick={handleCreateQuiz} />
+            <PlusCard onClick={() => handleNavigation('/creator')} />
         </Box>
     ));
 
@@ -96,4 +78,4 @@ const QuizCarousel = () => {
     );
 };
 
-export default QuizCarousel;
+export default QuestionSetCarousel;

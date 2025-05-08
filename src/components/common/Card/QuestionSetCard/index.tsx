@@ -1,18 +1,24 @@
 import { Box, Card, Chip, CardMedia, CardContent, Typography } from '@mui/material';
 // @project
 import styles from './styles.module.scss';
-import { QuestionSet } from '../../../../types/quiz';
+import { QuestionSet } from '../../../../types/question';
 
-export interface QuizCardProps {
+export interface QuestionSetCardProps {
     quiz: QuestionSet;
+    color: string;
     onClick?: (id: string) => void;
 }
 
-const QuizCard = ({ quiz, onClick }: QuizCardProps) => {
+const QuestionSetCard = ({ quiz, color, onClick }: QuestionSetCardProps) => {
     return (
         <Card
             onClick={() => onClick?.(quiz.id)}
             className={styles.card}
+            sx={{ 
+                '&.MuiCard-root': {
+                    backgroundColor: color
+                }
+            }}
         >
             <Box className={styles.chipContainer}>
                 <Chip 
@@ -49,4 +55,4 @@ const QuizCard = ({ quiz, onClick }: QuizCardProps) => {
     );
 };
 
-export default QuizCard;
+export default QuestionSetCard;

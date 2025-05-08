@@ -15,7 +15,11 @@ const TopicCard = ({ title, description, image, color, onClick }: TopicCardProps
         <Card
             onClick={onClick}
             className={styles.card}
-            sx={{ backgroundColor: color }}
+            sx={{ 
+                '&.MuiCard-root': {
+                    backgroundColor: color
+                }
+            }}
         >
             <Box className={styles.imageContainer}>
                 <Box

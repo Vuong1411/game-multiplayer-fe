@@ -24,3 +24,9 @@ export interface Answer {
     content: string;
     is_correct: boolean;
 }
+
+export interface Favorite {
+    id: string;
+    user_id: string;
+    question_set_id: string;
+}

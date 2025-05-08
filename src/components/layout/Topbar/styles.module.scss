@@ -47,6 +47,7 @@
             width: 100%;
             background-color: rgba(0, 0, 0, 0.04);
             transition: background-color 0.2s;
+            border: 1px solid #a5a5a5;
 
             &:hover {
                 background-color: rgba(0, 0, 0, 0.08);
@@ -59,17 +60,16 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                color: #a5a5a5;
             }
 
             .searchInput {
                 width: 100%;
-                padding: 8px 8px 8px 40px;
+                padding: 4px 4px 4px 40px;
                 color: inherit;
 
-                input {
-                    &::placeholder {
-                        color: rgba(0, 0, 0, 0.5);
-                    }
+                &::placeholder {
+                    color: #a5a5a5;
                 }
             }
         }
@@ -82,13 +82,8 @@
     gap: 16px;
 
     .createButton {
-        background-color: #26890c;
         text-transform: none;
         padding: 6px 16px;
-        
-        &:hover {
-            background-color: #1e6c09;
-        }
 
         @media (max-width: 600px) {
             display: none;

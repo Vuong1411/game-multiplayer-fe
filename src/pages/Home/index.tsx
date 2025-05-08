@@ -4,7 +4,7 @@ import styles from './styles.module.scss';
 import PromoBannerCard from '../../components/common/Card/BannerCard';
 import FeatureCarousel from "../../components/common/Carousel/FeatureCarousel";
 import TopicCarousel from "../../components/common/Carousel/TopicCarousel";
-import QuizCarousel from "../../components/common/Carousel/QuizCarousel";
+import QuestionSetCarousel from "../../components/common/Carousel/QuestionSetCarousel";
 
 const Home = () => {
     return (
@@ -32,7 +32,7 @@ const Home = () => {
                     <Typography variant="h4" className={styles.title}>
                         Quiz của tôi
                     </Typography>
-                    <QuizCarousel />
+                    <QuestionSetCarousel />
                 </Box>
             </Box>
         </>

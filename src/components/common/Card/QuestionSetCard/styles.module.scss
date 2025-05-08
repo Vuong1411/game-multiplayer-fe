@@ -2,8 +2,8 @@
     min-width: 200px;
     max-width: 200px;
     height: 250px;
-    background-color: #7c2d12;
-    color: white;
+    background-color: #8f8f8f;
+    color: #ffffff;
     border-radius: 8px;
     overflow: hidden;
     display: inline-block;
@@ -79,23 +79,36 @@
 
 :global(.MuiCardContent-root).content {
     padding: 5px;
-    height: auto;
+    height: 70px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    gap: 10px;
+    position: relative;
 }
 
 :global(.MuiTypography-root).title {
-    color: white;
-    font-size: 20px;
+    font-size: 15px;
     font-weight: 700;
     text-align: left;
+    line-height: 1.2;
+    display: -webkit-box;
+    display: box;
+    -webkit-box-orient: vertical;
+    box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 :global(.MuiTypography-root).author {
-    font-size: 11px;
+    position: absolute;
+    bottom: 10px;
     opacity: 0.8;
-    text-align: left;
+    font-size: 11px;
     font-weight: 400;
+    text-align: left;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

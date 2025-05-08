@@ -8,11 +8,7 @@ import "slick-carousel/slick/slick-theme.css";
 import styles from './styles.module.scss';
 import TopicCard from '../../Card/TopicCard';
 import mathImg from '../../../../assets/images/topic/math.png';
-
-const colors = [
-    '#f97316', '#2563eb', '#a855f7', '#eab308',
-    '#16a34a', '#dc2626', '#0891b2', '#ec4899'
-];
+import { getColor } from '../../../../utils/getColor';
 
 const topics = [
     {
@@ -38,13 +34,12 @@ const topics = [
         description: 'Khoa học về sự sống',
         image: mathImg,
         path: '/create-question'
-    }
+    },
 ];
 
 const TopicCarousel = () => {
     const navigate = useNavigate();
     const [isDragging, setIsDragging] = useState(false);
-    const shuffledColors = [...colors].sort(() => Math.random() - 0.5);
 
     const settings = {
         dots: true,
@@ -78,7 +73,7 @@ const TopicCarousel = () => {
         afterChange: () => setTimeout(() => setIsDragging(false), 100),
     };
 
-    const handleClick = (path: string) => {
+    const handleNavigation = (path: string) => {
         if (!isDragging) {
             navigate(path);
         }
@@ -94,8 +89,8 @@ const TopicCarousel = () => {
                     >
                         <TopicCard
                             {...topic}
-                            color={shuffledColors[index]}
-                            onClick={() => handleClick(topic.path)}
+                            color={getColor(index)}
+                            onClick={() => handleNavigation(topic.path)}
                         />
                     </Box>
                 ))}

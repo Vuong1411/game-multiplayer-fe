@@ -76,11 +76,12 @@ const DrawerContent = () => {
                         <ListItemButton
                             selected={location.pathname === item.path}
                             onClick={() => navigate(item.path)}
+                            className={styles.listItemButton}
                         >
                             <ListItemIcon className={styles.listItemIcon}>
                                 {item.icon}
                             </ListItemIcon>
-                            <ListItemText primary={item.text} />
+                            <ListItemText primary={item.text} className={styles.listItemText} />
                         </ListItemButton>
                     </ListItem>
                 ))}
@@ -99,7 +100,7 @@ const DrawerContent = () => {
                             <ListItemIcon className={styles.listItemIcon}>
                                 {item.icon}
                             </ListItemIcon>
-                            <ListItemText primary={item.text} />
+                            <ListItemText primary={item.text} className={styles.listItemText} />
                         </ListItemButton>
                     </ListItem>
                 ))}
@@ -116,6 +117,7 @@ interface SidebarProps {
 const Sidebar = ({ mobileOpen, handleDrawerToggle }: SidebarProps) => {
     return (
         <Box className={styles.drawerContainer}>
+            {/* Temporary drawer for mobile view */}
             <Drawer
                 variant="temporary"
                 open={mobileOpen}
@@ -126,6 +128,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }: SidebarProps) => {
                 <DrawerContent />
             </Drawer>
 
+            {/* Permanent drawer for desktop view */}
             <Drawer
                 variant="permanent"
                 className={styles.permanentDrawer}
