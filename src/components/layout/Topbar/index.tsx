@@ -11,12 +11,10 @@ import {
     MenuItem,
     ListItemIcon,
     Divider,
-    InputBase,
 } from '@mui/material';
 import {
     Menu as MenuIcon,
     Create as CreateIcon,
-    Search as SearchIcon,
     Person,
     Login,
     PersonAdd,
@@ -26,6 +24,7 @@ import {
 // @project
 import styles from './styles.module.scss';
 import logo from '../../../assets/logo.png';
+import SearchBar from '../../common/SearchBar';
 
 interface TopbarProps {
     handleDrawerToggle: () => void;
@@ -45,8 +44,8 @@ const Topbar = ({ handleDrawerToggle }: TopbarProps) => {
     };
 
     return (
-        <AppBar 
-            position="fixed" 
+        <AppBar
+            position="fixed"
             className={styles.appBar}
             sx={{
                 zIndex: (theme) => theme.zIndex.drawer + 1,
@@ -78,17 +77,9 @@ const Topbar = ({ handleDrawerToggle }: TopbarProps) => {
                     />
 
                     {/* Search bar */}
-                    <Box className={styles.searchWrapper}>
-                        <Box className={styles.searchBox}>
-                            <Box className={styles.searchIconWrapper}>
-                                <SearchIcon />
-                            </Box>
-                            <InputBase
-                                className={styles.searchInput}
-                                placeholder="Tìm kiếm..."
-                            />
-                        </Box>
-                    </Box>
+                    <SearchBar onSearch={(value) => {
+                        console.log('Searching:', value);
+                    }} />
                 </Box>
 
                 {/* Right section */}
@@ -113,50 +104,48 @@ const Topbar = ({ handleDrawerToggle }: TopbarProps) => {
                         open={Boolean(anchorEl)}
                         onClose={handleCloseMenu}
                         onClick={handleCloseMenu}
-                        PaperProps={{
-                            className: styles.menu
+                        slotProps={{
+                            paper: {
+                                className: styles.menu
+                            }
                         }}
                         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                     >
-                        {isAuthenticated ? (
-                            <>
-                                <MenuItem onClick={() => navigate('/profile')}>
-                                    <ListItemIcon>
-                                        <Person fontSize="small" />
-                                    </ListItemIcon>
-                                    Hồ sơ cá nhân
-                                </MenuItem>
-                                <MenuItem onClick={() => navigate('/settings')}>
-                                    <ListItemIcon>
-                                        <Settings fontSize="small" />
-                                    </ListItemIcon>
-                                    Cài đặt
-                                </MenuItem>
-                                <Divider />
-                                <MenuItem onClick={() => navigate('/logout')}>
-                                    <ListItemIcon>
-                                        <Logout fontSize="small" />
-                                    </ListItemIcon>
-                                    Đăng xuất
-                                </MenuItem>
-                            </>
-                        ) : (
-                            <>
-                                <MenuItem onClick={() => navigate('/login')}>
-                                    <ListItemIcon>
-                                        <Login fontSize="small" />
-                                    </ListItemIcon>
-                                    Đăng nhập
-                                </MenuItem>
-                                <MenuItem onClick={() => navigate('/register')}>
-                                    <ListItemIcon>
-                                        <PersonAdd fontSize="small" />
-                                    </ListItemIcon>
-                                    Đăng ký
-                                </MenuItem>
-                            </>
-                        )}
+                        {isAuthenticated ? [
+                            <MenuItem key="profile" onClick={() => navigate('/profile')}>
+                                <ListItemIcon>
+                                    <Person fontSize="small" />
+                                </ListItemIcon>
+                                Hồ sơ cá nhân
+                            </MenuItem>,
+                            <MenuItem key="settings" onClick={() => navigate('/settings')}>
+                                <ListItemIcon>
+                                    <Settings fontSize="small" />
+                                </ListItemIcon>
+                                Cài đặt
+                            </MenuItem>,
+                            <Divider key="divider" />,
+                            <MenuItem key="logout" onClick={() => navigate('/logout')}>
+                                <ListItemIcon>
+                                    <Logout fontSize="small" />
+                                </ListItemIcon>
+                                Đăng xuất
+                            </MenuItem>
+                        ] : [
+                            <MenuItem key="login" onClick={() => navigate('/login')}>
+                                <ListItemIcon>
+                                    <Login fontSize="small" />
+                                </ListItemIcon>
+                                Đăng nhập
+                            </MenuItem>,
+                            <MenuItem key="register" onClick={() => navigate('/register')}>
+                                <ListItemIcon>
+                                    <PersonAdd fontSize="small" />
+                                </ListItemIcon>
+                                Đăng ký
+                            </MenuItem>
+                        ]}
                     </Menu>
                 </Box>
             </Toolbar>

@@ -85,6 +85,13 @@
     position: relative;
 }
 
+.titleContainer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
 :global(.MuiTypography-root).title {
     font-size: 15px;
     font-weight: 700;

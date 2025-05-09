@@ -1,4 +1,17 @@
-import { Box, Card, Chip, CardMedia, CardContent, Typography } from '@mui/material';
+import { useState, MouseEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+    Box,
+    Card,
+    Chip,
+    CardMedia,
+    CardContent,
+    Typography,
+    Menu,
+    IconButton,
+    MenuItem
+} from '@mui/material';
+import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 // @project
 import styles from './styles.module.scss';
 import { QuestionSet } from '../../../../types/question';
@@ -10,25 +23,39 @@ export interface QuestionSetCardProps {
 }
 
 const QuestionSetCard = ({ quiz, color, onClick }: QuestionSetCardProps) => {
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [showMenu, setShowMenu] = useState(false);
+    const navigate = useNavigate();
+    const handleOpenMenu = (event: MouseEvent<HTMLElement>) => {
+        event.stopPropagation();
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleCloseMenu = () => {
+        setAnchorEl(null);
+    };
+
     return (
         <Card
             onClick={() => onClick?.(quiz.id)}
             className={styles.card}
-            sx={{ 
+            onMouseEnter={() => setShowMenu(true)}
+            onMouseLeave={() => setShowMenu(false)}
+            sx={{
                 '&.MuiCard-root': {
                     backgroundColor: color
                 }
             }}
         >
             <Box className={styles.chipContainer}>
-                <Chip 
-                    label="Kahoot" 
-                    size="small" 
+                <Chip
+                    label="Kahoot"
+                    size="small"
                     className={`${styles.chip} ${styles.kahoot}`}
                 />
-                <Chip 
-                    label="Miễn phí" 
-                    size="small" 
+                <Chip
+                    label="Miễn phí"
+                    size="small"
                     className={`${styles.chip} ${styles.free}`}
                 />
             </Box>
@@ -44,13 +71,39 @@ const QuestionSetCard = ({ quiz, color, onClick }: QuestionSetCardProps) => {
                 </Box>
             </Box>
             <CardContent className={styles.content}>
-                <Typography className={styles.title}>
-                    {quiz.title}
-                </Typography>
+                <Box className={styles.titleContainer}>
+                    <Typography className={styles.title}>
+                        {quiz.title}
+                    </Typography>
+                    {showMenu && (
+                        <IconButton
+                            onClick={handleOpenMenu}
+                            className={styles.menuButton}
+                            size="small"
+                        >
+                            <MoreVertIcon fontSize="small" />
+                        </IconButton>
+                    )}
+                </Box>
+
                 <Typography className={styles.author}>
                     {quiz.author}
                 </Typography>
             </CardContent>
+
+            <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleCloseMenu}
+                onClick={(e) => e.stopPropagation()}
+            >
+                <MenuItem onClick={() => navigate('/edit')}>
+                    Chỉnh sửa
+                </MenuItem>
+                <MenuItem onClick={() => navigate('/delete')}>
+                    Xóa
+                </MenuItem>
+            </Menu>
         </Card>
     );
 };

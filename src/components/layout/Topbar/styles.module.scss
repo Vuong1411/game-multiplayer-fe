@@ -1,7 +1,7 @@
-.appBar {
-    background-color: white !important;
-    color: rgba(0, 0, 0, 0.87) !important;
-    box-shadow: none !important;
+:global(.MuiAppBar-root).appBar {
+    background-color: white;
+    color: rgba(0, 0, 0, 0.87);
+    box-shadow: none;
     border-bottom: 1px solid rgba(0, 0, 0, 0.12);
     backdrop-filter: blur(6px);
 }
@@ -14,6 +14,7 @@
 .leftSection {
     display: flex;
     align-items: center;
+    flex: 1;
     gap: 16px;
 
     .menuButton {
@@ -28,50 +29,6 @@
         transition: opacity 0.2s;
         &:hover {
             opacity: 0.8;
-        }
-    }
-
-    .searchWrapper {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 400px;
-
-        @media (max-width: 900px) {
-            display: none;
-        }
-
-        .searchBox {
-            position: relative;
-            border-radius: 4px;
-            width: 100%;
-            background-color: rgba(0, 0, 0, 0.04);
-            transition: background-color 0.2s;
-            border: 1px solid #a5a5a5;
-
-            &:hover {
-                background-color: rgba(0, 0, 0, 0.08);
-            }
-
-            .searchIconWrapper {
-                padding: 0 12px;
-                height: 100%;
-                position: absolute;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #a5a5a5;
-            }
-
-            .searchInput {
-                width: 100%;
-                padding: 4px 4px 4px 40px;
-                color: inherit;
-
-                &::placeholder {
-                    color: #a5a5a5;
-                }
-            }
         }
     }
 }
