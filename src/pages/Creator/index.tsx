@@ -145,6 +145,7 @@ const Creator = () => {
                                 question={selectedQuestion}
                                 answers={selectedAnswers}
                                 onAnswerCreate={handleCreateAnswer}
+                                onAnswerChange={handleAnswerChange}
                             />
                     ) : (
                         <Box p={3} display="flex" justifyContent="center" alignItems="center" height="100%">

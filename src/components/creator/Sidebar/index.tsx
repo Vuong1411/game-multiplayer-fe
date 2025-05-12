@@ -39,7 +39,7 @@ const Sidebar = ({
             className={styles.sidebar}
             sx={{
                 width: '280px',
-                height: '93vh',
+                height: '90vh',
                 backgroundColor: '#F5F5F5',
                 display: 'flex',
                 flexDirection: 'column',

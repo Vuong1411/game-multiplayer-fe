@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { 
-    Box, 
-    Typography, 
+import {
+    Box,
+    Typography,
     Card,
     Grid,
     Button,
-    IconButton
+    TextField
 } from '@mui/material';
 import TriangleIcon from '@mui/icons-material/ChangeHistory'; // tam giác
 import DiamondIcon from '@mui/icons-material/Diamond'; // hình thoi
@@ -24,15 +24,16 @@ interface QuestionPreviewProps {
     answers: Answer[];
     onAnswerCreate?: () => void;
     onSelectedAnswer?: (answerId: number) => void;
+    onAnswerChange?: (answerId: number, newAnswer: Partial<Answer>) => void;
 }
 
-const QuestionPreview: React.FC<QuestionPreviewProps> = ({
+const QuestionPreview = ({
     question,
     answers,
     onAnswerCreate,
     onSelectedAnswer,
     onAnswerChange
-}) => {
+}: QuestionPreviewProps) => {
     const [selectedAnswerId, setSelectedAnswerId] = useState<number | null>(null);
 
     const handleSelectAnswer = (answerId: number) => {
@@ -42,29 +43,23 @@ const QuestionPreview: React.FC<QuestionPreviewProps> = ({
         }
     };
 
-    // Hàm xử lý khi click vào checkbox để đánh dấu đáp án đúng
-    const handleToggleCorrect = (event: React.MouseEvent, answerId: number, isCurrentlyCorrect: boolean) => {
-        event.stopPropagation(); // Ngăn không cho sự kiện lan ra ngoài (tránh trigger handleSelectAnswer)
-        
-        if (onAnswerChange) {
-            // Nếu câu trả lời hiện tại đã là đúng, không làm gì
-            if (isCurrentlyCorrect) return;
-            
-            // Đặt tất cả các câu trả lời là không đúng
-            answers.forEach(answer => {
-                if (answer.id !== answerId && answer.is_correct) {
-                    onAnswerChange(answer.id, { is_correct: false });
-                }
-            });
-            
-            // Đặt câu trả lời được chọn là đúng
-            onAnswerChange(answerId, { is_correct: true });
-        }
+    // Hàm xử lý chọn đáp án đúng
+    const handleToggleCorrect = (event: React.MouseEvent, answerId: number) => {
+        event.stopPropagation();
+        // Tìm đáp án được click
+        const clickedAnswer = answers.find(answer => answer.id === answerId);
+
+        if (!clickedAnswer) return;
+
+        onAnswerChange?.(answerId, {
+            is_correct: !clickedAnswer.is_correct
+        });
     };
+
 
     // Lấy biểu tượng và tên theo index
     const getSymbolAndName = (index: number) => {
-        switch(index) {
+        switch (index) {
             case 0: return { symbol: <TriangleIcon /> };
             case 1: return { symbol: <DiamondIcon /> };
             case 2: return { symbol: <CircleIcon /> };
@@ -84,12 +79,12 @@ const QuestionPreview: React.FC<QuestionPreviewProps> = ({
 
             {/* Hình ảnh */}
             <Box className={styles.imageContainer}>
-                <img 
+                <img
                     src={question.image_url || "https://images.unsplash.com/photo-1503756234508-e32369269deb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1035&q=80"}
-                    alt={question.content} 
+                    alt={question.content}
                     className={styles.questionImage}
                 />
-                
+
                 {/* Các nút công cụ */}
                 <Box className={styles.imageTools}>
                     <Box className={styles.toolButton}>
@@ -103,7 +98,7 @@ const QuestionPreview: React.FC<QuestionPreviewProps> = ({
                 {answers.map((answer, index) => {
                     const { symbol } = getSymbolAndName(index);
                     const isCorrect = answer.is_correct;
-                    
+
                     // Xác định className dựa trên index
                     const answerClass = [
                         styles.answerRed,
@@ -111,10 +106,10 @@ const QuestionPreview: React.FC<QuestionPreviewProps> = ({
                         styles.answerYellow,
                         styles.answerGreen
                     ][index % 4];
-                    
+
                     return (
-                        <Grid size={6} key={answer.id || index}>
-                            <Box 
+                        <Grid size={6} key={answer.id}>
+                            <Box
                                 className={`${styles.answerCard} ${answerClass}`}
                                 onClick={() => handleSelectAnswer(answer.id)}
                             >
@@ -123,15 +118,40 @@ const QuestionPreview: React.FC<QuestionPreviewProps> = ({
                                         {symbol}
                                     </Typography>
                                 </Box>
-                                
-                                <Typography className={styles.answerText}>
-                                    {answer.content}
-                                </Typography>
-                                
+
+                                {/* TextField cho nội dung đáp án */}
+                                <TextField
+                                    value={answer.content}
+                                    onChange={(e) => onAnswerChange?.(answer.id, { content: e.target.value })}
+                                    inputProps={{
+                                        style: {
+                                            color: 'white',
+                                            fontSize: '16px',
+                                            padding: '8px',
+                                            background: 'transparent'
+                                        }
+                                    }}
+                                    sx={{
+                                        flex: 1,
+                                        mx: 2,
+                                        '& .MuiInput-root': {
+                                            '&:before, &:after': {
+                                                display: 'none'
+                                            }
+                                        },
+                                        '& .MuiInput-input': {
+                                            color: 'white',
+                                            fontSize: '16px',
+                                            padding: '4px 8px',
+                                            background: 'transparent'
+                                        }
+                                    }}
+                                />
+
                                 {/* Checkbox tròn cho mỗi đáp án */}
-                                <Box 
+                                <Box
                                     className={styles.checkboxContainer}
-                                    onClick={(e) => handleToggleCorrect(e, answer.id, isCorrect)}
+                                    onClick={(e) => handleToggleCorrect(e, answer.id)}
                                     sx={{
                                         backgroundColor: isCorrect ? '#4caf50' : 'rgba(255,255,255,0.3)',
                                         width: '32px',
