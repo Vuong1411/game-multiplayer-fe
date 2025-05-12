@@ -1,0 +1,62 @@
+:global(.MuiAppBar-root).appBar {
+    background-color: #fff;
+    color: #333;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+:global(.MuiToolbar-root).toolbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 16px;
+    min-height: 64px;
+}
+
+.leftSection {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.logo {
+    height: 32px;
+    cursor: pointer;
+}
+
+.titleInput {
+    width: 200px;
+}
+
+:global(.MuiInput-root).titleInput::before {
+    border-bottom: none;
+}
+
+.rightSection {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+:global(.MuiButton-root).actionButton {
+    text-transform: none;
+    color: #333;
+}
+
+:global(.MuiButton-root).playButton {
+    background-color: #1368ce;
+    color: white;
+    text-transform: none;
+    
+    &:hover {
+        background-color: #1368ce;
+    }
+}
+
+:global(.MuiButton-root).saveButton {
+    background-color: #0066ff;
+    color: white;
+    text-transform: none;
+    
+    &:hover {
+        background-color: #0066ff;
+    }
+}

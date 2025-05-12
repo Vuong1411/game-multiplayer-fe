@@ -1,10 +1,10 @@
 import { Box, Typography } from "@mui/material";
 import styles from './styles.module.scss';
 // @project
-import PromoBannerCard from '../../components/common/Card/BannerCard';
-import FeatureCarousel from "../../components/common/Carousel/FeatureCarousel";
-import TopicCarousel from "../../components/common/Carousel/TopicCarousel";
-import QuestionSetCarousel from "../../components/common/Carousel/QuestionSetCarousel";
+import PromoBannerCard from '../../components/home/BannerCard';
+import FeatureCarousel from "../../components/home/FeatureCarousel";
+import TopicCarousel from "../../components/home/TopicCarousel";
+import QuizCarousel from "../../components/home/QuizCarousel";
 
 const Home = () => {
     return (
@@ -32,7 +32,7 @@ const Home = () => {
                     <Typography variant="h4" className={styles.title}>
                         Quiz của tôi
                     </Typography>
-                    <QuestionSetCarousel />
+                    <QuizCarousel />
                 </Box>
             </Box>
         </>

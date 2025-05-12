@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
 import styles from './styles.module.scss';
 import TabFilter from '../../components/common/Tab';
 import SearchBar from '../../components/common/SearchBar';
-import QuestionSetList from '../../components/common/List/QuestionSetList';
+import MyQuizList from '../../components/library/QuizList';
 import { questionSets } from '../../mocks/QuestionSet';
 
 const Library = () => {
@@ -31,7 +31,7 @@ const Library = () => {
             </Box>
 
             <Box className={styles.content}>
-                <QuestionSetList
+                <MyQuizList
                     questionSets={questionSets.filter(item =>
                         item.title.toLowerCase().includes(searchQuery.toLowerCase())
                     )}

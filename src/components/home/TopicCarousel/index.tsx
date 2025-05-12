@@ -2,47 +2,42 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import Slider from 'react-slick';
-import {
-    QuestionAnswer,
-    Slideshow,
-    SmartToy,
-    PresentToAll
-} from '@mui/icons-material';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 // @project
 import styles from './styles.module.scss';
-import FeatureCard from '../../Card/FeatureCard';
-import { getColor } from '../../../../utils/getColor';
+import TopicCard from '../../common/Card/TopicCard';
+import mathImg from '../../../assets/images/topic/math.png';
+import { getColor } from '../../../utils/getColor';
 
-const features = [
+const topics = [
     {
-        title: 'Tạo câu hỏi',
-        description: 'Tạo câu hỏi trắc nghiệm dễ dàng',
-        icon: <QuestionAnswer />,
-        path: '/creator'
+        title: 'Toán học',
+        description: 'Các bài tập và câu hỏi về toán',
+        image: mathImg,
+        path: '/create-question'
     },
     {
-        title: 'Lecture Mode',
-        description: 'Chế độ trình chiếu bài giảng',
-        icon: <PresentToAll />,
-        path: '/lecture-mode'
+        title: 'Vật lý',
+        description: 'Khám phá thế giới vật lý',
+        image: mathImg,
+        path: '/create-question'
     },
     {
-        title: 'Trình tạo AI',
-        description: 'Tạo câu hỏi tự động với AI',
-        icon: <SmartToy />,
-        path: '/creator/ai'
+        title: 'Hóa học',
+        description: 'Thế giới của phản ứng hóa học',
+        image: mathImg,
+        path: '/create-question'
     },
     {
-        title: 'Google Slides',
-        description: 'Tích hợp với Google Slides',
-        icon: <Slideshow />,
-        path: '/google-slides'
-    }
+        title: 'Sinh học',
+        description: 'Khoa học về sự sống',
+        image: mathImg,
+        path: '/create-question'
+    },
 ];
 
-const FeatureCarousel = () => {
+const TopicCarousel = () => {
     const navigate = useNavigate();
     const [isDragging, setIsDragging] = useState(false);
 
@@ -65,14 +60,12 @@ const FeatureCarousel = () => {
                 breakpoint: 1024,
                 settings: {
                     slidesToShow: 2,
-                    centerPadding: '40px',
                 }
             },
             {
                 breakpoint: 800,
                 settings: {
                     slidesToShow: 1,
-                    centerPadding: '30px',
                 }
             }
         ],
@@ -89,15 +82,15 @@ const FeatureCarousel = () => {
     return (
         <Box className={styles.carouselWrapper}>
             <Slider {...settings}>
-                {features.map((feature, index) => (
-                    <Box
-                        key={index}
+                {topics.map((topic, index) => (
+                    <Box 
+                        key={index} 
                         className={styles.slideWrapper}
                     >
-                        <FeatureCard
-                            {...feature}
+                        <TopicCard
+                            {...topic}
                             color={getColor(index)}
-                            onClick={() => handleNavigation(feature.path)}
+                            onClick={() => handleNavigation(topic.path)}
                         />
                     </Box>
                 ))}
@@ -106,4 +99,4 @@ const FeatureCarousel = () => {
     );
 };
 
-export default FeatureCarousel;
+export default TopicCarousel;

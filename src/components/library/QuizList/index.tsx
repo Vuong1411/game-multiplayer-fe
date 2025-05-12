@@ -1,21 +1,21 @@
 import { Box, Grid } from '@mui/material';
 // @project
 import styles from './styles.module.scss';
-import QuestionSetCard from '../../Card/QuestionSetCard';
-import { QuestionSet } from '../../../../types/question';
+import QuizCard from '../../common/Card/QuizCard';
+import { QuestionSet } from '../../../types/question';
 
-interface QuestionSetListProps {
+interface MyQuizListProps {
     questionSets: QuestionSet[];
     onQuizClick?: (id: string) => void;
 }
 
-const QuestionSetList = ({ questionSets, onQuizClick }: QuestionSetListProps) => {
+const MyQuizList = ({ questionSets, onQuizClick }: MyQuizListProps) => {
     return (
         <Box className={styles.listWrapper}>
             <Grid container spacing={2}>
                 {questionSets.map((quiz) => (
                     <Grid key={quiz.id}>
-                        <QuestionSetCard quiz={quiz} onClick={() => onQuizClick?.(quiz.id)} />
+                        <QuizCard quiz={quiz} onClick={() => onQuizClick?.(quiz.id)} />
                     </Grid>
                 ))}
             </Grid>
@@ -23,4 +23,4 @@ const QuestionSetList = ({ questionSets, onQuizClick }: QuestionSetListProps) =>
     );
 };
 
-export default QuestionSetList;
+export default MyQuizList;

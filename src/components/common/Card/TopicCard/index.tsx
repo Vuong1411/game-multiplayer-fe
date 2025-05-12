@@ -6,7 +6,7 @@ export interface TopicCardProps {
     title: string;
     description: string;
     image: string;
-    color: string;
+    color?: string;
     onClick?: () => void;
 }
 

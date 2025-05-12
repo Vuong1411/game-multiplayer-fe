@@ -9,23 +9,30 @@ import {
     Typography,
     Menu,
     IconButton,
-    MenuItem
+    MenuItem,
+    ListItemIcon
 } from '@mui/material';
-import { MoreVert as MoreVertIcon } from '@mui/icons-material';
+import {
+    MoreVert as MoreVertIcon,
+    PlayArrow as PlayArrowIcon,
+    Edit as EditIcon,
+    Delete as DeleteIcon,
+} from '@mui/icons-material';
 // @project
 import styles from './styles.module.scss';
 import { QuestionSet } from '../../../../types/question';
 
-export interface QuestionSetCardProps {
+export interface QuizCardProps {
     quiz: QuestionSet;
-    color: string;
-    onClick?: (id: string) => void;
+    color?: string;
+    onClick?: (id: number) => void;
 }
 
-const QuestionSetCard = ({ quiz, color, onClick }: QuestionSetCardProps) => {
+const QuizCard = ({ quiz, color, onClick }: QuizCardProps) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [showMenu, setShowMenu] = useState(false);
     const navigate = useNavigate();
+
     const handleOpenMenu = (event: MouseEvent<HTMLElement>) => {
         event.stopPropagation();
         setAnchorEl(event.currentTarget);
@@ -33,14 +40,15 @@ const QuestionSetCard = ({ quiz, color, onClick }: QuestionSetCardProps) => {
 
     const handleCloseMenu = () => {
         setAnchorEl(null);
+        setShowMenu(false);
     };
 
     return (
         <Card
             onClick={() => onClick?.(quiz.id)}
-            className={styles.card}
             onMouseEnter={() => setShowMenu(true)}
-            onMouseLeave={() => setShowMenu(false)}
+            onMouseLeave={() => !anchorEl && setShowMenu(false)}
+            className={styles.card}
             sx={{
                 '&.MuiCard-root': {
                     backgroundColor: color
@@ -62,7 +70,7 @@ const QuestionSetCard = ({ quiz, color, onClick }: QuestionSetCardProps) => {
             <Box className={styles.mediaWrapper}>
                 <CardMedia
                     component="img"
-                    image={quiz.image}
+                    image={quiz.image_url}
                     alt={quiz.title}
                     className={styles.media}
                 />
@@ -75,15 +83,17 @@ const QuestionSetCard = ({ quiz, color, onClick }: QuestionSetCardProps) => {
                     <Typography className={styles.title}>
                         {quiz.title}
                     </Typography>
-                    {showMenu && (
-                        <IconButton
-                            onClick={handleOpenMenu}
-                            className={styles.menuButton}
-                            size="small"
-                        >
-                            <MoreVertIcon fontSize="small" />
-                        </IconButton>
-                    )}
+                    <IconButton
+                        onClick={handleOpenMenu}
+                        className={styles.menuButton}
+                        size="small"
+                        sx={{
+                            opacity: showMenu ? 1 : 0,
+                            transition: 'opacity 0.2s ease'
+                        }}
+                    >
+                        <MoreVertIcon fontSize="small" />
+                    </IconButton>
                 </Box>
 
                 <Typography className={styles.author}>
@@ -96,11 +106,24 @@ const QuestionSetCard = ({ quiz, color, onClick }: QuestionSetCardProps) => {
                 open={Boolean(anchorEl)}
                 onClose={handleCloseMenu}
                 onClick={(e) => e.stopPropagation()}
+                className={styles.menu}
             >
-                <MenuItem onClick={() => navigate('/edit')}>
+                <MenuItem onClick={() => navigate('/live')} className={styles.menuItem}>
+                    <ListItemIcon>
+                        <PlayArrowIcon fontSize="small" />
+                    </ListItemIcon>
+                    Tổ chức live
+                </MenuItem>
+                <MenuItem onClick={() => navigate('/edit')} className={styles.menuItem}>
+                    <ListItemIcon>
+                        <EditIcon fontSize="small" />
+                    </ListItemIcon>
                     Chỉnh sửa
                 </MenuItem>
-                <MenuItem onClick={() => navigate('/delete')}>
+                <MenuItem onClick={() => navigate('/delete')} className={`${styles.menuItem} ${styles.delete}`}>
+                    <ListItemIcon>
+                        <DeleteIcon fontSize="small" />
+                    </ListItemIcon>
                     Xóa
                 </MenuItem>
             </Menu>
@@ -108,4 +131,4 @@ const QuestionSetCard = ({ quiz, color, onClick }: QuestionSetCardProps) => {
     );
 };
 
-export default QuestionSetCard;
+export default QuizCard;

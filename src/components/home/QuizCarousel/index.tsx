@@ -6,12 +6,12 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 // @project
 import styles from './styles.module.scss';
-import QuestionSetCard from '../../Card/QuestionSetCard';
-import PlusCard from '../../Card/PlusCard';
-import { questionSets } from '../../../../mocks/QuestionSet';
-import { getColor } from '../../../../utils/getColor';
+import QuizCard from '../../common/Card/QuizCard';
+import PlusCard from '../../common/Card/PlusCard';
+import { getColor } from '../../../utils/getColor';
+import { questionSets } from '../../../mocks/QuestionSet';
 
-const QuestionSetCarousel = () => {
+const QuizCarousel = () => {
     const navigate = useNavigate();
     const [isDragging, setIsDragging] = useState(false);
 
@@ -54,7 +54,7 @@ const QuestionSetCarousel = () => {
 
     const quizCards = questionSets.map((quiz, index) => (
         <Box key={index} className={styles.slideWrapper}>
-            <QuestionSetCard 
+            <QuizCard 
                 quiz={quiz} 
                 onClick={() => handleNavigation(`/details/${quiz.id}`)} 
                 color={getColor(index)}
@@ -78,4 +78,4 @@ const QuestionSetCarousel = () => {
     );
 };
 
-export default QuestionSetCarousel;
+export default QuizCarousel;

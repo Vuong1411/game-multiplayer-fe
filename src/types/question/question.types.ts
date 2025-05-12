@@ -1,32 +1,31 @@
 export interface QuestionSet {
-    id: string;
+    id: number;
     title: string;
-    author: string;
+    author: string; // Tên tác giả
     questions: number;
     description?: string;
-    image: string;
+    image_url?: string;
 }
 
 export interface Question {
-    id: string;
+    id: number;
     question_set_id: number;
     content: string;
     image_url?: string;
     type: 'choice' | 'text';
     time_limit: number;
     difficulty: 'easy' | 'medium' | 'hard';
-    answers?: Answer[];
 }
 
 export interface Answer {
-    id: string;
+    id: number;
     question_id: number;
     content: string;
     is_correct: boolean;
 }
 
 export interface Favorite {
-    id: string;
-    user_id: string;
-    question_set_id: string;
+    id: number;
+    user_id: number;
+    question_set_id: number;
 }

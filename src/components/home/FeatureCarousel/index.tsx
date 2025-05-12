@@ -2,42 +2,47 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import Slider from 'react-slick';
+import {
+    QuestionAnswer,
+    Slideshow,
+    SmartToy,
+    PresentToAll
+} from '@mui/icons-material';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 // @project
 import styles from './styles.module.scss';
-import TopicCard from '../../Card/TopicCard';
-import mathImg from '../../../../assets/images/topic/math.png';
-import { getColor } from '../../../../utils/getColor';
+import FeatureCard from '../../common/Card/FeatureCard';
+import { getColor } from '../../../utils/getColor';
 
-const topics = [
+const features = [
     {
-        title: 'Toán học',
-        description: 'Các bài tập và câu hỏi về toán',
-        image: mathImg,
-        path: '/create-question'
+        title: 'Tạo câu hỏi',
+        description: 'Tạo câu hỏi trắc nghiệm dễ dàng',
+        icon: <QuestionAnswer />,
+        path: '/creator'
     },
     {
-        title: 'Vật lý',
-        description: 'Khám phá thế giới vật lý',
-        image: mathImg,
-        path: '/create-question'
+        title: 'Lecture Mode',
+        description: 'Chế độ trình chiếu bài giảng',
+        icon: <PresentToAll />,
+        path: '/lecture-mode'
     },
     {
-        title: 'Hóa học',
-        description: 'Thế giới của phản ứng hóa học',
-        image: mathImg,
-        path: '/create-question'
+        title: 'Trình tạo AI',
+        description: 'Tạo câu hỏi tự động với AI',
+        icon: <SmartToy />,
+        path: '/creator/ai'
     },
     {
-        title: 'Sinh học',
-        description: 'Khoa học về sự sống',
-        image: mathImg,
-        path: '/create-question'
-    },
+        title: 'Google Slides',
+        description: 'Tích hợp với Google Slides',
+        icon: <Slideshow />,
+        path: '/google-slides'
+    }
 ];
 
-const TopicCarousel = () => {
+const FeatureCarousel = () => {
     const navigate = useNavigate();
     const [isDragging, setIsDragging] = useState(false);
 
@@ -60,12 +65,14 @@ const TopicCarousel = () => {
                 breakpoint: 1024,
                 settings: {
                     slidesToShow: 2,
+                    centerPadding: '40px',
                 }
             },
             {
                 breakpoint: 800,
                 settings: {
                     slidesToShow: 1,
+                    centerPadding: '30px',
                 }
             }
         ],
@@ -82,15 +89,15 @@ const TopicCarousel = () => {
     return (
         <Box className={styles.carouselWrapper}>
             <Slider {...settings}>
-                {topics.map((topic, index) => (
-                    <Box 
-                        key={index} 
+                {features.map((feature, index) => (
+                    <Box
+                        key={index}
                         className={styles.slideWrapper}
                     >
-                        <TopicCard
-                            {...topic}
+                        <FeatureCard
+                            {...feature}
                             color={getColor(index)}
-                            onClick={() => handleNavigation(topic.path)}
+                            onClick={() => handleNavigation(feature.path)}
                         />
                     </Box>
                 ))}
@@ -99,4 +106,4 @@ const TopicCarousel = () => {
     );
 };
 
-export default TopicCarousel;
+export default FeatureCarousel;

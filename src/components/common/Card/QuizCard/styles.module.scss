@@ -90,6 +90,11 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 8px;
+    .menuButton {
+        padding: 4px;
+        margin: -4px;
+        color: inherit;
+    }
 }
 
 :global(.MuiTypography-root).title {
@@ -118,4 +123,31 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+:global(.MuiMenu-root).menu {
+
+    :global(.MuiPaper-root) {
+        pointer-events: auto;  // Re-enable pointer events for menu content
+    }
+}
+
+:global(.MuiMenuItem-root).menuItem {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 5px 15px;
+
+    :global(.MuiListItemIcon-root) {
+        min-width: 28px;
+        padding-left: 2px;
+    }
+
+    &.delete {
+        color: #d32f2f;
+
+        :global(.MuiListItemIcon-root) {
+            color: #d32f2f;
+        }
+    }
 }

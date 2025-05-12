@@ -1,0 +1,216 @@
+.previewContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(to bottom, #baa5b9, #d8ccd6);
+  position: relative;
+  min-height: 100vh;
+  overflow: auto;
+  padding-bottom: 60px;
+}
+
+.questionTitle {
+  width: 100%;
+  max-width: 960px;
+  margin: 20px auto;
+  background-color: white;
+  padding: 16px;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 5;
+}
+
+.questionText {
+  text-align: center;
+  font-weight: 500;
+  color: #333;
+}
+
+.imageContainer {
+  width: 100%;
+  max-width: 700px;
+  max-height: 350px;
+  overflow: hidden;
+  border-radius: 4px;
+  position: relative;
+  margin-bottom: 24px;
+  z-index: 5;
+}
+
+.questionImage {
+  width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.imageTools {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.toolButton {
+  width: 32px;
+  height: 32px;
+  background-color: white;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toolIcon {
+  font-size: 18px;
+}
+
+.checkboxContainer {
+  transition: all 0.2s ease;
+}
+
+.answersContainer {
+  width: 100%;
+  max-width: 900px;
+  padding: 0 16px;
+  z-index: 5;
+}
+
+.answerCard {
+  height: 60px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  color: white;
+  padding: 0 16px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  padding-right: 10px;
+  justify-content: space-between;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  }
+}
+
+.answerRed {
+  background-color: #e91e63;
+}
+
+.answerBlue {
+  background-color: #1976d2;
+}
+
+.answerYellow {
+  background-color: #e6a100;
+}
+
+.answerGreen {
+  background-color: #388e3c;
+}
+
+.symbolContainer {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+}
+
+.symbolText {
+  font-size: 16px;
+  color: white;
+}
+
+.answerText {
+  flex-grow: 1;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.correctMark, .selectedMark {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.correctMark {
+  background-color: #4caf50;
+}
+
+.selectedMark {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.checkIcon {
+  color: white;
+  font-size: 20px;
+}
+
+.addAnswerButton {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border-radius: 4px;
+  z-index: 10;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+}
+
+/* Thêm phần background cho không gian phòng */
+.previewContainer::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  background-image: url("https://i.imgur.com/TvNwe0L.png");
+  background-size: contain;
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Thêm các chi tiết trang trí */
+.decoration {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.decoration.topLeft {
+  top: 60px;
+  left: 40px;
+}
+
+.decoration.topRight {
+  top: 60px;
+  right: 40px;
+}
+
+.decoration.bottomLeft {
+  bottom: 60px;
+  left: 40px;
+}
+
+.decoration.bottomRight {
+  bottom: 60px;
+  right: 40px;
+}

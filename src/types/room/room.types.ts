@@ -1,5 +1,5 @@
 export interface Room {
-    id: string;
+    id: number;
     pin: string;
     question_set_id: number;
     host_id: number;
@@ -11,7 +11,7 @@ export interface Room {
 }
 
 export interface Player {
-    id: string;
+    id: number;
     room_id: number;
     nickname: string;
     avatar_url?: string;
@@ -20,7 +20,7 @@ export interface Player {
 }
 
 export interface PlayerAnswer {
-    player_id: string;
+    player_id: number;
     question_id: number;
     answer_id?: number;
     answer_text?: string;

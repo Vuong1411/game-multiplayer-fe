@@ -90,7 +90,7 @@ const Topbar = ({ handleDrawerToggle }: TopbarProps) => {
                         variant="contained"
                         startIcon={<CreateIcon />}
                         className={styles.createButton}
-                        onClick={() => navigate('/create')}
+                        onClick={() => navigate('/creator')}
                     >
                         Tạo
                     </Button>

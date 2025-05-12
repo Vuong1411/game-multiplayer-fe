@@ -2,7 +2,7 @@ import { Box, Typography, Button, Card, CardContent } from '@mui/material';
 import { School } from '@mui/icons-material';
 
 import styles from './styles.module.scss';
-import promoImg from '../../../../assets/images/banner.png';
+import promoImg from '../../../assets/images/banner.png';
 
 const PromoBannerCard = () => {
     return (

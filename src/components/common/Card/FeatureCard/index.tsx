@@ -5,7 +5,7 @@ export interface FeatureCardProps {
     title: string;
     description: string;
     icon: React.ReactNode;
-    color: string;
+    color?: string;
     onClick?: () => void;
 }
 
