@@ -13,7 +13,7 @@ import "slick-carousel/slick/slick-theme.css";
 // @project
 import styles from './styles.module.scss';
 import FeatureCard from '../../common/Card/FeatureCard';
-import { getColor } from '../../../utils/getColor';
+import { getColor } from '../../../utils/Color';
 
 const features = [
     {

@@ -7,11 +7,17 @@
 .contentWrapper {
     display: flex;
     flex-grow: 1;
-    padding-top: 64px;;
+    padding-top: 64px;
 }
 
 .mainContent {
     flex-grow: 1;
-    width: 100%;
+    width: calc(100% - 250px);
     overflow-y: auto;
+}
+
+.settingsPanel {
+    position: fixed;
+    right: 0;
+    height: calc(100vh - 64px);
 }

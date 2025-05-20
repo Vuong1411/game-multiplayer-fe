@@ -2,68 +2,41 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+  width: calc(100% - 250px);
+  height: 100%;
   position: relative;
-  height: 90vh;
   overflow: auto;
+  padding: 20px;
 }
 
+// Phần tiêu đề câu hỏi
 .questionTitle {
   width: 100%;
-  max-width: 880px;
-  margin: 10px auto;
+  padding: 10px;
+  display: flex;
+  text-align: center;
+  justify-content: center;
   background-color: white;
-  padding: 16px;
   border-radius: 4px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   z-index: 5;
 }
 
-.questionText {
-  text-align: center;
-  font-weight: 500;
-  color: #333;
-}
-
-.imageContainer {
+.questionTextField {
   width: 100%;
-  max-width: 400px;
-  max-height: 300px;
-  overflow: hidden;
-  border-radius: 4px;
-  position: relative;
-  margin-bottom: 10px;
-  z-index: 5;
 }
 
-.questionImage {
-  width: 100%;
-  object-fit: cover;
-  display: block;
-}
+.questionInput {
+  color: #333 !important;
+  font-size: 25px !important;
+  font-weight: 500 !important;
+  text-align: center !important;
+  padding: 10px !important;
 
-.imageTools {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  display: flex;
-  gap: 8px;
-}
-
-.toolButton {
-  width: 32px;
-  height: 32px;
-  background-color: white;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.toolIcon {
-  font-size: 18px;
+  &::placeholder {
+    color: #aaa;
+    opacity: 0.7;
+  }
 }
 
 .checkboxContainer {
@@ -72,23 +45,20 @@
 
 .answersContainer {
   width: 100%;
-  max-width: 900px;
-  padding: 0 20px;
   z-index: 5;
 }
 
 .answerCard {
-  height: 60px;
+  height: 100px;
+  width: 100%;
   border-radius: 8px;
   display: flex;
   align-items: center;
   cursor: pointer;
   position: relative;
-  color: white;
   padding: 0 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   transition: all 0.2s ease;
-  padding-right: 10px;
   justify-content: space-between;
 
   &:hover {
@@ -97,8 +67,26 @@
   }
 }
 
+.symbolContainer {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+}
+
+.symbolText {
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Màu sắc cho các câu trả lời
 .answerRed {
-  background-color: #e91e63;
+  background-color: #f70052;
 }
 
 .answerBlue {
@@ -113,57 +101,141 @@
   background-color: #388e3c;
 }
 
-.symbolContainer {
-  width: 32px;
-  height: 32px;
+.answerPurple {
+  background-color: #9c27b0;
+}
+
+.answerOrange {
+  background-color: #fa7900;
+}
+
+.answerTextField {
+  flex: 1;
+  margin: 0 16px;
+  width: 100%;
+
+  :global {
+    .MuiOutlinedInput-notchedOutline {
+      border: none !important;
+      border-bottom: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    .MuiInputBase-input {
+      width: 100% !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
+    }
+  }
+}
+
+.answerInput {
+  color: white !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+    opacity: 1 !important;
+  }
+}
+
+// Checkbox chọn câu trả lời đúng
+.checkboxContainer {
+  min-width: 32px;
+  min-height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 16px;
+  margin-left: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  background-color: rgba(255, 255, 255, 0.2);
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+  }
 }
 
-.symbolText {
-  font-size: 16px;
-  color: white;
-}
-
-.answerText {
-  flex-grow: 1;
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.correctMark, .selectedMark {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.correctMark {
+.checkboxCorrect {
   background-color: #4caf50;
-}
 
-.selectedMark {
-  background-color: rgba(255, 255, 255, 0.3);
+  &:hover {
+    background-color: #45a049;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+  }
 }
 
 .checkIcon {
   color: white;
   font-size: 20px;
+  animation: fadeIn 0.2s ease-in-out;
 }
 
-.addAnswerButton {
+.uncheckIcon {
+  color: white;
+  font-size: 20px;
+  opacity: 0.8;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.deleteAnswerButton {
   position: absolute;
-  bottom: 16px;
-  right: 16px;
+  top: -10px;
+  right: -10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+
+  .answerCard:hover & {
+    opacity: 1;
+  }
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+    transform: scale(1.1);
+  }
+}
+
+.clearIcon {
+  color: white;
+  font-size: 16px;
+}
+
+/* Nút thêm câu trả lời */
+.addAnswerButton {
+  margin: 24px auto 40px !important;
+  padding: 10px 16px !important;
   background-color: rgba(0, 0, 0, 0.7);
   color: white;
   border-radius: 4px;
   z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.8);
@@ -182,7 +254,6 @@
   background-size: contain;
   opacity: 0.2;
   pointer-events: none;
-  z-index: 1;
 }
 
 /* Thêm các chi tiết trang trí */

@@ -3,11 +3,10 @@ export interface Room {
     pin: string;
     question_set_id: number;
     host_id: number;
-    type: 'sync' | 'async';
-    status: 'waiting' | 'active' | 'finished';
+    type: string;
+    status: string;
     created_at: Date;
     ended_at?: Date;
-    players?: Player[];
 }
 
 export interface Player {

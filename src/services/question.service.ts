@@ -1,108 +1,58 @@
 import { api } from './index';
-import { QuestionSet, Question } from '../types/question';
+import { Question } from '../types/question';
 import { API_CONFIG } from '../config/api.config';
+import { getImageUrl } from '../utils/Image';
 
-export const questionSetService = {
-    // Lấy tất cả bộ câu hỏi
-    getAll: async () => {
-        try {
-            const response = await api.get<QuestionSet[]>(API_CONFIG.endpoints.questionSet.getAll);
-            return response.data;
-        } catch (error) {
-            throw new Error('Failed to fetch question sets');
-        }
-    },
+interface QuestionsResponse {
+    success: boolean;
+    questions: Question[];
+}
 
-    // Lấy bộ câu hỏi theo ID
-    getById: async (id: string) => {
-        try {
-            const response = await api.get<QuestionSet>(API_CONFIG.endpoints.questionSet.getById(id));
-            return response.data;
-        } catch (error) {
-            throw new Error(`Failed to fetch question set with id: ${id}`);
-        }
-    },
-
-    // Tạo mới bộ câu hỏi
-    create: async (data: Partial<QuestionSet>) => {
-        try {
-            const response = await api.post<QuestionSet>(API_CONFIG.endpoints.questionSet.create, data);
-            return response.data;
-        } catch (error) {
-            throw new Error('Failed to create question set!');
-        }
-    },
-
-    // Cập nhật bộ câu hỏi
-    update: async (id: string, data: Partial<QuestionSet>) => {
-        try {
-            const response = await api.put<QuestionSet>(API_CONFIG.endpoints.questionSet.update(id), data);
-            return response.data;
-        } catch (error) {
-            throw new Error(`Failed to update question set with id: ${id}`);
-        }
-    },
-
-    // Xóa bộ câu hỏi
-    delete: async (id: string) => {
-        try {
-            await api.delete(API_CONFIG.endpoints.questionSet.delete(id));
-        } catch (error) {
-            throw new Error(`Failed to delete question set with id: ${id}`);
-        }
-    },
-    
-};
+interface QuestionResponse {
+    success: boolean;
+    question: Question;
+}
 
 export const questionService = {
-    // Lấy tất cả câu hỏi trong bộ câu hỏi
-    getAll: async (setId: string) => {
+    /**
+     * Lấy tất cả câu hỏi
+     * @param question_set_id ID của bộ câu hỏi
+     * @returns Danh sách câu hỏi
+     */
+    getAll: async (question_set_id: number) => {
         try {
-            const response = await api.get<Question[]>(API_CONFIG.endpoints.question.getAll(setId));
-            return response.data;
+            const response = await api.get<QuestionsResponse>(API_CONFIG.endpoints.question.getAll(question_set_id));
+
+            if (response.data?.success) {
+                response.data.questions.forEach(item => {
+                    item.image_url = getImageUrl(item.image_url);
+                });
+                return response.data.questions;
+            }
+
+            return [];
         } catch (error) {
-            throw new Error(`Failed to fetch questions for set with id: ${setId}`);
+            throw new Error('Failed to fetch questions');
         }
     },
 
-    // Lấy câu hỏi theo ID
-    getById: async (setId: string, id: string) => {
+    /**
+     * Lấy câu hỏi theo ID
+     * @param id ID của câu hỏi
+     * @returns Câu hỏi tương ứng với ID
+     */
+    getById: async (id: number) => {
         try {
-            const response = await api.get<Question>(API_CONFIG.endpoints.question.getById(setId, id));
-            return response.data;
+            const response = await api.get<QuestionResponse>(API_CONFIG.endpoints.question.getById(id));
+
+            if (response.data?.success) {
+                response.data.question.image_url = getImageUrl(response.data.question.image_url);
+                return response.data.question;
+            }
+
+            return null;
         } catch (error) {
-            throw new Error(`Failed to fetch question with id: ${id} in set: ${setId}`);
+            throw new Error(`Failed to fetch question with id: ${id}`);
         }
     },
-
-    // Tạo mới câu hỏi
-    create: async (setId: string, data: Partial<Question>) => {
-        try {
-            const response = await api.post<Question>(API_CONFIG.endpoints.question.create(setId), data);
-            return response.data;
-        } catch (error) {
-            throw new Error(`Failed to create question in set with id: ${setId}`);
-        }
-    },
-
-    // Cập nhật câu hỏi
-    update: async (setId: string, id: string, data: Partial<Question>) => {
-        try {
-            const response = await api.put<Question>(API_CONFIG.endpoints.question.update(setId, id), data);
-            return response.data;
-        } catch (error) {
-            throw new Error(`Failed to update question with id: ${id} in set: ${setId}`);
-        }
-    },
-
-    // Xóa câu hỏi
-    delete: async (setId: string, id: string) => {
-        try {
-            await api.delete(API_CONFIG.endpoints.question.delete(setId, id));
-        } catch (error) {
-            throw new Error(`Failed to delete question with id: ${id} in set: ${setId}`);
-        }
-    },
-
-};
-
+}

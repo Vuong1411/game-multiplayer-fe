@@ -2,46 +2,43 @@ import React, { useState } from 'react';
 import {
     Box,
     Typography,
-    Card,
     Grid,
     Button,
     TextField
 } from '@mui/material';
-import TriangleIcon from '@mui/icons-material/ChangeHistory'; // tam giác
-import DiamondIcon from '@mui/icons-material/Diamond'; // hình thoi
+import ChangeHistorySharpIcon from '@mui/icons-material/ChangeHistorySharp'; // hình tam giác
+import SignalCellular4BarIcon from '@mui/icons-material/SignalCellular4Bar'; // 
+import HexagonIcon from '@mui/icons-material/Hexagon'; // hình lục giác
+import PentagonIcon from '@mui/icons-material/Pentagon'; // hình ngũ giác
 import CircleIcon from '@mui/icons-material/Circle'; // hình tròn
 import SquareIcon from '@mui/icons-material/Square'; // hình vuông
 import AddIcon from '@mui/icons-material/Add';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import ClearIcon from '@mui/icons-material/Clear';
 // @project
 import { Question, Answer } from '../../../types/question';
 import styles from './styles.module.scss';
+import ImageUploadCard from '../ImageUploadCard';
 
 interface QuestionPreviewProps {
     question: Question;
     answers: Answer[];
     onAnswerCreate?: () => void;
     onSelectedAnswer?: (answerId: number) => void;
+    onQuestionChange?: (newQuestion: Question) => void;
     onAnswerChange?: (answerId: number, newAnswer: Partial<Answer>) => void;
+    onAnswerDelete?: (answerId: number) => void;
 }
 
 const QuestionPreview = ({
     question,
     answers,
     onAnswerCreate,
-    onSelectedAnswer,
-    onAnswerChange
+    onQuestionChange,
+    onAnswerChange,
+    onAnswerDelete
 }: QuestionPreviewProps) => {
-    const [selectedAnswerId, setSelectedAnswerId] = useState<number | null>(null);
-
-    const handleSelectAnswer = (answerId: number) => {
-        setSelectedAnswerId(answerId);
-        if (onSelectedAnswer) {
-            onSelectedAnswer(answerId);
-        }
-    };
 
     // Hàm xử lý chọn đáp án đúng
     const handleToggleCorrect = (event: React.MouseEvent, answerId: number) => {
@@ -56,15 +53,16 @@ const QuestionPreview = ({
         });
     };
 
-
     // Lấy biểu tượng và tên theo index
-    const getSymbolAndName = (index: number) => {
+    const getSymbol = (index: number) => {
         switch (index) {
-            case 0: return { symbol: <TriangleIcon /> };
-            case 1: return { symbol: <DiamondIcon /> };
+            case 0: return { symbol: <SignalCellular4BarIcon /> };
+            case 1: return { symbol: <HexagonIcon /> };
             case 2: return { symbol: <CircleIcon /> };
             case 3: return { symbol: <SquareIcon /> };
-            default: return { symbol: <CircleIcon /> };
+            case 4: return { symbol: <PentagonIcon /> };
+            case 5: return { symbol: <ChangeHistorySharpIcon /> };
+            default: return { symbol: <SignalCellular4BarIcon /> };
         }
     };
 
@@ -72,31 +70,37 @@ const QuestionPreview = ({
         <Box className={styles.previewContainer}>
             {/* Tiêu đề câu hỏi */}
             <Box className={styles.questionTitle}>
-                <Typography variant="h5" className={styles.questionText}>
-                    {question.content}
-                </Typography>
+                <TextField
+                    value={question.content}
+                    onChange={(e) => onQuestionChange?.({ ...question, content: e.target.value })}
+                    className={styles.questionTextField}
+                    fullWidth
+                    multiline
+                    variant="standard"
+                    InputProps={{
+                        className: styles.questionInput,
+                        disableUnderline: true,
+                    }}
+                    inputProps={{
+                        style: { textAlign: 'center' }
+                    }}
+                    placeholder="Nhập câu hỏi của bạn"
+                />
             </Box>
 
             {/* Hình ảnh */}
-            <Box className={styles.imageContainer}>
-                <img
-                    src={question.image_url || "https://images.unsplash.com/photo-1503756234508-e32369269deb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1035&q=80"}
-                    alt={question.content}
-                    className={styles.questionImage}
-                />
+            <ImageUploadCard
+                imageUrl = {question.image_url}
+                alt={question.content}
+                onImageChange={(url) => {
+                    onQuestionChange?.({ ...question, image_url: url });
+                }}
+            />
 
-                {/* Các nút công cụ */}
-                <Box className={styles.imageTools}>
-                    <Box className={styles.toolButton}>
-                        <span className={styles.toolIcon}><InfoOutlinedIcon fontSize="small" /></span>
-                    </Box>
-                </Box>
-            </Box>
-
-            {/* Danh sách đáp án */}
-            <Grid container spacing={2} className={styles.answersContainer}>
+            {/* Danh sách đáp án trắc nghiệm */}
+            <Grid container justifyContent="center" spacing={2} className={styles.answersContainer}>
                 {answers.map((answer, index) => {
-                    const { symbol } = getSymbolAndName(index);
+                    const { symbol } = getSymbol(index);
                     const isCorrect = answer.is_correct;
 
                     // Xác định className dựa trên index
@@ -104,15 +108,14 @@ const QuestionPreview = ({
                         styles.answerRed,
                         styles.answerBlue,
                         styles.answerYellow,
-                        styles.answerGreen
-                    ][index % 4];
+                        styles.answerGreen,
+                        styles.answerPurple,
+                        styles.answerOrange
+                    ][index % 6];
 
-                    return (
+                    if (question.type === 'choice') return (
                         <Grid size={6} key={answer.id}>
-                            <Box
-                                className={`${styles.answerCard} ${answerClass}`}
-                                onClick={() => handleSelectAnswer(answer.id)}
-                            >
+                            <Box className={`${styles.answerCard} ${answerClass}`}>
                                 <Box className={styles.symbolContainer}>
                                     <Typography className={styles.symbolText}>
                                         {symbol}
@@ -123,59 +126,75 @@ const QuestionPreview = ({
                                 <TextField
                                     value={answer.content}
                                     onChange={(e) => onAnswerChange?.(answer.id, { content: e.target.value })}
+                                    className={styles.answerTextField}
                                     inputProps={{
-                                        style: {
-                                            color: 'white',
-                                            fontSize: '16px',
-                                            padding: '8px',
-                                            background: 'transparent'
-                                        }
+                                        className: styles.answerInput
                                     }}
-                                    sx={{
-                                        flex: 1,
-                                        mx: 2,
-                                        '& .MuiInput-root': {
-                                            '&:before, &:after': {
-                                                display: 'none'
-                                            }
-                                        },
-                                        '& .MuiInput-input': {
-                                            color: 'white',
-                                            fontSize: '16px',
-                                            padding: '4px 8px',
-                                            background: 'transparent'
-                                        }
-                                    }}
+                                    placeholder={`Thêm đáp án ${index + 1}`}
                                 />
 
                                 {/* Checkbox tròn cho mỗi đáp án */}
                                 <Box
-                                    className={styles.checkboxContainer}
+                                    className={`${styles.checkboxContainer} ${isCorrect ? styles.checkboxCorrect : ''}`}
                                     onClick={(e) => handleToggleCorrect(e, answer.id)}
-                                    sx={{
-                                        backgroundColor: isCorrect ? '#4caf50' : 'rgba(255,255,255,0.3)',
-                                        width: '32px',
-                                        height: '32px',
-                                        borderRadius: '50%',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        mr: 1,
-                                        border: '2px solid white',
-                                        cursor: 'pointer',
-                                        transition: 'all 0.2s ease',
-                                        '&:hover': {
-                                            boxShadow: '0 0 0 3px rgba(255,255,255,0.5)',
-                                            backgroundColor: isCorrect ? '#43a047' : 'rgba(255,255,255,0.4)'
-                                        }
-                                    }}
                                 >
                                     {isCorrect ? (
-                                        <CheckCircleIcon sx={{ color: 'white', fontSize: '20px' }} />
+                                        <CheckCircleIcon className={styles.checkIcon} />
                                     ) : (
-                                        <RadioButtonUncheckedIcon sx={{ color: 'white', fontSize: '20px' }} />
+                                        <RadioButtonUncheckedIcon className={styles.uncheckIcon} />
                                     )}
                                 </Box>
+
+                                {/* Nút xóa đáp án */}
+                                {answers.length > 2 && ( // Only show when there are more than 2 answers
+                                    <Box
+                                        className={styles.deleteAnswerButton}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onAnswerDelete?.(answer.id);
+                                        }}
+                                    >
+                                        <ClearIcon className={styles.clearIcon} />
+                                    </Box>
+                                )}
+                            </Box>
+                        </Grid>
+                    );
+                    else return (
+                        <Grid size={8} key={answer.id}>
+                            <Box
+                                className={`${styles.answerCard} ${answerClass}`}
+                            >
+                                {/* Biểu tượng cho mỗi đáp án */}
+                                <Box className={styles.symbolContainer}>
+                                    <Typography className={styles.symbolText}>
+                                        {symbol}
+                                    </Typography>
+                                </Box>
+
+                                {/* TextField cho nội dung đáp án */}
+                                <TextField
+                                    value={answer.content}
+                                    onChange={(e) => onAnswerChange?.(answer.id, { content: e.target.value, is_correct: true })}
+                                    className={styles.answerTextField}
+                                    inputProps={{
+                                        className: styles.answerInput
+                                    }}
+                                    placeholder={`Nhập đáp án ${index + 1}`}
+                                />
+
+                                {/* Nút xóa đáp án */}
+                                {answers.length > 1 && (
+                                    <Box
+                                        className={styles.deleteAnswerButton}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onAnswerDelete?.(answer.id);
+                                        }}
+                                    >
+                                        <ClearIcon className={styles.clearIcon} />
+                                    </Box>
+                                )}
                             </Box>
                         </Grid>
                     );

@@ -22,12 +22,49 @@
     cursor: pointer;
 }
 
-.titleInput {
-    width: 200px;
+.settingsGroup {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 4px;
+    background-color: #fff;
 }
 
-:global(.MuiInput-root).titleInput::before {
-    border-bottom: none;
+:global(.MuiTextField-root).titleInput {
+    margin: 0;
+    padding-left: 8px;
+    width: 250px;
+
+    :global(.MuiInputBase-root) {
+
+        &::before,
+        &::after {
+            display: none !important;
+        }
+    }
+
+    :global(.MuiInputBase-input) {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+    }
+}
+
+:global(.MuiButton-root).settingsButton {
+    color: #333;
+    text-transform: none;
+    padding: 4px 8px;
+    font-weight: 700;
+    font-size: 16px;
+    min-width: auto;
+    border: none;
+    border-radius: 4px;
+    background-color: #d8d8d8;
+
+    &:hover {
+        background-color: #cecece;
+    }
 }
 
 .rightSection {
@@ -45,7 +82,7 @@
     background-color: #1368ce;
     color: white;
     text-transform: none;
-    
+
     &:hover {
         background-color: #1368ce;
     }
@@ -55,7 +92,7 @@
     background-color: #0066ff;
     color: white;
     text-transform: none;
-    
+
     &:hover {
         background-color: #0066ff;
     }

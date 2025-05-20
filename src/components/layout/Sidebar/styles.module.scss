@@ -2,7 +2,7 @@
     width: 240px;
     flex-shrink: 0;
 
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
         width: auto;
     }
 }
@@ -10,7 +10,7 @@
 :global(.MuiDrawer-root).temporaryDrawer {
     display: block;
 
-    @media (min-width: 600px) {
+    @media (min-width: 768px) {
         display: none;
     }
 
@@ -26,7 +26,7 @@
 :global(.MuiDrawer-root).permanentDrawer {
     display: none;
 
-    @media (min-width: 600px) {
+    @media (min-width: 768px) {
         display: block;
     }
 

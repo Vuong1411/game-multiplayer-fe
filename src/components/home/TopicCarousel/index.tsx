@@ -8,7 +8,7 @@ import "slick-carousel/slick/slick-theme.css";
 import styles from './styles.module.scss';
 import TopicCard from '../../common/Card/TopicCard';
 import mathImg from '../../../assets/images/topic/math.png';
-import { getColor } from '../../../utils/getColor';
+import { getColor } from '../../../utils/Color';
 
 const topics = [
     {

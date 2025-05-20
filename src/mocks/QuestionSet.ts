@@ -1,7 +1,7 @@
 import { QuestionSet } from '../types/question';
 import img from '../assets/images/quiz/history.png';
 
-export const questionSets: QuestionSet[] = [
+export const mockQuestionSets: QuestionSet[] = [
     {
         id: 1,
         title: 'Game lịch sử',

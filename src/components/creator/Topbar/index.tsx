@@ -9,13 +9,18 @@ import {
 
 import styles from './styles.module.scss';
 import logo from '../../../assets/logo.png';
+import { QuestionSet } from '../../../types/question';
+
+export interface TopbarProps {
+    quiz: QuestionSet[];
+}
 
 const Topbar = () => {
     const navigate = useNavigate();
 
     return (
-        <AppBar 
-            position="fixed" 
+        <AppBar
+            position="fixed"
             className={styles.appBar}
             elevation={0}
         >
@@ -31,20 +36,23 @@ const Topbar = () => {
                         onClick={() => navigate('/')}
                     />
 
-                    {/* Game title input */}
-                    <TextField 
-                        placeholder="Game lịch sử"
-                        variant="standard"
-                        className={styles.titleInput}
-                    />
+                    {/* Cài đặt */}
+                    <Box className={styles.settingsGroup}>
+                        {/* Tiêu đề */}
+                        <TextField
+                            placeholder={"Nhập tiêu đề"}
+                            variant="standard"
+                            className={styles.titleInput}
+                        />
 
-                    {/* Settings button */}
-                    <Button
-                        variant="text"
-                        className={styles.settingsButton}
-                    >
-                        Cài đặt
-                    </Button>
+                        {/* Settings button */}
+                        <Button
+                            variant="text"
+                            className={styles.settingsButton}
+                        >
+                            Cài đặt
+                        </Button>
+                    </Box>
                 </Box>
 
                 {/* Right section */}

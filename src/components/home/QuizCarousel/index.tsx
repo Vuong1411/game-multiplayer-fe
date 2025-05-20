@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import Slider from 'react-slick';
@@ -8,12 +8,29 @@ import "slick-carousel/slick/slick-theme.css";
 import styles from './styles.module.scss';
 import QuizCard from '../../common/Card/QuizCard';
 import PlusCard from '../../common/Card/PlusCard';
-import { getColor } from '../../../utils/getColor';
-import { questionSets } from '../../../mocks/QuestionSet';
+import { getColor } from '../../../utils/Color';
+import { QuestionSet } from '../../../types/question';
+import { questionSetService } from '../../../services/questionSet.service';
 
 const QuizCarousel = () => {
     const navigate = useNavigate();
     const [isDragging, setIsDragging] = useState(false);
+    const [questionSets, setQuestionSets] = useState<QuestionSet[]>([]);
+
+    //  Tải danh sách bộ câu hỏi từ server
+    useEffect(() => {
+        const fetchQuestionSets = async () => {
+            try {
+                const data = await questionSetService.getAll();
+                
+                setQuestionSets(data);
+            } catch (error) {
+                console.error('Failed to fetch question sets:', error);
+            }
+        };
+
+        fetchQuestionSets();
+    }, []);
 
     const handleNavigation = (path: string) => {
         if (!isDragging) {
@@ -53,9 +70,10 @@ const QuizCarousel = () => {
     };
 
     const quizCards = questionSets.map((quiz, index) => (
+
         <Box key={index} className={styles.slideWrapper}>
             <QuizCard 
-                quiz={quiz} 
+                quiz={quiz}
                 onClick={() => handleNavigation(`/details/${quiz.id}`)} 
                 color={getColor(index)}
             />

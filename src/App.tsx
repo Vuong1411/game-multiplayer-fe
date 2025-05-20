@@ -6,6 +6,8 @@ import { MainLayout } from './components/layout';
 import Home  from './pages/Home';
 import Library from './pages/Library';
 import Creator from './pages/Creator';
+import Detail from './pages/Detail';
+
 function App() {
     return (
         <ThemeProvider theme={theme}>
@@ -15,8 +17,10 @@ function App() {
                 <Route element={<MainLayout />}>
                     <Route path="/" element={<Home />} />
                     <Route path="/library" element={<Library />} />
+                    <Route path="/details/:id" element={<Detail />} />
                 </Route>
                 <Route path="/creator" element={<Creator />} />
+                <Route path="/creator/:quizId" element={<Creator />} />
             </Routes>
             </BrowserRouter>
         </ThemeProvider>

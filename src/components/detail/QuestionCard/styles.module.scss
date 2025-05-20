@@ -1,0 +1,120 @@
+.previewContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    width: 100%;
+    height: 100%;
+    max-width: 600px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    background-color: #f0e4f7;
+}
+
+.questionTitle {
+    padding: 10px 20px;
+    border-radius: 12px;
+    background-color: #fff;
+    margin-bottom: 16px;
+    width: 100%;
+}
+
+.questionText {
+    text-align: center;
+    font-weight: 600;
+}
+
+.imageContainer {
+    width: 50%;
+    height: 50%;
+}
+
+.questionImage {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.answersContainer {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.answerCard {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 8px;
+    min-height: 40px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    color: white;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.symbolContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+
+    svg {
+        font-size: 24px;
+        color: white;
+    }
+}
+.symbolText {
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+}
+
+.answerText {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.correctMark {
+    position: absolute;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+        font-size: 24px;
+        color: white;
+    }
+}
+
+// Answer color variants
+.redAnswer {
+    background-color: #FF5252;
+}
+
+.blueAnswer {
+    background-color: #2979FF;
+}
+
+.yellowAnswer {
+    background-color: #FFC107;
+}
+
+.greenAnswer {
+    background-color: #4CAF50;
+}
+
+.purpleAnswer {
+    background-color: #9C27B0;
+}
+
+.orangeAnswer {
+    background-color: #FF9800;
+}

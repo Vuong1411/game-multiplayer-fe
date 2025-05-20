@@ -1,0 +1,42 @@
+.sidebar {
+  width: 200px;
+  height: 100%;
+  top: 64px;
+  max-height: calc(100vh - 64px);
+  position: sticky;
+  background-color: #F5F5F5;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.questionList {
+  width: 100%;
+  height: calc(100% - 100px);
+  flex-grow: 1;
+  padding: 8px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.questionItem {
+  padding: 12px;
+  padding-bottom: 4px;
+}
+
+:global(.MuiTypography-root).questionTypeLabel {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.buttonsContainer {
+  padding: 8px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: sticky;
+}

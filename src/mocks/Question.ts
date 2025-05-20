@@ -47,7 +47,7 @@ export const mockQuestions: Question[] = [
     image_url: img,
     type: 'choice',
     time_limit: 20,
-    difficulty: 'easy'
+    point: 10
   },
   {
     id: 2,
@@ -56,7 +56,7 @@ export const mockQuestions: Question[] = [
     image_url: img,
     type: 'choice',
     time_limit: 20,
-    difficulty: 'medium'
+    point: 20
   },
   {
     id: 3,
@@ -65,7 +65,7 @@ export const mockQuestions: Question[] = [
     image_url: img,
     type: 'choice',
     time_limit: 20,
-    difficulty: 'easy'
+    point: 10
   },
   {
     id: 4,
@@ -74,7 +74,7 @@ export const mockQuestions: Question[] = [
     image_url: img,
     type: 'choice',
     time_limit: 20,
-    difficulty: 'hard'
+    point: 20
   },
   {
     id: 5,
@@ -82,8 +82,8 @@ export const mockQuestions: Question[] = [
     content: 'Số cột trong đền Parthenon là bao nhiêu?',
     image_url: img,
     type: 'text',
-    time_limit: 30,
-    difficulty: 'medium'
+    time_limit: 45,
+    point: 20
   },
   {
     id: 6,
@@ -91,8 +91,8 @@ export const mockQuestions: Question[] = [
     content: 'Thành phố nào là quê hương của Olympic cổ đại?',
     image_url: img,
     type: 'text',
-    time_limit: 25,
-    difficulty: 'medium'
+    time_limit: 30,
+    point: 20
   },
   {
     id: 7,
@@ -101,7 +101,7 @@ export const mockQuestions: Question[] = [
     image_url: img,
     type: 'choice',
     time_limit: 15,
-    difficulty: 'easy'
+    point: 10
   },
   {
     id: 8,
@@ -110,7 +110,7 @@ export const mockQuestions: Question[] = [
     image_url: img,
     type: 'choice',
     time_limit: 20,
-    difficulty: 'medium'
+    point: 10
   }
 ];
 

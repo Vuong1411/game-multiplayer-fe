@@ -7,12 +7,10 @@
 .contentWrapper {
     display: flex;
     flex-grow: 1;
-    padding-top: 64px;;
+    padding-top: 64px;
 }
 
 .mainContent {
-    flex-grow: 1;
-    width: 100%;
-    overflow-y: auto;
+    width: calc(100% - 250px);
     padding: 32px;
 }

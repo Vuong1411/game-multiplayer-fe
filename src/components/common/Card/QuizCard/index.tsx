@@ -29,9 +29,9 @@ export interface QuizCardProps {
 }
 
 const QuizCard = ({ quiz, color, onClick }: QuizCardProps) => {
+    const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [showMenu, setShowMenu] = useState(false);
-    const navigate = useNavigate();
 
     const handleOpenMenu = (event: MouseEvent<HTMLElement>) => {
         event.stopPropagation();
