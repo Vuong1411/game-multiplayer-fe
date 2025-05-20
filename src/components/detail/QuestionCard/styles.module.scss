@@ -2,51 +2,60 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px;
+    padding: 5px;
     width: 100%;
     height: 100%;
-    max-width: 600px;
+    max-width: 300px;
     border-radius: 12px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     background-color: #f0e4f7;
+    @media screen and (max-width: 1000px) {
+    min-height: 400px;
+    min-width: 500px;
+    padding: 10px;
+  }
 }
 
 .questionTitle {
-    padding: 10px 20px;
-    border-radius: 12px;
+    padding: 5px 10px;
+    border-radius: 10px;
     background-color: #fff;
-    margin-bottom: 16px;
+    margin-bottom: 5px;
     width: 100%;
 }
 
-.questionText {
+:global(.MuiTypography-root).questionText {
     text-align: center;
     font-weight: 600;
+    font-size: 12px;
 }
 
 .imageContainer {
-    width: 50%;
-    height: 50%;
+    width: 40%;
+    height: 40%;
 }
 
 .questionImage {
     width: 100%;
     height: 100%;
-    border-radius: 8px;
+    border-radius: 6px;
     object-fit: cover;
 }
 
 .answersContainer {
     width: 100%;
-    margin-top: 20px;
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
 }
 
 .answerCard {
     display: flex;
     align-items: center;
-    padding: 12px 16px;
-    border-radius: 8px;
-    min-height: 40px;
+    padding: 5px;
+    border-radius: 6px;
+    min-height: 34px;
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
@@ -62,23 +71,26 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 12px;
+    margin-right: 10px;
 
     svg {
-        font-size: 24px;
+        font-size: 15px;
         color: white;
     }
 }
 .symbolText {
-    font-size: 18px;
+    font-size: 12px;
     font-weight: 600;
     color: white;
 }
 
-.answerText {
+:global(.MuiTypography-root).answerText {
     flex: 1;
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .correctMark {
@@ -89,7 +101,7 @@
     justify-content: center;
 
     svg {
-        font-size: 24px;
+        font-size: 20px;
         color: white;
     }
 }

@@ -29,23 +29,38 @@ import { mockQuestions, mockAnswers } from '../../mocks/Question';
 //import { questionService } from '../../services/question.service';
 
 const Detail = () => {
+    const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
     const [questionSet, setQuestionSet] = useState<QuestionSet | null>(null);
-    const [questions, setQuestions] = useState<Question[]>([]);
+    const [questionsWithAnswers, setQuestionsWithAnswers] = useState<{
+        question: Question;
+        answers: Answer[];
+    }[]>([]);
 
     useEffect(() => {
-        const fetchQuestionSets = async () => {
+        const fetchData = async () => {
             if (!id) return;
             try {
                 setQuestionSet(mockQuestionSets.find(qs => qs.id === Number(id)) || null);
-                setQuestions(mockQuestions.filter(q => q.question_set_id === Number(id)));
+                const questions = mockQuestions.filter(q => q.question_set_id === Number(id));
+
+                setQuestionsWithAnswers(
+                    questions.map(question => ({
+                        question,
+                        answers: mockAnswers.filter(answer => answer.question_id === question.id),
+                    }))
+                );
             } catch (err) {
                 console.error('Failed to fetch quiz:', err);
             }
         };
 
-        fetchQuestionSets();
+        fetchData();
     }, [id]);
+
+    const handleNavigation = (path: string) => {
+        navigate(path);
+    };
 
     return (
         <>
@@ -55,17 +70,17 @@ const Detail = () => {
                     <Toolbar className={styles.toolbar}>
                         <Box className={styles.navbarLeft}>
                             <Avatar
-                                alt="Morkaths"
+                                alt={questionSet?.author || 'Unknown'}
                                 src="/avatar-placeholder.png"
                                 className={styles.userAvatar}
                             />
                             <Typography variant="body1" className={styles.username}>
-                                Morkaths
+                                {questionSet?.author || "Unknown"}
                             </Typography>
                         </Box>
 
                         <Box className={styles.navbarRight}>
-                            <Tooltip title="Chỉnh sửa">
+                            <Tooltip title="Chỉnh sửa" onClick={() => handleNavigation(`/creator/${id}`)}>
                                 <IconButton className={styles.navButton}>
                                     <EditIcon />
                                 </IconButton>
@@ -138,13 +153,11 @@ const Detail = () => {
                     {/* Question Section */}
                     <Box className={styles.questionSection}>
                         <Box className={styles.sectionQuestionHeader}>
-                            <Typography variant="h6">Câu hỏi ({questions.length})</Typography>
+                            <Typography variant="h6">Câu hỏi ({questionsWithAnswers.length})</Typography>
                         </Box>
 
                         <Grid container justifyContent={'center'} spacing={1} className={styles.questionGrid}>
-                            {questions.map((question) => {
-                                const answers = mockAnswers.filter(answer => answer.question_id === question.id);
-
+                            {questionsWithAnswers.map(({question, answers}) => {
                                 return (
                                     <Grid key={question.id}>
                                         <QuestionCard

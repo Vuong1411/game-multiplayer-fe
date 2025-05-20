@@ -14,30 +14,34 @@ import { questionSetService } from '../../services/questionSet.service';
 
 const Creator = () => {
     // Lấy quizId từ URL
-    const { quizId } = useParams();
+    const { id } = useParams<{ id: string }>();
 
     // State để quản lý danh sách câu hỏi và đáp án
     const [questions, setQuestions] = useState<Question[]>([]);
     const [answers, setAnswers] = useState<Answer[]>([]);
+    const [questionsWithAnswers, setQuestionsWithAnswers] = useState<{
+        question: Question;
+        answers: Answer[];
+    }[]>([]);
     const [selectedQuestionId, setSelectedQuestionId] = useState<number | undefined>();
     const [showSettingsPanel, setShowSettingsPanel] = useState(false);
 
     // Load mock data khi component mount
     useEffect(() => {
-        // const quiz = questionSetService.getById(Number(quizId))
-        // if (quiz !== null) {
-        //     setSelectedQuestionId(mockQuestions[0].id);
-        // } else {
-        //     handleAddQuestion();
-        // }
-        setQuestions(mockQuestions);
+        const questions = mockQuestions.filter(q => q.question_set_id === Number(id));
+        setQuestionsWithAnswers(
+            questions.map(question => ({
+                question,
+                answers: mockAnswers.filter(answer => answer.question_id === question.id),
+            }))
+        );
         setAnswers(mockAnswers);
         if (mockQuestions.length > 0) {
             setSelectedQuestionId(mockQuestions[0].id);
         } else {
             handleAddQuestion();
         }
-    }, [quizId]);
+    }, [id]);
 
     // Tìm câu hỏi được chọn để hiển thị chi tiết
     const selectedQuestion = questions.find(q => q.id === selectedQuestionId);

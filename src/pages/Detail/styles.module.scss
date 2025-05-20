@@ -62,8 +62,8 @@
 
 // Content header styles
 .quizContainer {
-  width: calc(100% - 250px);
-  padding: 24px;
+  width: calc(100% - 270px);
+  padding: 20px;
   @media screen and (max-width: 1000px) {
     width: 100%;
   }
@@ -180,7 +180,6 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 16px;
-  padding: 20px;
 }
 
 // Action Bar styles
