@@ -1,7 +1,7 @@
-import { api } from './index';
-import { QuestionSet } from '../types/question';
-import { API_CONFIG } from '../config/api.config';
-import { getImageUrl } from '../utils/Image';
+import { api } from './api';
+import { QuestionSet } from '@project/types/question';
+import { API_CONFIG } from '@project/config/api.config';
+import { getImageUrl } from '@project/utils/Image';
 
 interface QuestionSetsResponse {
     success: boolean;
@@ -23,7 +23,7 @@ export const questionSetService = {
             const response = await api.get<QuestionSetsResponse>(API_CONFIG.endpoints.questionSet.getAll);
 
             if (response.data?.success) {
-                response.data.question_sets.forEach( item => {
+                response.data.question_sets.forEach(item => {
                     item.image_url = getImageUrl(item.image_url);
                 })
                 return response.data.question_sets;
@@ -31,7 +31,7 @@ export const questionSetService = {
 
             return [];
         } catch (error) {
-            throw new Error('Failed to fetch question sets');
+            throw new Error('Failed to fetch question sets!');
         }
     },
 
@@ -39,15 +39,15 @@ export const questionSetService = {
     getById: async (id: number) => {
         try {
             const response = await api.get<QuestionSetResponse>(API_CONFIG.endpoints.questionSet.getById(id));
-            
+
             if (response.data?.success) {
                 response.data.question_set.image_url = getImageUrl(response.data.question_set.image_url);
                 return response.data.question_set;
             }
-            
+
             return null;
         } catch (error) {
-            throw new Error(`Failed to fetch question set with id: ${id}`);
+            throw new Error(`Failed to fetch question set with id: ${id}!`);
         }
     },
 
@@ -67,7 +67,7 @@ export const questionSetService = {
             const response = await api.put<QuestionSet>(API_CONFIG.endpoints.questionSet.update(id), data);
             return response.data;
         } catch (error) {
-            throw new Error(`Failed to update question set with id: ${id}`);
+            throw new Error(`Failed to update question set with id: ${id}!`);
         }
     },
 
@@ -76,9 +76,8 @@ export const questionSetService = {
         try {
             await api.delete(API_CONFIG.endpoints.questionSet.delete(id));
         } catch (error) {
-            throw new Error(`Failed to delete question set with id: ${id}`);
+            throw new Error(`Failed to delete question set with id: ${id}!`);
         }
     },
-    
-};
 
+};

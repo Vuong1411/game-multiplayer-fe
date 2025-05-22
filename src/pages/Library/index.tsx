@@ -1,15 +1,30 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 // @project
 import styles from './styles.module.scss';
-import TabFilter from '../../components/common/Tab';
-import SearchBar from '../../components/common/SearchBar';
-import MyQuizList from '../../components/library/QuizList';
-import { mockQuestionSets } from '../../mocks/QuestionSet';
+import MyQuizList from './components/QuizList';
+import TabFilter from '@project/components/common/Tab';
+import SearchBar from '@project/components/common/SearchBar';
+import { QuestionSet } from '@project/types/question';
+import { questionSetService } from '@project/services/questionSet.service';
 
 const Library = () => {
     const [activeTab, setActiveTab] = useState(0);
     const [searchQuery, setSearchQuery] = useState('');
+    const [questionSets, setQuestionSets] = useState<QuestionSet[]>([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await questionSetService.getAll();
+                setQuestionSets(data);
+            } catch (error) {
+                console.error('Failed to fetch question sets:', error);
+            }
+        };
+        fetchData();
+    }, []);
+
 
     return (
         <>
@@ -26,7 +41,7 @@ const Library = () => {
 
             <Box className={styles.content}>
                 <MyQuizList
-                    questionSets={mockQuestionSets.filter(item =>
+                    questionSets={questionSets.filter(item =>
                         item.title.toLowerCase().includes(searchQuery.toLowerCase())
                     )}
                 />

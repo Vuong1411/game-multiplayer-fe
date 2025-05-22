@@ -1,4 +1,5 @@
 import { Card, CardContent, Typography, Box } from '@mui/material';
+// @project
 import styles from './styles.module.scss';
 
 export interface FeatureCardProps {

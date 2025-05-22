@@ -1,0 +1,241 @@
+:global(.MuiAppBar-root).appBar {
+    background-color: #fff;
+    color: #333;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+:global(.MuiToolbar-root).toolbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 16px;
+    min-height: 64px;
+}
+
+.leftSection {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.logo {
+    height: 32px;
+    cursor: pointer;
+}
+
+.settingsGroup {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 4px;
+    background-color: #fff;
+}
+
+:global(.MuiTextField-root).titleInput {
+    margin: 0;
+    padding-left: 8px;
+    width: 250px;
+
+    :global(.MuiInputBase-root) {
+
+        &::before,
+        &::after {
+            display: none !important;
+        }
+    }
+
+    :global(.MuiInputBase-input) {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+        cursor: pointer;
+    }
+}
+
+:global(.MuiButton-root).settingsButton {
+    color: #333;
+    text-transform: none;
+    padding: 4px 8px;
+    font-weight: 700;
+    font-size: 16px;
+    min-width: auto;
+    border: none;
+    border-radius: 4px;
+    background-color: #d8d8d8;
+
+    &:hover {
+        background-color: #cecece;
+    }
+}
+
+.rightSection {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+:global(.MuiButton-root).actionButton {
+    text-transform: none;
+    color: #333;
+}
+
+:global(.MuiButton-root).playButton {
+    background-color: #1368ce;
+    color: white;
+    text-transform: none;
+
+    &:hover {
+        background-color: #1368ce;
+    }
+}
+
+:global(.MuiButton-root).saveButton {
+    background-color: #0066ff;
+    color: white;
+    text-transform: none;
+}
+
+// Phần CSS hiện tại của bạn giữ nguyên...
+
+// Dialog styling
+.dialogTitle {
+    padding: 16px 24px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dialogTitleContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+}
+
+:global(.MuiTypography-root).dialogTitleText {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+// Dialog Content styling
+.dialogContent {
+    padding: 24px 32px !important;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    max-height: 70vh;
+    overflow-y: auto;
+
+    // Custom scrollbar
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: #a0a0a0;
+    }
+}
+
+:global(.MuiTypography-root).sectionTitle {
+    font-size: 18px;
+    font-weight: 600 ;
+    color: #333;
+    margin-bottom: 4px;
+    margin-top: 15px;
+}
+
+.sectionSubtitle {
+    font-size: 14px !important;
+    color: #666;
+    margin-bottom: 4px !important;
+}
+
+.optional {
+    font-size: 14px;
+    font-weight: normal;
+    color: #666;
+}
+
+// Text fields
+.textField {
+    margin-top: 8px;
+
+    input,
+    textarea {
+        font-size: 15px;
+    }
+}
+
+// Image section
+.coverImageContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.coverImage {
+    width: 100%;
+    height: 100%;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.placeholderImage {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background-color: #000;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+    }
+}
+
+.imageIconsOverlay {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 8px;
+}
+
+.imageIcon {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    padding: 4px !important;
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.3) !important;
+    }
+}
+
+.changeImageButton {
+    color: #333 !important;
+    border-color: #ccc !important;
+    text-transform: none !important;
+    font-weight: normal !important;
+}

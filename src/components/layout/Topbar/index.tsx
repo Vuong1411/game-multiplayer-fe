@@ -23,8 +23,8 @@ import {
 } from '@mui/icons-material';
 // @project
 import styles from './styles.module.scss';
-import logo from '../../../assets/logo.png';
-import SearchBar from '../../common/SearchBar';
+import logo from '@project/assets/logo.png';
+import SearchBar from '@project/components/common/SearchBar';
 
 interface TopbarProps {
     handleDrawerToggle: () => void;

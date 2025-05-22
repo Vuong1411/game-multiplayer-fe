@@ -1,7 +1,7 @@
-import { api } from './index';
-import { Question } from '../types/question';
-import { API_CONFIG } from '../config/api.config';
-import { getImageUrl } from '../utils/Image';
+import { api } from './api';
+import { Question } from '@project/types/question';
+import { API_CONFIG } from '@project/config/api.config';
+import { getImageUrl } from '@project/utils/Image';
 
 interface QuestionsResponse {
     success: boolean;
@@ -32,7 +32,7 @@ export const questionService = {
 
             return [];
         } catch (error) {
-            throw new Error('Failed to fetch questions');
+            throw new Error('Failed to fetch questions!');
         }
     },
 
@@ -52,7 +52,25 @@ export const questionService = {
 
             return null;
         } catch (error) {
-            throw new Error(`Failed to fetch question with id: ${id}`);
+            throw new Error(`Failed to fetch question with id: ${id}!`);
+        }
+    },
+    /**
+     * Tạo mới câu hỏi
+     * @param data Dữ liệu câu hỏi
+     * @returns Câu hỏi vừa tạo
+     */
+    create: async (data: Partial<Question>): Promise<Question | null> => {
+        try {
+            const response = await api.post<QuestionResponse>(API_CONFIG.endpoints.question.create, data);
+            if (response.data?.success) {
+                response.data.question.image_url = getImageUrl(response.data.question.image_url);
+                return response.data.question;
+            }
+            return null;
+        } catch (error) {
+            throw new Error('Failed to create question!');
         }
     },
 }
+

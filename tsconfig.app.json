@@ -20,7 +20,13 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    /* Url  project */
+    "baseUrl": ".",
+    "paths": {
+      "@project/*": ["src/*"]
+    }
   },
-  "include": ["src"]
+  "include": ["src"],
 }

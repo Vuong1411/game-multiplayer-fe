@@ -1,5 +1,5 @@
-import { Question, Answer } from '../types/question/question.types';
-import img from '../assets/images/quiz/history.png';
+import { Question, Answer } from '@project/types/question';
+import img from '@project/assets/images/quiz/history.png';
 
 // Mock data cho answers (tách riêng theo đúng interface)
 export const mockAnswers: Answer[] = [
@@ -47,7 +47,7 @@ export const mockQuestions: Question[] = [
     image_url: img,
     type: 'choice',
     time_limit: 20,
-    point: 10
+    points: 10
   },
   {
     id: 2,
@@ -56,7 +56,7 @@ export const mockQuestions: Question[] = [
     image_url: img,
     type: 'choice',
     time_limit: 20,
-    point: 20
+    points: 20
   },
   {
     id: 3,
@@ -65,7 +65,7 @@ export const mockQuestions: Question[] = [
     image_url: img,
     type: 'choice',
     time_limit: 20,
-    point: 10
+    points: 10
   },
   {
     id: 4,
@@ -74,7 +74,7 @@ export const mockQuestions: Question[] = [
     image_url: img,
     type: 'choice',
     time_limit: 20,
-    point: 20
+    points: 20
   },
   {
     id: 5,
@@ -83,7 +83,7 @@ export const mockQuestions: Question[] = [
     image_url: img,
     type: 'text',
     time_limit: 45,
-    point: 20
+    points: 20
   },
   {
     id: 6,
@@ -92,7 +92,7 @@ export const mockQuestions: Question[] = [
     image_url: img,
     type: 'text',
     time_limit: 30,
-    point: 20
+    points: 20
   },
   {
     id: 7,
@@ -101,7 +101,7 @@ export const mockQuestions: Question[] = [
     image_url: img,
     type: 'choice',
     time_limit: 15,
-    point: 10
+    points: 10
   },
   {
     id: 8,
@@ -110,7 +110,7 @@ export const mockQuestions: Question[] = [
     image_url: img,
     type: 'choice',
     time_limit: 20,
-    point: 10
+    points: 10
   }
 ];
 

@@ -1,5 +1,6 @@
 import { Box, InputBase } from '@mui/material';
 import { Search as SearchIcon } from '@mui/icons-material';
+// @project
 import styles from './styles.module.scss';
 
 interface SearchBarProps {

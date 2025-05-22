@@ -4,166 +4,208 @@ import { Box, Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 // @project
 import styles from './styles.module.scss';
-import Topbar from '../../components/creator/Topbar';
-import Sidebar from '../../components/creator/Sidebar';
-import QuestionView from '../../components/creator/QuestionView';
-import SettingsPanel from '../../components/creator/SettingsPannel';
-import { Question, Answer } from '../../types/question';
-import { mockQuestions, mockAnswers } from '../../mocks/Question';
-import { questionSetService } from '../../services/questionSet.service';
+import Topbar from './components/Topbar';
+import Sidebar from './components/Sidebar';
+import QuestionView from './components/QuestionView';
+import ConfigurationBar from './components/ConfigurationBar';
+import { QuestionSet, Question, Answer } from '@project/types/question';
+// import { mockQuestions, mockAnswers } from '../../mocks/Question';
+import { questionSetService, questionService, answerService } from '@project/services';
 
 const Creator = () => {
-    // Lấy quizId từ URL
-    const { id } = useParams<{ id: string }>();
-
-    // State để quản lý danh sách câu hỏi và đáp án
-    const [questions, setQuestions] = useState<Question[]>([]);
-    const [answers, setAnswers] = useState<Answer[]>([]);
+    const navigate = useNavigate();
+    const { id } = useParams<{ id: string }>(); // question set id
+    const [questionSet, setQuestionSet] = useState<QuestionSet | null>(null);
     const [questionsWithAnswers, setQuestionsWithAnswers] = useState<{
         question: Question;
         answers: Answer[];
     }[]>([]);
     const [selectedQuestionId, setSelectedQuestionId] = useState<number | undefined>();
-    const [showSettingsPanel, setShowSettingsPanel] = useState(false);
+    //const [showSettingsPanel, setShowSettingsPanel] = useState(false);
 
-    // Load mock data khi component mount
     useEffect(() => {
-        const questions = mockQuestions.filter(q => q.question_set_id === Number(id));
-        setQuestionsWithAnswers(
-            questions.map(question => ({
-                question,
-                answers: mockAnswers.filter(answer => answer.question_id === question.id),
-            }))
-        );
-        setAnswers(mockAnswers);
-        if (mockQuestions.length > 0) {
-            setSelectedQuestionId(mockQuestions[0].id);
-        } else {
-            handleAddQuestion();
-        }
+        const fetchData = async () => {
+            if (!id) return;
+            try {
+                // Lấy bộ câu hỏi từ API
+                const questionSetData = await questionSetService.getById(Number(id));
+                setQuestionSet(questionSetData);
+
+                // Lấy danh sách câu hỏi từ API
+                const questionsData = await questionService.getAll(Number(id));
+                const questionsList = await Promise.all(
+                    questionsData.map(async (question) => ({
+                        question,
+                        answers: await answerService.getAll(question.id),
+                    }))
+                );
+                setQuestionsWithAnswers(questionsList);
+
+                // Nếu có câu hỏi, chọn câu hỏi đầu tiên
+                if (questionsList.length > 0) {
+                    setSelectedQuestionId(questionsList[0].question.id);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        fetchData();
     }, [id]);
-
-    // Tìm câu hỏi được chọn để hiển thị chi tiết
-    const selectedQuestion = questions.find(q => q.id === selectedQuestionId);
-
-    // Lấy đáp án cho câu hỏi được chọn
-    const selectedAnswers = selectedQuestionId
-        ? answers.filter(answer => answer.question_id === selectedQuestionId)
-        : [];
 
     // Hàm xử lý khi chọn câu hỏi từ sidebar
     const handleSelectQuestion = (questionId: number) => {
         setSelectedQuestionId(questionId);
     };
 
+    const questions = questionsWithAnswers.map(item => item.question);
+    const answers = questionsWithAnswers.flatMap(item => item.answers);
+
+    // Tìm câu hỏi và đáp án được chọn
+    const selected = questionsWithAnswers.find(
+        item => item.question.id === selectedQuestionId
+    );
+    const selectedQuestion = selected?.question || null;
+    const selectedAnswers = selected?.answers || [];
+
     // Hàm thêm câu hỏi mới
     const handleAddQuestion = () => {
-        const newId = questions.length > 0 ? Math.max(...questions.map(q => q.id)) + 1 : 1;
+        const tempId = -(Date.now());
         // Tạo câu hỏi mới với ID ngẫu nhiên
         const newQuestion: Question = {
-            id: newId,
+            id: tempId,
             question_set_id: 1,
-            content: 'Câu hỏi',
+            content: 'Câu hỏi mới',
             type: 'choice',
             time_limit: 20,
-            point: 10,
+            points: 10,
+            image_url: '',
         };
 
+        // Tạo sẵn 4 đáp án mặc định
         const newAnswers: Answer[] = [
             {
-                id: answers.length > 0 ? Math.max(...answers.map(a => a.id)) + 1 : 1,
-                question_id: newQuestion.id,
+                id: tempId * 10 - 1,
+                question_id: tempId,
+                content: '',
+                is_correct: true
+            },
+            {
+                id: tempId * 10 - 2,
+                question_id: tempId,
                 content: '',
                 is_correct: false
             },
             {
-                id: answers.length > 0 ? Math.max(...answers.map(a => a.id)) + 2 : 2,
-                question_id: newQuestion.id,
+                id: tempId * 10 - 3,
+                question_id: tempId,
                 content: '',
                 is_correct: false
             },
             {
-                id: answers.length > 0 ? Math.max(...answers.map(a => a.id)) + 3 : 3,
-                question_id: newQuestion.id,
-                content: '',
-                is_correct: false
-            },
-            {
-                id: answers.length > 0 ? Math.max(...answers.map(a => a.id)) + 4 : 4,
-                question_id: newQuestion.id,
+                id: tempId * 10 - 4,
+                question_id: tempId,
                 content: '',
                 is_correct: false
             }
         ];
 
         // Thêm câu hỏi mới vào danh sách
-        setQuestions([...questions, newQuestion]);
-        setAnswers([...answers, ...newAnswers]);
+        setQuestionsWithAnswers(prev => [...prev, { question: newQuestion, answers: newAnswers }]);
 
-        // Chọn câu hỏi mới thêm
         setSelectedQuestionId(newQuestion.id);
     };
 
+    // Hàm xử lý tạo đáp án mới
+    const handleAddAnswer = () => {
+        if (!selectedQuestionId) return;
+        const tempId = Math.max(...answers.map(a => a.id), 0) + 1;
+
+        // Tạo đáp án mới
+        const newAnswer: Answer = {
+            id: tempId,
+            question_id: selectedQuestionId,
+            content: ``,
+            is_correct: selectedAnswers.length === 0
+        };
+
+        // Cập nhật questionsWithAnswers
+        setQuestionsWithAnswers(prev => prev.map(item =>
+            item.question.id === selectedQuestionId
+                ? { ...item, answers: [...item.answers, newAnswer] }
+                : item
+        ));
+    };
+
+
+    // Tạo slide mới (câu hỏi loại text)
     const handleAddSlide = () => {
-        // Tạo slide mới (câu hỏi loại text)
+
+    };
+
+    // Hàm xử lý thay đổi bộ câu hỏi
+    const handleQuestionSetChange = (changes: Partial<QuestionSet>) => {
+        if (!questionSet) return;
+        setQuestionSet(prev => prev ? { ...prev, ...changes } : null);
     };
 
     // Hàm xử lý thay đổi câu hỏi
     const handleQuestionChange = (changes: Partial<Question>) => {
         if (!selectedQuestionId) return;
 
-        const updatedQuestions = questions.map(q =>
-            q.id === selectedQuestionId ? { ...q, ...changes } : q
-        );
+        setQuestionsWithAnswers(prev => prev.map(item =>
+            item.question.id === selectedQuestionId
+                ? { ...item, question: { ...item.question, ...changes } }
+                : item
+        ));
+    };
 
-        setQuestions(updatedQuestions);
+    // Hàm xử lý thay đổi đáp án
+    const handleAnswerChange = (answerId: number, changes: Partial<Answer>) => {
+        if (!selectedQuestionId) return;
+
+        setQuestionsWithAnswers(prev => prev.map(item =>
+            item.question.id === selectedQuestionId
+                ? {
+                    ...item,
+                    answers: item.answers.map(answer =>
+                        answer.id === answerId
+                            ? { ...answer, ...changes }
+                            : answer
+                    )
+                }
+                : item
+        ));
     };
 
     // Hàm xử lý xóa câu hỏi
     const handleQuestionDelete = (questionId: number) => {
         // Xóa câu hỏi và đáp án liên quan
-        const updatedQuestions = questions.filter(q => q.id !== questionId);
-        setQuestions(updatedQuestions);
-
-        // Xóa đáp án liên quan
-        const updatedAnswers = answers.filter(answer => answer.question_id !== questionId);
-        setAnswers(updatedAnswers);
+        const deleted = questionsWithAnswers.filter(
+            item => item.question.id !== questionId
+        );
+        setQuestionsWithAnswers(deleted);
 
         if (selectedQuestionId === questionId) {
-            setSelectedQuestionId(updatedQuestions.length > 0 ? updatedQuestions[0].id : undefined);
+            setSelectedQuestionId(deleted[0]?.question?.id);
         }
     };
 
-    // Hàm xử lý thay đổi đáp án
-    const handleAnswerChange = (answerId: number, changes: Partial<Answer>) => {
-        const updatedAnswers = answers.map(answer =>
-            answer.id === answerId ? { ...answer, ...changes } : answer
-        );
-        setAnswers(updatedAnswers);
-    };
-
-    // Hàm xử lý tạo đáp án mới
-    const handleCreateAnswer = () => {
-        if (!selectedQuestionId) return;
-
-        // Tạo ID mới
-        const newId = Math.max(...answers.map(a => a.id), 0) + 1;
-
-        // Tạo đáp án mới
-        const newAnswer: Answer = {
-            id: newId,
-            question_id: selectedQuestionId,
-            content: `Đáp án ${selectedAnswers.length + 1}`,
-            is_correct: selectedAnswers.length === 0 // Đáp án đầu tiên mặc định là đúng
-        };
-
-        // Cập nhật state
-        setAnswers([...answers, newAnswer]);
+    // Hàm xử lý xóa đáp án
+    const handleAnswerDelete = (answerId: number) => {
+        setQuestionsWithAnswers(prev => prev.map(item =>
+            item.question.id === selectedQuestionId
+                ? {
+                    ...item,
+                    answers: item.answers.filter(answer => answer.id !== answerId)
+                }
+                : item
+        ));
     };
 
     return (
         <Box className={styles.container}>
-            <Topbar />
+            <Topbar quiz={questionSet} onQuestionSetChange={handleQuestionSetChange} />
 
             <Box className={styles.contentWrapper}>
                 <Sidebar
@@ -179,13 +221,10 @@ const Creator = () => {
                         <QuestionView
                             question={selectedQuestion}
                             answers={selectedAnswers}
-                            onAnswerCreate={handleCreateAnswer}
                             onQuestionChange={handleQuestionChange}
+                            onAnswerCreate={handleAddAnswer}
                             onAnswerChange={handleAnswerChange}
-                            onAnswerDelete={(answerId) => {
-                                const updatedAnswers = answers.filter(answer => answer.id !== answerId);
-                                setAnswers(updatedAnswers);
-                            }}
+                            onAnswerDelete={handleAnswerDelete}
                         />
                     ) : (
                         <Box p={3} display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="100%">
@@ -204,7 +243,7 @@ const Creator = () => {
                 </Box>
                 <Box className={`${styles.settingsPanel}`}>
                     {selectedQuestion && (
-                        <SettingsPanel
+                        <ConfigurationBar
                             question={selectedQuestion}
                             onQuestionChange={handleQuestionChange}
                             onQuestionDelete={handleQuestionDelete}

@@ -1,5 +1,5 @@
-import { QuestionSet } from '../types/question';
-import img from '../assets/images/quiz/history.png';
+import { QuestionSet } from '@project/types/question';
+import img from '@project/assets/images/quiz/history.png';
 
 export const mockQuestionSets: QuestionSet[] = [
     {

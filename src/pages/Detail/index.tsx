@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
     Box,
@@ -20,13 +20,12 @@ import PersonIcon from '@mui/icons-material/Person';
 import GridViewIcon from '@mui/icons-material/GridView';
 // @project
 import styles from './styles.module.scss';
-import QuestionCard from '../../components/detail/QuestionCard';
-import ActionBar from '../../components/detail/ActionBar';
+import ActionBar from './components/ActionBar';
+import QuestionCard from './components/QuestionCard';
 import { QuestionSet, Question, Answer } from '../../types/question';
-import { mockQuestionSets } from '../../mocks/QuestionSet';
-import { mockQuestions, mockAnswers } from '../../mocks/Question';
-//import { questionSetService } from '../../services/questionSet.service';
-//import { questionService } from '../../services/question.service';
+import { questionSetService, questionService, answerService } from '@project/services';
+// import { mockQuestionSets } from '../../mocks/QuestionSet';
+// import { mockQuestions, mockAnswers } from '../../mocks/Question';
 
 const Detail = () => {
     const navigate = useNavigate();
@@ -41,15 +40,23 @@ const Detail = () => {
         const fetchData = async () => {
             if (!id) return;
             try {
-                setQuestionSet(mockQuestionSets.find(qs => qs.id === Number(id)) || null);
-                const questions = mockQuestions.filter(q => q.question_set_id === Number(id));
-
-                setQuestionsWithAnswers(
-                    questions.map(question => ({
+                // setQuestionSet(mockQuestionSets.find(qs => qs.id === Number(id)) || null);
+                // const questions = mockQuestions.filter(q => q.question_set_id === Number(id));
+                // setQuestionsWithAnswers(
+                //     questions.map(question => ({
+                //         question,
+                //         answers: mockAnswers.filter(answer => answer.question_id === question.id),
+                //     }))
+                // );
+                setQuestionSet(await questionSetService.getById(Number(id)));
+                const questionsData = await questionService.getAll(Number(id));
+                setQuestionsWithAnswers(await Promise.all(
+                    questionsData.map(async (question) => ({
                         question,
-                        answers: mockAnswers.filter(answer => answer.question_id === question.id),
-                    }))
+                        answers: await answerService.getAll(question.id),
+                    })))
                 );
+                
             } catch (err) {
                 console.error('Failed to fetch quiz:', err);
             }

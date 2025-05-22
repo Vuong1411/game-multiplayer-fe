@@ -10,7 +10,7 @@
 
   @media screen and (max-width: 768px) {
     width: 100%;
-    
+
   }
 }
 
@@ -64,6 +64,8 @@
 .quizContainer {
   width: calc(100% - 270px);
   padding: 20px;
+
+  // Laptop, Mobile,..
   @media screen and (max-width: 1000px) {
     width: 100%;
   }
@@ -167,7 +169,7 @@
 .questionSection {
   display: flex;
   flex-direction: column;
-  padding-bottom: 50px;
+  padding-bottom: 30px;
 }
 
 :global(.MuiGrid-root).questionGrid {
@@ -187,6 +189,7 @@
   position: fixed;
   right: 0;
   height: calc(100vh - 64px);
+
   @media screen and (max-width: 1000px) {
     display: none;
   }

@@ -20,7 +20,7 @@ import {
 } from '@mui/icons-material';
 // @project
 import styles from './styles.module.scss';
-import { QuestionSet } from '../../../../types/question';
+import { QuestionSet } from '@project/types/question';
 
 export interface QuizCardProps {
     quiz: QuestionSet;

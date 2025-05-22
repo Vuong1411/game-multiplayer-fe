@@ -14,8 +14,13 @@ export const API_CONFIG = {
             delete: (id: number) => `/api/question-sets/${id}`
         },
         question: {
-            getAll: (question_set_id: number) => `/api/questions/${question_set_id}`,
+            getAll: (question_set_id: number) => `/api/questions?question_set_id=${question_set_id}`,
             getById: (id: number) => `/api/questions/${id}`,
-        }
+            create: '/api/questions',
+        },
+        answer: {
+            getAll: (question_id: number) => `/api/answers?question_id=${question_id}`,
+            create: '/api/answers',
+        },
     }
 };
