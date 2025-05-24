@@ -5,7 +5,7 @@ export interface Room {
     host_id: number;
     type: string;
     status: string;
-    created_at: Date;
+    created_at?: Date;
     ended_at?: Date;
 }
 
