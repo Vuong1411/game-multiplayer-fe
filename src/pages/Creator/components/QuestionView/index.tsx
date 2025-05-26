@@ -28,6 +28,7 @@ interface QuestionPreviewProps {
     onAnswerCreate?: () => void;
     onAnswerChange?: (id: number, changes: Partial<Answer>) => void;
     onAnswerDelete?: (id: number) => void;
+    onQuestionImageChange?: (questionId: number, url: string | undefined, file?: File) => void;
 }
 
 const QuestionPreview = ({
@@ -36,7 +37,8 @@ const QuestionPreview = ({
     onQuestionChange,
     onAnswerCreate,
     onAnswerChange,
-    onAnswerDelete
+    onAnswerDelete,
+    onQuestionImageChange
 }: QuestionPreviewProps) => {
 
     // Hàm xử lý chọn đáp án đúng
@@ -91,12 +93,13 @@ const QuestionPreview = ({
             <ImageUploadCard
                 imageUrl = {question.image_url}
                 alt={question.content}
-                onChange={(url) => {
+                onChange={(url, file) => {
                     onQuestionChange?.({ image_url: url });
+                    onQuestionImageChange?.(question.id, url, file);
                 }}
             />
 
-            {/* Danh sách đáp án trắc nghiệm */}
+            {/* Danh sách đáp án */}
             <Grid container justifyContent="center" spacing={2} className={styles.answersContainer}>
                 {answers.map((answer, index) => {
                     const { symbol } = getSymbol(index);
@@ -112,6 +115,7 @@ const QuestionPreview = ({
                         styles.answerOrange
                     ][index % 6];
 
+                    // Trắc nghiệm (choice)
                     if (question.type === 'choice') return (
                         <Grid size={6} key={answer.id}>
                             <Box className={`${styles.answerCard} ${answerClass}`}>
@@ -159,6 +163,7 @@ const QuestionPreview = ({
                             </Box>
                         </Grid>
                     );
+                    // Tự luận
                     else return (
                         <Grid size={8} key={answer.id}>
                             <Box

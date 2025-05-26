@@ -23,6 +23,7 @@ import styles from './styles.module.scss';
 import ActionBar from './components/ActionBar';
 import QuestionCard from './components/QuestionCard';
 import { QuestionSet, Question, Answer } from '../../types/question';
+import { Room } from '../../types/room';
 import { questionSetService, questionService, answerService } from '@project/services';
 // import { mockQuestionSets } from '../../mocks/QuestionSet';
 // import { mockQuestions, mockAnswers } from '../../mocks/Question';
@@ -40,14 +41,6 @@ const Detail = () => {
         const fetchData = async () => {
             if (!id) return;
             try {
-                // setQuestionSet(mockQuestionSets.find(qs => qs.id === Number(id)) || null);
-                // const questions = mockQuestions.filter(q => q.question_set_id === Number(id));
-                // setQuestionsWithAnswers(
-                //     questions.map(question => ({
-                //         question,
-                //         answers: mockAnswers.filter(answer => answer.question_id === question.id),
-                //     }))
-                // );
                 setQuestionSet(await questionSetService.getById(Number(id)));
                 const questionsData = await questionService.getAll(Number(id));
                 setQuestionsWithAnswers(await Promise.all(
@@ -68,6 +61,17 @@ const Detail = () => {
     const handleNavigation = (path: string) => {
         navigate(path);
     };
+
+    const handleCreateRoomLive = () => {
+        if (!id) return;
+        
+        navigate(`/lobby/${id}`, { state: { type: 'live' } });
+    }
+
+    const handleCreateRoomSolo = () => {
+        if (!id) return;
+        navigate(`/lobby/${id}`, { state: { type: 'solo' } });
+    }
 
     return (
         <>
@@ -117,8 +121,8 @@ const Detail = () => {
                     <Box className={styles.quizHeader}>
                         <Box className={styles.quizImageContainer}>
                             <img
-                                src={questionSet?.image_url || "/quiz-placeholder.jpg"}
-                                alt={questionSet?.title || "Quiz"}
+                                src={questionSet?.image_url}
+                                alt={questionSet?.title}
                                 className={styles.quizImage}
                             />
                         </Box>
@@ -132,11 +136,11 @@ const Detail = () => {
                             </Box>
 
                             <Typography variant="h4" className={styles.quizTitle}>
-                                {questionSet?.title}
+                                {questionSet?.title || 'Quiz không có tiêu đề'}
                             </Typography>
 
                             <Typography variant="body1" className={styles.quizDescription}>
-                                {questionSet?.description || "Lịch sử thần thoại"}
+                                {questionSet?.description || 'Không có mô tả cho quiz này.'}
                             </Typography>
 
                             <Box className={styles.quizStats}>
@@ -179,7 +183,10 @@ const Detail = () => {
                 </Box>
                 {/* Action Bar */}
                 <Box className={styles.actionBarContainer}>
-                    <ActionBar />
+                    <ActionBar 
+                        onLiveClick={handleCreateRoomLive}
+                        onSoloClick={handleCreateRoomSolo} 
+                    />
                 </Box>
             </Box>
         </>

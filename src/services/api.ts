@@ -2,31 +2,36 @@ import axios from 'axios';
 import { API_CONFIG } from '@project/config/api.config';
 
 // Tạo instance axios 
-export const api = axios.create({
+const api = axios.create({
     baseURL: API_CONFIG.baseURL,
-    headers: {
-        'Content-Type': 'application/json',
+});
+
+// Request interceptor để tự động thêm token
+api.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+            config.headers.Authorization = `${token}`;
+        }
+        return config;
     },
-});
-
-// Thêm interceptor để xử lý token
-api.interceptors.request.use(config => {
-    const token = localStorage.getItem('token');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+    (error) => {
+        return Promise.reject(error);
     }
-    return config;
-});
+);
 
-// Xử lý lỗi
+// Response interceptor để xử lý token hết hạn
 api.interceptors.response.use(
-    response => response,
-    error => {
-        // Xử lý khi token không hợp lệ hoặc hết hạn (401, 403, etc..)
-        if (error.response.status === 401) {
-            // Xóa token khỏi localStorage
-            localStorage.removeItem('token');
+    (response) => response,
+    async (error) => {
+        if (error.response?.status === 401) {
+            // Token hết hạn, redirect về login
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('authUser');
+            window.location.href = '/login';
         }
         return Promise.reject(error);
     }
 );
+
+export { api };

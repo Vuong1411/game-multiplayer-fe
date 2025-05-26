@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
@@ -12,6 +12,7 @@ import { QuestionSet, Question, Answer } from '@project/types/question';
 // import { mockQuestions, mockAnswers } from '../../mocks/Question';
 import { questionSetService, questionService, answerService } from '@project/services';
 
+
 const Creator = () => {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>(); // question set id
@@ -20,6 +21,7 @@ const Creator = () => {
         question: Question;
         answers: Answer[];
     }[]>([]);
+    const [pendingUploads, setPendingUploads] = useState<Map<string, File>>(new Map());
     const [selectedQuestionId, setSelectedQuestionId] = useState<number | undefined>();
     //const [showSettingsPanel, setShowSettingsPanel] = useState(false);
 
@@ -203,9 +205,111 @@ const Creator = () => {
         ));
     };
 
+    // Hàm xử lý thay đổi ảnh bộ câu hỏi
+    const handleQuestionSetImageChange = (url: string | undefined, file?: File) => {
+        if (!questionSet) return;
+
+        setQuestionSet(prev => prev ? { ...prev, image_url: url } : null);
+
+        // Store file for later upload
+        if (file && url) {
+            setPendingUploads(prev => {
+                const newMap = new Map(prev);
+                newMap.set(`questionset_${questionSet.id}`, file);
+                return newMap;
+            });
+        } else if (!url) {
+            // Remove from pending uploads if deleted
+            setPendingUploads(prev => {
+                const newMap = new Map(prev);
+                newMap.delete(`questionset_${questionSet.id}`);
+                return newMap;
+            });
+        }
+    };
+
+    // Hàm xử lý thay đổi ảnh câu hỏi
+    const handleQuestionImageChange = (questionId: number, url: string | undefined, file?: File) => {
+        setQuestionsWithAnswers(prev => prev.map(item =>
+            item.question.id === questionId
+                ? { ...item, question: { ...item.question, image_url: url } }
+                : item
+        ));
+
+        // Store file for later upload
+        if (file && url) {
+            setPendingUploads(prev => {
+                const newMap = new Map(prev);
+                newMap.set(`question_${questionId}`, file);
+                return newMap;
+            });
+        } else if (!url) {
+            setPendingUploads(prev => {
+                const newMap = new Map(prev);
+                newMap.delete(`question_${questionId}`);
+                return newMap;
+            });
+        }
+    };
+
+    const handleSave = async () => {
+        if (!questionSet) return;
+
+        try {
+            // 1. Cập nhật bộ câu hỏi
+            const questionSetFile = pendingUploads.get(`questionset_${questionSet.id}`);
+            await questionSetService.update(questionSet.id, questionSet, questionSetFile);
+
+            // 2. Cập nhật các câu hỏi
+            for (const item of questionsWithAnswers) {
+                const questionFile = pendingUploads.get(`question_${item.question.id}`);
+
+                if (item.question.id < 0) {
+                    // Thêm mới câu hỏi
+                    const newId = await questionService.create({
+                        question_set_id: questionSet.id,
+                        content: item.question.content,
+                        type: item.question.type,
+                        points: item.question.points,
+                        time_limit: item.question.time_limit
+                    }, questionFile);
+                    if (newId) item.question.id = newId;
+                } else {
+                    // Cập nhật câu hỏi đã tồn tại
+                    await questionService.update(item.question.id, item.question, questionFile);
+                }
+
+                // 3. Cập nhật đáp án cho từng câu hỏi
+                for (const answer of item.answers) {
+                    if (answer.id < 0) {
+                        // Thêm mới đáp án
+                        const newId = await answerService.create({
+                            question_id: item.question.id,
+                            content: answer.content,
+                            is_correct: answer.is_correct
+                        });
+                        if (newId) answer.id = newId;
+                    } else {
+                        // Cập nhật đáp án đã tồn tại
+                        await answerService.update(answer.id, answer);
+                    }
+                }
+            }
+
+            navigate(`/detail/${questionSet.id}`);
+        } catch (err) {
+            console.error('Failed to save quiz:', err);
+        }
+    }
+
     return (
         <Box className={styles.container}>
-            <Topbar quiz={questionSet} onQuestionSetChange={handleQuestionSetChange} />
+            <Topbar
+                quiz={questionSet}
+                onSave={handleSave}
+                onQuestionSetChange={handleQuestionSetChange}
+                onQuestionSetImageChange={handleQuestionSetImageChange}
+            />
 
             <Box className={styles.contentWrapper}>
                 <Sidebar
@@ -225,6 +329,7 @@ const Creator = () => {
                             onAnswerCreate={handleAddAnswer}
                             onAnswerChange={handleAnswerChange}
                             onAnswerDelete={handleAnswerDelete}
+                            onQuestionImageChange={handleQuestionImageChange}
                         />
                     ) : (
                         <Box p={3} display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="100%">

@@ -8,7 +8,7 @@ import { mockQuestionSets } from '@project/mocks/QuestionSet';
 import { mockQuestions, mockAnswers } from '@project/mocks/Question';
 
 const SoloGame = () => {
-    const { id } = useParams(); // Room ID
+    const { id } = useParams<{ id: string }>();
     const [questionSet, setQuestionSet] = useState<QuestionSet | null>(null);
     const [questionsWithAnswers, setQuestionsWithAnswers] = useState<{
         question: Question;
@@ -21,24 +21,16 @@ const SoloGame = () => {
         const fetchData = async () => {
             if (!id) return;
             try {
-                const questionSetData = mockQuestionSets.find(qs => qs.id === id);
+                const questionSetData = mockQuestionSets.find(qs => qs.id === Number(id));
+                const questionsData = mockQuestions.filter(q => q.question_set_id === Number(id));
             } catch (err) {
                 console.error(err);
             }
         }
     });
 
-    if (!room) {
-        return <div>Room not found</div>;
-    }
-
     return (
         <div>
-            <h1>Game ID: {id}</h1>
-            <p>Room ID: {room?.id}</p>
-            <p>Room Pin: {room?.pin}</p>
-            <p>Host ID: {room?.host_id}</p>
-            <p>Status: {room?.status}</p>
         </div>
     );
 }

@@ -25,6 +25,7 @@ import {
 import styles from './styles.module.scss';
 import logo from '@project/assets/logo.png';
 import SearchBar from '@project/components/common/SearchBar';
+import { useAuth } from '@project/contexts/AuthContext';
 
 interface TopbarProps {
     handleDrawerToggle: () => void;
@@ -33,14 +34,17 @@ interface TopbarProps {
 const Topbar = ({ handleDrawerToggle }: TopbarProps) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const navigate = useNavigate();
-    const isAuthenticated = false;
-
+    const { currentUser, isAuthenticated , logout } = useAuth();
     const handleOpenMenu = (event: MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
 
     const handleCloseMenu = () => {
         setAnchorEl(null);
+    };
+
+    const handleLogout = () => {
+        logout();
     };
 
     return (
@@ -126,7 +130,7 @@ const Topbar = ({ handleDrawerToggle }: TopbarProps) => {
                                 Cài đặt
                             </MenuItem>,
                             <Divider key="divider" />,
-                            <MenuItem key="logout" onClick={() => navigate('/logout')}>
+                            <MenuItem key="logout" onClick={handleLogout}>
                                 <ListItemIcon>
                                     <Logout fontSize="small" />
                                 </ListItemIcon>

@@ -1,10 +1,10 @@
 export interface Room {
     id: number;
-    pin: string;
+    pin?: string;
     question_set_id: number;
     host_id: number;
-    type: string;
-    status: string;
+    type: string;       // 'solo' | 'live'
+    status: string;     // 'waiting' | 'progress' | 'ended'
     created_at?: Date;
     ended_at?: Date;
 }

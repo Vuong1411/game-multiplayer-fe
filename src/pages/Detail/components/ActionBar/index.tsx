@@ -11,9 +11,12 @@ import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import styles from './styles.module.scss';
 
 interface ActionBarProps {
+    onLiveClick?: () => void;
+    onSoloClick?: () => void;
+
 }
 
-const ActionBar: React.FC<ActionBarProps> = ({}) => {
+const ActionBar = ({onLiveClick, onSoloClick}: ActionBarProps) => {
     return (
         <Box className={styles.actionBarContainer}>
             {/* Phiên kahoot */}
@@ -22,7 +25,7 @@ const ActionBar: React.FC<ActionBarProps> = ({}) => {
             </Typography>
 
             <Box className={styles.sectionButton}>
-                <Button className={styles.button} fullWidth>
+                <Button className={styles.button} fullWidth onClick={onLiveClick}>
                     <Box className={styles.buttonContent}>
                         <LiveTvIcon className={styles.actionIcon} />
                         <Typography className={styles.buttonText}>Tổ chức live</Typography>
@@ -54,7 +57,7 @@ const ActionBar: React.FC<ActionBarProps> = ({}) => {
                     </Box>
                 </Button>
 
-                <Button className={styles.button} fullWidth>
+                <Button className={styles.button} fullWidth onClick={onSoloClick}>
                     <Box className={styles.buttonContent}>
                         <SportsEsportsIcon className={styles.actionIcon} />
                         <Typography className={styles.buttonText}>Chơi cá nhân</Typography>

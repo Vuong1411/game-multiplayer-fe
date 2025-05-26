@@ -8,21 +8,36 @@ import TopicCarousel from "./components/TopicCarousel";
 import QuizCarousel from "./components/QuizCarousel";
 import { QuestionSet } from '@project/types/question';
 import { questionSetService } from '@project/services/questionSet.service';
+import { useAuth } from '@project/contexts/AuthContext';
 
 const Home = () => {
-    const [questionSets, setQuestionSets] = useState<QuestionSet[]>([]);
+    const [allQuiz, setAllQuiz] = useState<QuestionSet[]>([]);
+    const [myQuiz, setMyQuiz] = useState<QuestionSet[]>([]);
+    const { isAuthenticated } = useAuth();
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await questionSetService.getAll();
-
-                setQuestionSets(data);
+                const allQuizData = await questionSetService.getAll();
+                setAllQuiz(allQuizData);
+                // Nếu người dùng đã đăng nhập, lấy quiz của họ
+                if (isAuthenticated) {
+                    try {
+                        const myQuizData = await questionSetService.getMe();
+                        setMyQuiz(myQuizData);
+                    } catch (error) {
+                        console.error('Failed to fetch my question sets:', error);
+                        setMyQuiz([]);
+                    }
+                } else {
+                    setMyQuiz([]);
+                }
             } catch (error) {
                 console.error('Failed to fetch question sets:', error);
+                setAllQuiz([]);
             }
         };
         fetchData();
-    }, []);
+    }, [isAuthenticated]);
     return (
         <>
             <Box className={styles.section}>
@@ -46,9 +61,16 @@ const Home = () => {
 
                 <Box className={styles.sectionContent}>
                     <Typography variant="h4" className={styles.title}>
+                        Quiz phổ biến
+                    </Typography>
+                    <QuizCarousel questionSets={allQuiz} />
+                </Box>
+
+                <Box className={styles.sectionContent}>
+                    <Typography variant="h4" className={styles.title}>
                         Quiz của tôi
                     </Typography>
-                    <QuizCarousel questionSets={questionSets} />
+                    <QuizCarousel questionSets={myQuiz} />
                 </Box>
             </Box>
         </>

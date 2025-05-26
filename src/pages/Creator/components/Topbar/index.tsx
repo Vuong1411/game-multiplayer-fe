@@ -21,13 +21,16 @@ import { QuestionSet } from '@project/types/question';
 
 export interface TopbarProps {
     quiz: QuestionSet | null;
+    onSave?: () => void;
     onQuestionSetChange?: (newQuiz: Partial<QuestionSet>) => void;
+    onQuestionSetImageChange?: (url: string | undefined, file?: File) => void;
 }
 
-const Topbar = ({ quiz, onQuestionSetChange }: TopbarProps) => {
+const Topbar = ({ quiz, onSave, onQuestionSetChange, onQuestionSetImageChange }: TopbarProps) => {
     const navigate = useNavigate();
     const [openSettings, setOpenSettings] = useState(false);
     const [tempData, setTempData] = useState<Partial<QuestionSet>>({});
+    const [image, setImage] = useState<File>();
 
     const handleOpenSettings = () => {
         setTempData({
@@ -125,6 +128,7 @@ const Topbar = ({ quiz, onQuestionSetChange }: TopbarProps) => {
                         variant="contained"
                         color="primary"
                         className={styles.saveButton}
+                        onClick={onSave}
                     >
                         Lưu
                     </Button>
@@ -205,7 +209,10 @@ const Topbar = ({ quiz, onQuestionSetChange }: TopbarProps) => {
                             <ImageUploadCard
                                 imageUrl={tempData.image_url}
                                 alt={quiz?.title}
-                                onChange={(url) => setTempData({...tempData, image_url: url})}
+                                onChange={(url, file) => {
+                                    setTempData({...tempData, image_url: url});
+                                    onQuestionSetImageChange?.( url, file);
+                                }}
                             />
                         </Grid>
                     </Grid>

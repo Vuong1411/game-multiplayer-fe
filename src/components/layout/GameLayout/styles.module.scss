@@ -7,14 +7,8 @@
 .contentWrapper {
     display: flex;
     flex-grow: 1;
-    padding-top: 64px;
 }
 
 .mainContent {
-    width: calc(100% - 250px);
-    padding: 10px;
-
-    @media screen and (max-width: 1000px) {
-        width: 100%;
-    }
+    width: 100%;
 }
