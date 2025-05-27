@@ -14,14 +14,14 @@ import {
 import PersonIcon from '@mui/icons-material/Person';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
-// LanguageIcon can be used or a simple text button for "VI"
-// import LanguageIcon from '@mui/icons-material/Language';
 
 import styles from './styles.module.scss';
 import { Player, Room } from '@project/types';
 import { QuestionSet } from '@project/types/question';
 import { mockQuestionSets } from '@project/mocks/QuestionSet';
 import { mockPlayers } from '@project/mocks/Player';
+import { mockRooms } from '@project/mocks/Room';
+import { roomService, questionSetService, playerService } from '@project/services';
 
 const Lobby = () => {
     const { id } = useParams<{ id: string }>();
@@ -29,32 +29,19 @@ const Lobby = () => {
     const [room, setRoom] = useState<Room | null>(null);
     const [players, setPlayers] = useState<Player[] | []>([]);
     const [playerName, setPlayerName] = useState<string>('');
-    
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 if (!id) return;
-                const questionSetData = mockQuestionSets.find(qs => qs.id === Number(id));
-
-                const mockRoom: Room = {
-                    id: 1,
-                    pin: '123456',
-                    question_set_id: questionSetData?.id || 0,
-                    host_id: 1,
-                    type: 'solo',
-                    status: 'waiting',
-                    created_at: new Date()
-                };
-                setRoom({
-                    id: 1,
-                    question_set_id: questionSetData?.id || 0,
-                    host_id: 1,
-                    type: 'solo',
-                    status: 'waiting',
-                    created_at: new Date()
-                });
-                const playerData = mockPlayers.filter(player => player.room_id === Number(id));
+                // Lấy dữ liệu phòng từ url
+                const roomData = mockRooms.find(room => room.id === Number(id));
+                setRoom(roomData || null);
+                // Lấy bộ câu hỏi từ phòng
+                const questionSetData = mockQuestionSets.find(qs => qs.id === roomData?.question_set_id);
                 setQuestionSet(questionSetData || null);
+                // Lấy danh sách người chơi trong phòng
+                const playerData = mockPlayers.filter(player => player.room_id === Number(id));
                 setPlayers(playerData || []);
             } catch (err) {
                 console.error(err);
@@ -64,17 +51,41 @@ const Lobby = () => {
         fetchData();
     }, [id]);
 
-    const handleJoinGame = () => {
+    // Hàm xử lý khi người dùng join game
+    const handleJoinGame = async () => {
+        if (!room) return;
+
         if (playerName.trim()) {
-            const newPlayer: Player = {
-                id: players.length + 1,
-                room_id: room?.id || 0,
-                nickname: playerName.trim(),
-                score: 0,
-                joined_at: new Date()
-            };
-            setPlayers([...players, newPlayer]);
-            setPlayerName('');
+            try {
+                // Tạo người chơi mới
+                const newPlayer: Partial<Player> = {
+                    nickname: playerName,
+                    room_id: room.id,
+                    score: 0
+                };
+                // const playerId = await playerService.create(newPlayer);
+                
+                // if (playerId) {
+                //     newPlayer.id = playerId;
+                //     setPlayers([...players, newPlayer as Player]);
+                //     setPlayerName('');
+                // }
+
+                setPlayers([...players, newPlayer as Player]);
+                    setPlayerName('');
+            } catch (error) {
+                console.error('Failed to join game:', error);
+            }
+        }
+    };
+
+    // Hàm xử lý khi người dùng rời phòng
+    const handleLeaveGame = async (playerId: number) => {
+        try {
+            await playerService.delete(playerId);
+            setPlayers(players.filter(player => player.id !== playerId));
+        } catch (error) {
+            console.error('Failed to leave game:', error);
         }
     };
 
@@ -89,7 +100,7 @@ const Lobby = () => {
                     Phòng chờ
                 </Typography>
                 <Box className={styles.topRightControls}>
-                    <Button variant="contained" size="small" className={styles.languageButton} sx={{backgroundColor: 'rgba(0,0,0,0.5)', color: '#fff', '&:hover': {backgroundColor: 'rgba(0,0,0,0.7)'}}}>
+                    <Button variant="contained" size="small" className={styles.languageButton} sx={{ backgroundColor: 'rgba(0,0,0,0.5)', color: '#fff', '&:hover': { backgroundColor: 'rgba(0,0,0,0.7)' } }}>
                         VI
                     </Button>
                     <IconButton size="small" aria-label="sound">
@@ -131,7 +142,13 @@ const Lobby = () => {
 
                 <Box className={styles.playersDisplay}>
                     {players.map((player) => (
-                        <Chip key={player.id} label={player.nickname} className={styles.playerChip} />
+                        <Chip 
+                            key={player.id} 
+                            label={player.nickname} 
+                            className={styles.playerChip} 
+                            onDelete={() => handleLeaveGame(player.id)}
+                            deleteIcon={<PersonIcon />}
+                        />
                     ))}
                 </Box>
             </Box>
@@ -150,7 +167,7 @@ const Lobby = () => {
                         className={styles.playerNameInput}
                     />
                     <Button variant="contained" onClick={handleJoinGame}>
-                        OK, đi!
+                        Vào phòng!
                     </Button>
                 </Box>
             </Box>

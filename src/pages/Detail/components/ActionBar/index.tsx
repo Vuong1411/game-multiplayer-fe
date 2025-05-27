@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LinkIcon from '@mui/icons-material/Link';
@@ -11,12 +10,11 @@ import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import styles from './styles.module.scss';
 
 interface ActionBarProps {
-    onLiveClick?: () => void;
-    onSoloClick?: () => void;
+    onCreateRoom?: () => void;
 
 }
 
-const ActionBar = ({onLiveClick, onSoloClick}: ActionBarProps) => {
+const ActionBar = ({onCreateRoom}: ActionBarProps) => {
     return (
         <Box className={styles.actionBarContainer}>
             {/* Phiên kahoot */}
@@ -25,7 +23,7 @@ const ActionBar = ({onLiveClick, onSoloClick}: ActionBarProps) => {
             </Typography>
 
             <Box className={styles.sectionButton}>
-                <Button className={styles.button} fullWidth onClick={onLiveClick}>
+                <Button className={styles.button} fullWidth onClick={onCreateRoom}>
                     <Box className={styles.buttonContent}>
                         <LiveTvIcon className={styles.actionIcon} />
                         <Typography className={styles.buttonText}>Tổ chức live</Typography>
@@ -57,7 +55,7 @@ const ActionBar = ({onLiveClick, onSoloClick}: ActionBarProps) => {
                     </Box>
                 </Button>
 
-                <Button className={styles.button} fullWidth onClick={onSoloClick}>
+                <Button className={styles.button} fullWidth onClick={onCreateRoom}>
                     <Box className={styles.buttonContent}>
                         <SportsEsportsIcon className={styles.actionIcon} />
                         <Typography className={styles.buttonText}>Chơi cá nhân</Typography>

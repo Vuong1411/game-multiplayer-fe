@@ -1,5 +1,3 @@
-import { get } from "http";
-
 export const API_CONFIG = {
     baseURL: import.meta.env.VITE_API_URL,
     endpoints: {
@@ -38,6 +36,13 @@ export const API_CONFIG = {
             leave: (roomId: number) => `/api/rooms/${roomId}/leave`,
             start: (roomId: number) => `/api/rooms/${roomId}/start`,
             end: (roomId: number) => `/api/rooms/${roomId}/end`
+        },
+        player: {
+            getAll: (room_id: number) => `/api/players?room_id=${room_id}`,
+            getById: (id: number) => `/api/players/${id}`,
+            create: '/api/players',
+            update: (id: number) => `/api/players/${id}`,
+            delete: (id: number) => `/api/players/${id}`
         },
     }
 };

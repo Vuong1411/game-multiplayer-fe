@@ -10,7 +10,6 @@ interface AnswersResponse {
 interface AnswerResponse {
     success: boolean;
     answer: Answer;
-    answer_id: number;
     message: string;
 }
 
@@ -39,11 +38,11 @@ export const answerService = {
      * @param data Dữ liệu câu trả lời
      * @returns Câu trả lời vừa tạo
      */
-    create: async (data: Partial<Answer>): Promise<number | null> => {
+    create: async (data: Partial<Answer>) => {
         try {
             const response = await api.post<AnswerResponse>(API_CONFIG.endpoints.answer.create, data);
             if (response.data?.success) {
-                return response.data.answer_id;
+                return response.data.answer.id;
             }
             return null;
         } catch (error) {
@@ -56,7 +55,7 @@ export const answerService = {
      * @param data Dữ liệu cập nhật
      * @returns Câu trả lời đã cập nhật
      */
-    update: async (id: number, data: Partial<Answer>): Promise<string | null> => {
+    update: async (id: number, data: Partial<Answer>) => {
         try {
             const response = await api.put<AnswerResponse>(API_CONFIG.endpoints.answer.update(id), data);
             if (response.data?.success) {

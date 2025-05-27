@@ -10,7 +10,7 @@ export interface Room {
 }
 
 export interface Player {
-    id: number;
+    id: number; // Unique identifier for the player
     room_id: number;
     nickname: string;
     avatar_url?: string;

@@ -49,8 +49,11 @@ export const roomService = {
     // Tạo mới phòng
     create: async (data: Partial<Room>) => {
         try {
-            const response = await api.post<Room>(API_CONFIG.endpoints.room.create, data);
-            return response.data;
+            const response = await api.post<RoomResponse>(API_CONFIG.endpoints.room.create, data);
+            if (response.data?.success) {
+                return response.data.room.id;
+            }
+            return null;
         } catch (error) {
             throw new Error('Failed to create room!');
         }

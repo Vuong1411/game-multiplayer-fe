@@ -1,7 +1,6 @@
 import { api } from './api';
 import { User } from '@project/types/user';
 import { API_CONFIG } from '@project/config/api.config';
-import { get } from 'http';
 
 interface AuthResponse {
     success: boolean;

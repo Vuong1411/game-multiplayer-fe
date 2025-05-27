@@ -28,17 +28,17 @@ function App() {
                             <Route path="/details/:id" element={<Detail />} />
                         </Route>
 
+                        {/* Route Layout Game */}
+                        <Route element={<GameLayout />}>
+                            <Route path="/lobby/:id" element={<Lobby />} />
+                        </Route>
+
                         {/* Các route cần đăng nhập */}
                         <Route element={<ProtectedRoute />}>
-                        
+
                             {/* Route Layout Main */}
                             <Route element={<MainLayout />}>
                                 <Route path="/library" element={<Library />} />
-                            </Route>
-
-                            {/* Route Layout Game */}
-                            <Route element={<GameLayout />}>
-                                <Route path="/lobby/:id" element={<Lobby />} />
                             </Route>
 
                             {/* Route No Layout */}

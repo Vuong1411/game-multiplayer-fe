@@ -2,4 +2,6 @@ export * from './api';
 export * from './questionSet.service';
 export * from './question.service';
 export * from './answer.service';
-export * from './upload.service';
+export * from './room.service';
+export * from './player.service';
+export * from './auth.service';
