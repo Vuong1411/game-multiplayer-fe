@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Snackbar, Alert } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 // @project
 import styles from './styles.module.scss';
@@ -23,11 +23,35 @@ const Creator = () => {
     }[]>([]);
     const [pendingUploads, setPendingUploads] = useState<Map<string, File>>(new Map());
     const [selectedQuestionId, setSelectedQuestionId] = useState<number | undefined>();
+    const [deletedQuestionIds, setDeletedQuestionIds] = useState<number[]>([]);
+    const [deletedAnswerIds, setDeletedAnswerIds] = useState<number[]>([]);
+    const [isSaving, setIsSaving] = useState(false);
+    // Thông báo
+    const [notification, setNotification] = useState<{
+        open: boolean;
+        message: string;
+        severity: 'success' | 'error' | 'warning' | 'info';
+    }>({
+        open: false,
+        message: '',
+        severity: 'success'
+    });
+
     //const [showSettingsPanel, setShowSettingsPanel] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
-            if (!id) return;
+            if (!id) {
+                const newQuestionSet: Partial<QuestionSet> = {
+                    id: -(Date.now()),
+                    title: '',
+                    description: ''
+                }
+                setQuestionSet(newQuestionSet as QuestionSet);
+                setQuestionsWithAnswers([]);
+                return;
+            }
+
             try {
                 // Lấy bộ câu hỏi từ API
                 const questionSetData = await questionSetService.getById(Number(id));
@@ -77,7 +101,7 @@ const Creator = () => {
         const newQuestion: Question = {
             id: tempId,
             question_set_id: 1,
-            content: 'Câu hỏi mới',
+            content: '',
             type: 'choice',
             time_limit: 20,
             points: 10,
@@ -121,7 +145,8 @@ const Creator = () => {
     // Hàm xử lý tạo đáp án mới
     const handleAddAnswer = () => {
         if (!selectedQuestionId) return;
-        const tempId = Math.max(...answers.map(a => a.id), 0) + 1;
+
+        const tempId = -(Date.now() + Math.random() * 1000);
 
         // Tạo đáp án mới
         const newAnswer: Answer = {
@@ -182,7 +207,18 @@ const Creator = () => {
 
     // Hàm xử lý xóa câu hỏi
     const handleQuestionDelete = (questionId: number) => {
-        // Xóa câu hỏi và đáp án liên quan
+        // Xóa trên database
+        if (questionId > 0) {
+            setDeletedQuestionIds(prev => [...prev, questionId]);
+            const answersDelete = questionsWithAnswers.find(
+                item => item.question.id === questionId
+            )?.answers || [];
+            const answerIdsDelete = answersDelete
+                .filter(answer => answer.id > 0)
+                .map(answer => answer.id);
+            setDeletedAnswerIds(prev => [...prev, ...answerIdsDelete]);
+        }
+        // Xóa câu hỏi và đáp án liên quan trên UI
         const deleted = questionsWithAnswers.filter(
             item => item.question.id !== questionId
         );
@@ -195,12 +231,15 @@ const Creator = () => {
 
     // Hàm xử lý xóa đáp án
     const handleAnswerDelete = (answerId: number) => {
+        // Xoá database
+        if (answerId > 0) {
+            setDeletedAnswerIds(pre => [...pre, answerId]);
+        };
+
+        // Xóa trên UI
         setQuestionsWithAnswers(prev => prev.map(item =>
             item.question.id === selectedQuestionId
-                ? {
-                    ...item,
-                    answers: item.answers.filter(answer => answer.id !== answerId)
-                }
+                ? { ...item, answers: item.answers.filter(answer => answer.id !== answerId)}
                 : item
         ));
     };
@@ -255,12 +294,41 @@ const Creator = () => {
     const handleSave = async () => {
         if (!questionSet) return;
 
+        setIsSaving(true);
+
         try {
             // 1. Cập nhật bộ câu hỏi
             const questionSetFile = pendingUploads.get(`questionset_${questionSet.id}`);
+            if( questionSet.id < 0) {
+                const newId = await questionSetService.create({
+                    title: questionSet.title,
+                    description: questionSet.description
+                }, questionSetFile);
+                if (newId) questionSet.id = newId;
+            }
             await questionSetService.update(questionSet.id, questionSet, questionSetFile);
 
-            // 2. Cập nhật các câu hỏi
+            // 2. Xóa các câu hỏi đã bị xóa
+            for (const deletedQuestionId of deletedQuestionIds) {
+                try {
+                    await questionService.delete(deletedQuestionId);
+                    console.log(`Đã xóa câu hỏi ID: ${deletedQuestionId}`);
+                } catch (err) {
+                    console.error(`Lỗi khi xóa câu hỏi ID ${deletedQuestionId}:`, err);
+                }
+            }
+
+            // 3. Xóa các đáp án đã bị xóa
+            for (const deletedAnswerId of deletedAnswerIds) {
+                try {
+                    await answerService.delete(deletedAnswerId);
+                    console.log(`Đã xóa đáp án ID: ${deletedAnswerId}`);
+                } catch (err) {
+                    console.error(`Lỗi khi xóa đáp án ID ${deletedAnswerId}:`, err);
+                }
+            }
+
+            // 4. Cập nhật các câu hỏi
             for (const item of questionsWithAnswers) {
                 const questionFile = pendingUploads.get(`question_${item.question.id}`);
 
@@ -279,28 +347,63 @@ const Creator = () => {
                     await questionService.update(item.question.id, item.question, questionFile);
                 }
 
-                // 3. Cập nhật đáp án cho từng câu hỏi
+                // 5. Cập nhật đáp án cho từng câu hỏi
                 for (const answer of item.answers) {
+                    if (answer.question_id !== item.question.id) {
+                        answer.question_id = item.question.id;
+                    }
                     if (answer.id < 0) {
                         // Thêm mới đáp án
-                        const newId = await answerService.create({
-                            question_id: item.question.id,
+                        const newAnswerId = await answerService.create({
+                            question_id: answer.question_id,
                             content: answer.content,
                             is_correct: answer.is_correct
                         });
-                        if (newId) answer.id = newId;
+                        if (newAnswerId) answer.id = newAnswerId;
                     } else {
                         // Cập nhật đáp án đã tồn tại
                         await answerService.update(answer.id, answer);
                     }
                 }
             }
+            // 6. Reset danh sách xóa
+            setDeletedQuestionIds([]);
+            setDeletedAnswerIds([]);
 
-            navigate(`/detail/${questionSet.id}`);
+            // Hiển thị thông báo thành công
+            setNotification({
+                open: true,
+                message: 'Cập nhật thành công! Đang chuyển hướng...',
+                severity: 'success'
+            });
+
+            // Chờ 2 giây để người dùng thấy thông báo trước khi chuyển hướng
+            setTimeout(() => {
+                navigate(`/details/${questionSet.id}`);
+            }, 2000);
+
         } catch (err) {
             console.error('Failed to save quiz:', err);
+
+            // Hiển thị thông báo lỗi
+            setNotification({
+                open: true,
+                message: 'Có lỗi xảy ra khi lưu. Vui lòng thử lại!',
+                severity: 'error'
+            });
+
+        } finally {
+            setIsSaving(false);
         }
     }
+
+    // Hàm đóng notification
+    const handleCloseNotification = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setNotification(prev => ({ ...prev, open: false }));
+    };
 
     return (
         <Box className={styles.container}>
@@ -309,6 +412,7 @@ const Creator = () => {
                 onSave={handleSave}
                 onQuestionSetChange={handleQuestionSetChange}
                 onQuestionSetImageChange={handleQuestionSetImageChange}
+                isSaving={isSaving}
             />
 
             <Box className={styles.contentWrapper}>
@@ -356,6 +460,22 @@ const Creator = () => {
                     )}
                 </Box>
             </Box>
+
+            <Snackbar
+                open={notification.open}
+                autoHideDuration={6000}
+                onClose={handleCloseNotification}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert 
+                    onClose={handleCloseNotification} 
+                    severity={notification.severity}
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    {notification.message}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 };

@@ -1,15 +1,24 @@
 import axios from 'axios';
 import { API_CONFIG } from '@project/config/api.config';
+import { getCookie, deleteCookie } from '@project/utils/Cookie';
 
-// Tạo instance axios 
-const api = axios.create({
+// Tạo instance axios cho public API
+const publicApi = axios.create({
     baseURL: API_CONFIG.baseURL,
+    timeout: API_CONFIG.timeout
+});
+
+// Tạo instance axios cho private API
+const privateApi = axios.create({
+    baseURL: API_CONFIG.baseURL,
+    timeout: API_CONFIG.timeout,
+    withCredentials: true
 });
 
 // Request interceptor để tự động thêm token
-api.interceptors.request.use(
+privateApi.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('authToken');
+        const token = getCookie('authToken');
         if (token) {
             config.headers.Authorization = `${token}`;
         }
@@ -21,17 +30,25 @@ api.interceptors.request.use(
 );
 
 // Response interceptor để xử lý token hết hạn
-api.interceptors.response.use(
+privateApi.interceptors.response.use(
     (response) => response,
     async (error) => {
         if (error.response?.status === 401) {
             // Token hết hạn, redirect về login
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('authUser');
+            deleteCookie('authToken');
+            deleteCookie('authUser');
             window.location.href = '/login';
         }
         return Promise.reject(error);
     }
 );
 
-export { api };
+// Interceptor cho publicApi để xử lý lỗi
+publicApi.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+export { publicApi, privateApi };

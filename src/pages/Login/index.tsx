@@ -43,7 +43,6 @@ const Login = () => {
 
             if (response) {
                 const { user, token } = response;
-                console.log('Login thành công:', user, token);
                 // Lưu thông tin người dùng và token vào context
                 authContext.login(user, token);
                 navigate(from, { replace: true });

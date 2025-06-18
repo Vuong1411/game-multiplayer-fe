@@ -10,6 +10,8 @@ import {
     Tooltip,
     AppBar,
     Toolbar,
+    Snackbar,
+    Alert,
 } from '@mui/material';
 // Icons
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
@@ -26,8 +28,6 @@ import { useAuth } from '@project/contexts/AuthContext';
 import { QuestionSet, Question, Answer } from '@project/types/question';
 import { Room } from '@project/types/room';
 import { questionSetService, questionService, answerService, roomService } from '@project/services';
-// import { mockQuestionSets } from '../../mocks/QuestionSet';
-// import { mockQuestions, mockAnswers } from '../../mocks/Question';
 
 const Detail = () => {
     const navigate = useNavigate();
@@ -38,6 +38,7 @@ const Detail = () => {
         question: Question;
         answers: Answer[];
     }[]>([]);
+    const [showAlert, setShowAlert] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -51,7 +52,7 @@ const Detail = () => {
                         answers: await answerService.getAll(question.id),
                     })))
                 );
-                
+
             } catch (err) {
                 console.error('Failed to fetch quiz:', err);
             }
@@ -64,21 +65,87 @@ const Detail = () => {
         navigate(path);
     };
 
-    const handleCreateRoom = async () => {
-        if (!id || !currentUser) return;
+    const handleEditClick = () => {
+        // Kiểm tra quyền edit
+        if (!currentUser) {
+            setShowAlert(true);
+            return;
+        }
 
-        const newRoom: Partial<Room> = {
-            question_set_id: Number(id),
-            host_id: Number(currentUser.id),
-            type: 'live',
-            status: 'waiting'
-        };
-        const roomId = await roomService.create(newRoom);
-        navigate(`/lobby/${roomId}`);
-    }
+        // Kiểm tra nếu user hiện tại là tác giả
+        if (questionSet?.created_by && Number(currentUser.id) !== questionSet.created_by) {
+            setShowAlert(true);
+            return;
+        }
+
+        handleNavigation(`/creator/${id}`);
+    };
+
+    const handleCloseAlert = () => {
+        setShowAlert(false);
+    };
+
+    const handleCreateRoom = async (type: 'sync' | 'async' = 'async') => {
+        if (!id || !currentUser) {
+            setShowAlert(true);
+            return;
+        }
+
+        try {
+            const newRoom: Partial<Room> = {
+                question_set_id: Number(id),
+                type: type,
+                status: 'waiting'
+            };
+
+            const result = await roomService.create(newRoom);
+            if (result) {
+                const { room_id, pin } = result;
+                if (type === 'async') {
+                    navigate(`/lobby/solo/${room_id}`, {
+                        state: {
+                            pin: pin.trim(),
+                            isHost: true
+                        }
+                    });
+                } 
+                else {
+                    navigate(`/lobby/live/${room_id}`, {
+                        state: {
+                            pin: pin.trim(),
+                            isHost: true
+                        }
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Failed to create room:', error);
+            setShowAlert(true);
+        }
+    };
+    const handleCreateLiveRoom = () => handleCreateRoom('sync');
+    const handleCreateSoloRoom = () => handleCreateRoom('async');
 
     return (
         <>
+            {/* Thông báo lỗi */}
+            <Snackbar
+                open={showAlert}
+                autoHideDuration={3000}
+                onClose={handleCloseAlert}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert
+                    onClose={handleCloseAlert}
+                    severity="warning"
+                    sx={{ width: '100%' }}
+                >
+                    {!currentUser
+                        ? "Bạn cần đăng nhập để thực hiện thao tác này!"
+                        : "Chỉ tác giả mới có thể thực hiện này!"
+                    }
+                </Alert>
+            </Snackbar>
             {/* Navbar: toàn màn hình ở trên top */}
             <AppBar className={styles.navbar}>
                 <Container maxWidth={false}>
@@ -95,7 +162,7 @@ const Detail = () => {
                         </Box>
 
                         <Box className={styles.navbarRight}>
-                            <Tooltip title="Chỉnh sửa" onClick={() => handleNavigation(`/creator/${id}`)}>
+                            <Tooltip title="Chỉnh sửa" onClick={handleEditClick}>
                                 <IconButton className={styles.navButton}>
                                     <EditIcon />
                                 </IconButton>
@@ -172,7 +239,7 @@ const Detail = () => {
                         </Box>
 
                         <Grid container justifyContent={'center'} spacing={1} className={styles.questionGrid}>
-                            {questionsWithAnswers.map(({question, answers}) => {
+                            {questionsWithAnswers.map(({ question, answers }) => {
                                 return (
                                     <Grid key={question.id}>
                                         <QuestionCard
@@ -187,8 +254,9 @@ const Detail = () => {
                 </Box>
                 {/* Action Bar */}
                 <Box className={styles.actionBarContainer}>
-                    <ActionBar 
-                        onCreateRoom={handleCreateRoom} 
+                    <ActionBar
+                        onCreateLiveRoom={handleCreateLiveRoom}
+                        onCreateSoloRoom={handleCreateSoloRoom}
                     />
                 </Box>
             </Box>

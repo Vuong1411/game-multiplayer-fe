@@ -1,37 +1,37 @@
 import { Player } from '@project/types/room';
 
 // Mock data for players
-export const mockPlayers: Player[] = [
+export const mockPlayers = (roomId: number): Player[] => [
     {
         id: 1,
-        room_id: 1,
+        room_id: roomId, // ✅ Dynamic room_id
         nickname: 'Robyn',
-        avatar_url: 'https://example.com/avatar1.png',
-        score: 0,
-        joined_at: new Date('2023-10-01T10:00:00Z')
+        avatar_url: '',
+        score: 1712,
+        joined_at: new Date()
     },
     {
         id: 2,
-        room_id: 1,
+        room_id: roomId,
         nickname: 'Nancy',
-        avatar_url: 'https://example.com/avatar2.png',
-        score: 0,
-        joined_at: new Date('2023-10-01T10:05:00Z')
+        avatar_url: '',
+        score: 2008,
+        joined_at: new Date()
     },
     {
         id: 3,
-        room_id: 1,
+        room_id: roomId,
         nickname: 'Mal',
-        avatar_url: 'https://example.com/avatar3.png',
-        score: 0,
-        joined_at: new Date('2023-10-01T10:10:00Z')
+        avatar_url: '',
+        score: 572,
+        joined_at: new Date()
     },
     {
         id: 4,
-        room_id: 1,
+        room_id: roomId,
         nickname: 'Shima',
-        avatar_url: 'https://example.com/avatar4.png',
-        score: 0,
-        joined_at: new Date('2023-10-01T10:15:00Z')
+        avatar_url: '',
+        score: 1833,
+        joined_at: new Date()
     }
 ];

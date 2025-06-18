@@ -119,8 +119,8 @@ const ConfigurationBar = ({
                         onChange={(e) => onQuestionChange?.({ ...question, points: Number(e.target.value) })}
                         className={styles.selectControl}
                     >
-                        <MenuItem value={10}>Tiêu chuẩn</MenuItem>
-                        <MenuItem value={20}>Gấp đôi điểm</MenuItem>
+                        <MenuItem value={1000}>Tiêu chuẩn</MenuItem>
+                        <MenuItem value={2000}>Gấp đôi điểm</MenuItem>
                         <MenuItem value={0}>Không tính điểm</MenuItem>
                     </Select>
                 </FormControl>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     AppBar,
@@ -13,10 +13,12 @@ import {
     Grid
 } from '@mui/material';
 import SettingIcon from '@mui/icons-material/Settings';
+import SaveIcon from '@mui/icons-material/Save';
+import CircularProgress from '@mui/material/CircularProgress';
 // @project
 import styles from './styles.module.scss';
 import ImageUploadCard from '../ImageUploadCard';
-import logo from '@project/assets/logo.png';
+import logo from '@project/assets/logo.svg';
 import { QuestionSet } from '@project/types/question';
 
 export interface TopbarProps {
@@ -24,13 +26,24 @@ export interface TopbarProps {
     onSave?: () => void;
     onQuestionSetChange?: (newQuiz: Partial<QuestionSet>) => void;
     onQuestionSetImageChange?: (url: string | undefined, file?: File) => void;
+    isSaving ?: boolean;
 }
 
-const Topbar = ({ quiz, onSave, onQuestionSetChange, onQuestionSetImageChange }: TopbarProps) => {
+const Topbar = ({ quiz, onSave, onQuestionSetChange, onQuestionSetImageChange, isSaving = false }: TopbarProps) => {
     const navigate = useNavigate();
     const [openSettings, setOpenSettings] = useState(false);
     const [tempData, setTempData] = useState<Partial<QuestionSet>>({});
-    const [image, setImage] = useState<File>();
+
+    useEffect(() => {
+        const handleUnload = (e: BeforeUnloadEvent) => {
+            e.preventDefault();
+            return e.returnValue = '';
+        };
+
+        window.addEventListener('beforeunload', handleUnload);
+        return () => window.removeEventListener('beforeunload', handleUnload);
+    }, []);
+
 
     const handleOpenSettings = () => {
         setTempData({
@@ -53,6 +66,16 @@ const Topbar = ({ quiz, onSave, onQuestionSetChange, onQuestionSetImageChange }:
         setOpenSettings(false);
         setTempData({});
     };
+
+    const handleQuit = () => {
+        if (window.confirm('Bạn có chắc muốn thoát? Thay đổi chưa lưu sẽ bị mất.')) {
+            if (quiz?.id) {
+                navigate(`/details/${quiz.id}`);
+            } else {
+                navigate('/');
+            }
+        }
+    }
 
 
 
@@ -111,14 +134,15 @@ const Topbar = ({ quiz, onSave, onQuestionSetChange, onQuestionSetImageChange }:
                     </Button>
 
                     <Button
-                        variant="text"
+                        variant='text'
                         className={styles.actionButton}
                     >
                         Xem trước
                     </Button>
 
                     <Button
-                        variant="text"
+                        variant="outlined"
+                        onClick={handleQuit}
                         className={styles.actionButton}
                     >
                         Thoát
@@ -126,11 +150,12 @@ const Topbar = ({ quiz, onSave, onQuestionSetChange, onQuestionSetImageChange }:
 
                     <Button
                         variant="contained"
-                        color="primary"
                         className={styles.saveButton}
                         onClick={onSave}
+                        disabled={isSaving}
+                        startIcon={isSaving ? <CircularProgress size={20} /> : <SaveIcon />}
                     >
-                        Lưu
+                        {isSaving ? 'Đang lưu...' : 'Lưu'}
                     </Button>
                 </Box>
             </Toolbar>
@@ -183,7 +208,7 @@ const Topbar = ({ quiz, onSave, onQuestionSetChange, onQuestionSetImageChange }:
                             <Typography variant="h6" className={styles.sectionTitle}>Tiêu đề</Typography>
                             <TextField
                                 value={tempData.title}
-                                onChange={(e) => setTempData({...tempData, title: e.target.value})}
+                                onChange={(e) => setTempData({ ...tempData, title: e.target.value })}
                                 variant="outlined"
                                 fullWidth
                                 placeholder="Nhập tiêu đề cho bộ câu hỏi"
@@ -192,7 +217,7 @@ const Topbar = ({ quiz, onSave, onQuestionSetChange, onQuestionSetImageChange }:
                             <Typography variant="h6" className={styles.sectionTitle}>Mô tả <span className={styles.optional}>(Không bắt buộc)</span></Typography>
                             <TextField
                                 value={tempData.description}
-                                onChange={(e) => setTempData({...tempData, description: e.target.value})}
+                                onChange={(e) => setTempData({ ...tempData, description: e.target.value })}
                                 variant="outlined"
                                 fullWidth
                                 multiline
@@ -210,8 +235,8 @@ const Topbar = ({ quiz, onSave, onQuestionSetChange, onQuestionSetImageChange }:
                                 imageUrl={tempData.image_url}
                                 alt={quiz?.title}
                                 onChange={(url, file) => {
-                                    setTempData({...tempData, image_url: url});
-                                    onQuestionSetImageChange?.( url, file);
+                                    setTempData({ ...tempData, image_url: url });
+                                    onQuestionSetImageChange?.(url, file);
                                 }}
                             />
                         </Grid>

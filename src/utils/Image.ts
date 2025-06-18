@@ -7,7 +7,7 @@ import { API_CONFIG } from '@project/config/api.config';
  */
 export const getImageUrl = (path?: string): string => {
     if (!path) {
-        return 'https://via.placeholder.com/300x200?text=No+Image';
+        return 'https://i.pinimg.com/736x/6b/4b/b9/6b4bb99c31679504834a2015f39bd236.jpg';
     }
     if (path.startsWith('http://') || path.startsWith('https://')) {
         return path;

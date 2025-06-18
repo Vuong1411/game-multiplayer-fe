@@ -23,7 +23,7 @@ import {
 } from '@mui/icons-material';
 // @project
 import styles from './styles.module.scss';
-import logo from '@project/assets/logo.png';
+import logo from '@project/assets/logo.svg';
 import SearchBar from '@project/components/common/SearchBar';
 import { useAuth } from '@project/contexts/AuthContext';
 

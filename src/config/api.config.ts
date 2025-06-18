@@ -1,10 +1,17 @@
 export const API_CONFIG = {
     baseURL: import.meta.env.VITE_API_URL,
+    timeout: 10000,
     endpoints: {
         auth: {
             login: '/api/auth/login',
             register: '/api/auth/register',
             me: '/api/auth/me',
+        },
+        user: {
+            getAll: '/api/users',
+            getById: (id: number) => `/api/users/${id}`,
+            getByUsername: (username: string) => `/api/users/by-username?username=${username}`,
+            getByEmail: (email: string) => `/api/users/by-email?email=${email}`,
         },
         questionSet: {
             getAll: '/api/question-sets',
@@ -31,18 +38,28 @@ export const API_CONFIG = {
         room: {
             getAll: '/api/rooms',
             getById: (id: number) => `/api/rooms/${id}`,
+            getByPin: (pin: string) => `/api/rooms/by-pin?pin=${pin}`,
             create: '/api/rooms',
-            join: (roomId: number) => `/api/rooms/${roomId}/join`,
-            leave: (roomId: number) => `/api/rooms/${roomId}/leave`,
-            start: (roomId: number) => `/api/rooms/${roomId}/start`,
-            end: (roomId: number) => `/api/rooms/${roomId}/end`
+            update: (id: number) => `/api/rooms/${id}`,
+            delete: (id: number) => `/api/rooms/${id}`
         },
         player: {
             getAll: (room_id: number) => `/api/players?room_id=${room_id}`,
+            getByPin: (pin: string) => `/api/players/by-pin?pin=${pin}`,
             getById: (id: number) => `/api/players/${id}`,
             create: '/api/players',
             update: (id: number) => `/api/players/${id}`,
             delete: (id: number) => `/api/players/${id}`
         },
+        playerAnswer: {
+            getByPlayer: (player_id: number) => `/api/player-answers?player_id=${player_id}`,
+            getByRoom: (room_id: number) => `/api/player-answers?room_id=${room_id}`,
+            getByQuestion: (question_id: number) => `/api/player-answers?question_id=${question_id}`,
+            getById: (id: number) => `/api/player-answers/${id}`,
+            create: '/api/player-answers',
+            update: (id: number) => `/api/player-answers/${id}`,
+            delete: (id: number) => `/api/player-answers/${id}`
+        },
+
     }
 };

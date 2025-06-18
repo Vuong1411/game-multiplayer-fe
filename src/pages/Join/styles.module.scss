@@ -1,0 +1,141 @@
+.joinContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    background-image: url('https://i.pinimg.com/originals/18/83/de/1883de5bfee36b043b973bef00c561e0.gif');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    box-sizing: border-box;
+    color: white;
+}
+
+.topBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    position: absolute;
+    top: 20px;
+    left: 0;
+    padding: 0 30px;
+    box-sizing: border-box;
+}
+
+.homeButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 8px 12px;
+    border-radius: 4px;
+    color: #fff;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+}
+
+.topRightControls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    :global(.MuiIconButton-root) {
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff;
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+    }
+
+    .languageButton {
+        padding: 6px 12px;
+        font-weight: bold;
+        border-radius: 4px;
+    }
+}
+
+.mainContentArea {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+.branding {
+    font-size: 4rem !important;
+    font-weight: bold !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 1rem;
+
+    @media (max-width: 768px) {
+        font-size: 3rem !important;
+    }
+}
+
+.joinCard {
+    width: 100%;
+    max-width: 350px;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+    background: white !important;
+}
+
+.joinCardContent {
+    padding: 2rem !important;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    :global(.MuiTextField-root) {
+        flex-grow: 1;
+
+        :global(.MuiInputBase-root) {
+            background-color: #fff;
+            border-radius: 4px;
+        }
+
+        label {
+            color: #c4c4c4;
+            font-weight: 700;
+        }
+
+        input {
+            color: rgb(51, 51, 51);
+            font-weight: 700;
+        }
+    }
+
+    :global(.MuiButton-root) {
+        background-color: #646cff;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 16px;
+        padding: 10px 20px;
+
+        &:hover {
+            background-color: #5555cc;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .topBar {
+        padding: 1rem;
+    }
+
+    .mainContentArea {
+        padding: 1rem;
+    }
+
+    .joinCardContent {
+        padding: 2rem 1.5rem !important;
+    }
+}

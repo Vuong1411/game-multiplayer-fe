@@ -2,8 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Grid } from '@mui/material';
 // @project
 import styles from './styles.module.scss';
-import { QuestionSet } from '../../../../types/question';
-import QuizCard from '../../../../components/common/Card/QuizCard';
+import { QuestionSet } from '@project/types/question';
+import QuizCard from '@project/components/common/Card/QuizCard';
 
 interface MyQuizListProps {
     questionSets: QuestionSet[];

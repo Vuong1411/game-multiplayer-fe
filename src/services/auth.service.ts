@@ -1,4 +1,4 @@
-import { api } from './api';
+import { publicApi, privateApi } from './api';
 import { User } from '@project/types/user';
 import { API_CONFIG } from '@project/config/api.config';
 
@@ -16,7 +16,7 @@ export const authService = {
      */
     login: async (email: string, password: string): Promise<{ user: User; token: string } | null> => {
         try {
-            const response = await api.post<AuthResponse>(API_CONFIG.endpoints.auth.login, { email, password });
+            const response = await publicApi.post<AuthResponse>(API_CONFIG.endpoints.auth.login, { email, password });
             if (response.data?.success) {
                 return { user: response.data.user, token: response.data.token };
             }
@@ -33,7 +33,7 @@ export const authService = {
      */
     register: async (user: Partial<User>): Promise<User | null> => {
         try {
-            const response = await api.post<AuthResponse>(API_CONFIG.endpoints.auth.register, user);
+            const response = await publicApi.post<AuthResponse>(API_CONFIG.endpoints.auth.register, user);
             if (response.data?.success) {
                 return response.data.user;
             }
@@ -48,7 +48,7 @@ export const authService = {
      */
     me: async (): Promise<User | null> => {
         try {
-            const response = await api.get<AuthResponse>(API_CONFIG.endpoints.auth.me);
+            const response = await privateApi.get<AuthResponse>(API_CONFIG.endpoints.auth.me);
             if (response.data?.success) {
                 return response.data.user;
             }

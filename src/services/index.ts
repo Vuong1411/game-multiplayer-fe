@@ -4,4 +4,6 @@ export * from './question.service';
 export * from './answer.service';
 export * from './room.service';
 export * from './player.service';
+export * from './playerAnswer.service';
 export * from './auth.service';
+export * from './user.service';

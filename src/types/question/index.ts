@@ -2,6 +2,7 @@ export interface QuestionSet {
     id: number;
     title: string;
     author: string;
+    created_by: number;
     questions: number;
     description?: string;
     image_url?: string;

@@ -10,7 +10,7 @@ export interface Room {
 }
 
 export interface Player {
-    id: number; // Unique identifier for the player
+    id: number;
     room_id: number;
     nickname: string;
     avatar_url?: string;
@@ -21,8 +21,8 @@ export interface Player {
 export interface PlayerAnswer {
     player_id: number;
     question_id: number;
-    answer_id?: number;
-    answer_text?: string;
+    answer_id?: number | null;
+    answer_text?: string | null;
     is_correct: boolean;
     response_time: number;
     points: number;
