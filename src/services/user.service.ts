@@ -1,4 +1,4 @@
-import { publicApi } from './api';
+import { publicApi, privateApi } from './api';
 import { User } from '@project/types/user';
 import { API_CONFIG } from '@project/config/api.config';
 
@@ -52,6 +52,32 @@ export const userService = {
         } catch (error) {
             console.error(`Failed to fetch user with id: ${id}!`, error);
             throw new Error(`Failed to fetch user with id: ${id}!`);
+        }
+    },
+
+    /**
+     * Cập nhật thông tin user (username, email)
+     */
+    updateProfile: async (data: { userId: string; email?: string; username?: string }): Promise<boolean> => {
+        try {
+            const response = await privateApi.put(API_CONFIG.endpoints.user.updateProfile, data);
+            return response.data?.success ?? false;
+        } catch (error) {
+            console.error('Failed to update profile!', error);
+            return false;
+        }
+    },
+
+    /**
+     * Đổi mật khẩu
+     */
+    changePassword: async (oldPassword: string, newPassword: string): Promise<boolean> => {
+        try {
+            const response = await privateApi.post(API_CONFIG.endpoints.user.changePassword, { oldPassword, newPassword });
+            return response.data?.success ?? false;
+        } catch (error) {
+            console.error('Failed to change password!', error);
+            return false;
         }
     },
 };

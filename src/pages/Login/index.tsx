@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button, TextField, Container, Typography, Box, CircularProgress } from '@mui/material';
 // @project
-import styles from './styles.module.scss';
 import { User } from '@project/types/user';
 import { useAuth } from '@project/contexts/AuthContext';
 import { authService } from '@project/services/auth.service';
@@ -16,7 +15,7 @@ const Login = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const from = (location.state as any)?.from?.pathname || '/';
+    const from = (location.state)?.from?.pathname || '/';
 
     // Xử lý khi người dùng đã đăng nhập
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,9 +48,9 @@ const Login = () => {
             } else {
                 setError('Sai tài khoản hoặc mật khẩu.');
             }
-        } catch (err: any) {
+        } catch (err) {
             console.error('Login request failed:', err);
-            setError(err.message || 'Không thể đăng nhập. Vui lòng thử lại.');
+            setError('Không thể đăng nhập. Vui lòng thử lại.');
         } finally {
             setLoading(false);
         }

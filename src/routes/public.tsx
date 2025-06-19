@@ -10,6 +10,7 @@ import Join from '@project/pages/Join';
 import LobbyAsync from '@project/pages/LobbyAsync';
 import LobbySync from '@project/pages/LobbySync';
 import GameAsync from '@project/pages/GameAsync';
+import Profile from '@project/pages/Profile';
 
 export interface RouteConfig {
     path: string;
@@ -28,6 +29,7 @@ const PublicRoutes: RouteConfig[] = [
     { path: '/library', component: Library, layout: MainLayout, requiresAuth: true },
     { path: '/creator', component: Creator, layout: null, requiresAuth: true },
     { path: '/creator/:id', component: Creator, layout: null, requiresAuth: true },
+    { path: '/profile', component: Profile, layout: null, requiresAuth: true },
     // Game routes
     { path: '/join', component: Join, layout: GameLayout, requiresAuth: false, requiresSocket: false },
     { path: '/lobby/solo/:id', component: LobbyAsync, layout: GameLayout, requiresAuth: false, requiresSocket: false },
