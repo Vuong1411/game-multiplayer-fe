@@ -12,6 +12,8 @@ export const API_CONFIG = {
             getById: (id: number) => `/api/users/${id}`,
             getByUsername: (username: string) => `/api/users/by-username?username=${username}`,
             getByEmail: (email: string) => `/api/users/by-email?email=${email}`,
+            updateProfile: '/api/users/update-profile',
+            changePassword: '/api/users/change-password',
         },
         questionSet: {
             getAll: '/api/question-sets',
