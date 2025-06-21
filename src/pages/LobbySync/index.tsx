@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import {
     Button,
@@ -12,10 +12,6 @@ import {
     Chip,
     Snackbar,
     Alert,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions
 } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
@@ -26,6 +22,8 @@ import styles from './styles.module.scss';
 import { useGameRoom } from '@project/hooks/useGameRoom';
 import { QuestionSet, User } from '@project/types';
 import { roomService, questionSetService, userService } from '@project/services';
+import CommonDialog from '@project/components/common/Dialog';
+import { useDialog } from '@project/hooks/useDialog';
 
 const LobbySync = () => {
     const { id } = useParams<{ id: string }>();
@@ -39,19 +37,36 @@ const LobbySync = () => {
         joinRoom,
         leaveRoom,
         startGame
-    } = useGameRoom(pin || '');
+    } = useGameRoom(pin, isHost);
 
     const [questionSet, setQuestionSet] = useState<QuestionSet | null>(null);
     const [host, setHost] = useState<User | null>(null);
+    const [hasJoined, setHasJoined] = useState(false);
     const [nickName, setNickName] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
-    const [showDialog, setShowDialog] = useState(false);
+    const { dialogProps, showDialog } = useDialog();
+    const hasShownDialog = useRef(false);
     const [countdown, setCountdown] = useState<number | null>(null);
 
     useEffect(() => {
-        if (!pin) {
-            console.warn('No PIN found in location state');
-            setShowDialog(true);
+        if (!pin && !hasShownDialog.current) {
+            console.warn('User is not the host, redirecting to join page');
+            hasShownDialog.current = true;
+            // Show dialog using hook
+            showDialog({
+                type: 'error',
+                title: 'Truy cập bị từ chối',
+                message: 'Bạn cần mã PIN để tham gia phòng LIVE này.',
+                description: 'Đây là phòng chơi thời gian thực, cần mã PIN để tham gia.',
+                icon: <DoNotDisturbAltIcon />,
+                tip: 'Nhận mã PIN từ người tổ chức phòng.',
+                primaryButton: {
+                    label: 'Nhập PIN',
+                    onClick: () => navigate('/join', { replace: true }),
+                    color: 'error'
+                },
+                closable: false
+            });
             return;
         }
 
@@ -73,18 +88,39 @@ const LobbySync = () => {
         };
 
         fetchData();
-    }, [pin]);
+    }, [pin, id, showDialog]);
 
     useEffect(() => {
         if (gameStarted) {
             setCountdown(5);
-        }
-    }, [gameStarted]);
 
-    const handleNoAccess = () => {
-        setShowDialog(false);
-        navigate('/join', { replace: true });
-    };
+            // Tạo interval để cập nhật mỗi giây
+            const intervalId = setInterval(() => {
+                setCountdown(prev => {
+                    if (prev === null || prev <= 0) return 0;
+                    return prev - 1;
+                });
+            }, 1000);
+
+            // Tạo timeout riêng cho việc navigate
+            const navigateTimeout = setTimeout(() => {
+                navigate(`/game/live/${id}`, {
+                    state: {
+                        nickName: nickName?.trim() || '',
+                        pin,
+                        isHost
+                    },
+                    replace: true
+                });
+            }, 5000);
+
+            // Cleanup khi unmount
+            return () => {
+                clearInterval(intervalId);
+                clearTimeout(navigateTimeout);
+            };
+        }
+    }, [gameStarted, id, nickName, pin, isHost, navigate]);
 
     const handleJoinGame = () => {
         const trimmedName = nickName.trim();
@@ -100,8 +136,7 @@ const LobbySync = () => {
         }
 
         joinRoom({ nickname: trimmedName });
-
-        setNickName('');
+        setHasJoined(true);
         setError(null);
     };
 
@@ -160,38 +195,6 @@ const LobbySync = () => {
                     </IconButton>
                 </Box>
             </Box>
-
-            {/* Game Starting Overlay */}
-            {countdown !== null && (
-                <Box sx={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: 'rgba(0, 0, 0, 0.8)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    zIndex: 9999,
-                    color: 'white',
-                    textAlign: 'center'
-                }}>
-                    <Box>
-                        <Typography variant="h2" sx={{ fontWeight: 'bold', mb: 2 }}>
-                            Game bắt đầu trong:
-                        </Typography>
-                        <Typography variant="h1" sx={{
-                            fontSize: '6rem',
-                            fontWeight: 'bold',
-                            color: countdown <= 3 ? '#ff4444' : '#ffffff',
-                            textShadow: '0 0 20px rgba(255,255,255,0.5)'
-                        }}>
-                            {countdown}
-                        </Typography>
-                    </Box>
-                </Box>
-            )}
 
             {/* Main Content Area */}
             <Box className={styles.mainContentArea}>
@@ -264,81 +267,23 @@ const LobbySync = () => {
                             size="small"
                             className={styles.nickNameInput}
                             error={!!error}
-                            helperText={error && "Vui lòng sửa lỗi trên"}
+                            helperText={error ? "Vui lòng sửa lỗi trên" : hasJoined ? "Đã tham gia với biệt danh này" : ""}
+                            disabled={hasJoined}
                         />
 
                         <Button
                             variant="contained"
                             onClick={handleJoinGame}
-                            disabled={!nickName.trim()}
+                            disabled={!nickName.trim() || hasJoined}
                         >
-                            Vào phòng!
+                            {hasJoined ? 'Đã vào phòng' : 'Vào phòng!'}
                         </Button>
                     </Box>
                 </Box>
             )}
 
-            {/* Dialog cảnh báo */}
-            <Dialog
-                open={showDialog}
-                onClose={() => { }}
-                maxWidth="sm"
-                fullWidth
-                PaperProps={{
-                    sx: {
-                        borderRadius: 3,
-                        textAlign: 'center'
-                    }
-                }}
-            >
-                <DialogTitle sx={{
-                    background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
-                    color: 'white',
-                    py: 3,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 1,
-                }}>
-                    <DoNotDisturbAltIcon />
-                    <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                        Truy cập bị từ chối
-                    </Typography>
-                </DialogTitle>
-
-                <DialogContent sx={{ py: 3 }}>
-                    <Typography variant="h6" sx={{ mt: 2, mb: 2, color: '#333' }}>
-                        Bạn cần mã PIN để tham gia phòng LIVE này.
-                    </Typography>
-                    <Typography variant="body1" color="textSecondary" sx={{ mb: 2 }}>
-                        Đây là phòng chơi thời gian thực, cần mã PIN để tham gia.
-                    </Typography>
-                    <Box sx={{
-                        background: '#fff3cd',
-                        border: '1px solid #ffeaa7',
-                        borderRadius: 2,
-                        p: 2,
-                        mt: 2
-                    }}>
-                        <Typography variant="body2" sx={{ fontStyle: 'italic' }}>
-                            💡 <strong>Gợi ý:</strong> Nhận mã PIN từ người tổ chức phòng.
-                        </Typography>
-                    </Box>
-                </DialogContent>
-
-                <DialogActions sx={{ p: 3, gap: 1 }}>
-                    <Button
-                        variant="contained"
-                        onClick={handleNoAccess}
-                        sx={{
-                            minWidth: 120,
-                            background: 'linear-gradient(45deg, #ff4444, #ff6666)'
-                        }}
-                    >
-                        Nhập PIN!
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            {/* Hiển thị dialog */}
+            <CommonDialog {...dialogProps} />
 
             <Snackbar
                 open={!!error}
@@ -354,6 +299,20 @@ const LobbySync = () => {
                     {error}
                 </Alert>
             </Snackbar>
+
+            {/* Overlay đếm ngược */}
+            {countdown !== null && countdown > 0 && (
+                <Box className={styles.countdownOverlay}>
+                    <Box className={styles.countdownContainer}>
+                        <Typography variant="h1" className={styles.countdownNumber}>
+                            {countdown}
+                        </Typography>
+                        <Typography variant="h4" className={styles.countdownText}>
+                            Game bắt đầu trong...
+                        </Typography>
+                    </Box>
+                </Box>
+            )}
         </Box>
     );
 };

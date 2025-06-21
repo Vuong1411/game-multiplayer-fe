@@ -10,6 +10,7 @@ import Join from '@project/pages/Join';
 import LobbyAsync from '@project/pages/LobbyAsync';
 import LobbySync from '@project/pages/LobbySync';
 import GameAsync from '@project/pages/GameAsync';
+import GameSync from '@project/pages/GameSync';
 
 export interface RouteConfig {
     path: string;
@@ -33,6 +34,7 @@ const PublicRoutes: RouteConfig[] = [
     { path: '/lobby/solo/:id', component: LobbyAsync, layout: GameLayout, requiresAuth: false, requiresSocket: false },
     { path: '/lobby/live/:id', component: LobbySync, layout: GameLayout, requiresAuth: false, requiresSocket: true },
     { path: '/game/solo/:id', component: GameAsync, layout: GameLayout, requiresAuth: false, requiresSocket: false },
+    { path: '/game/live/:id', component: GameSync, layout: GameLayout, requiresAuth: false, requiresSocket: true },
 ]
 
 export default PublicRoutes;

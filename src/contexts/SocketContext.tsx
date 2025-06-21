@@ -15,10 +15,8 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     const [isConnected, setIsConnected] = useState(false);
 
     useEffect(() => {
-        if (!socketConfig.enabled) {
-            console.log('Socket disabled via config');
-            return;
-        }
+        if (!socketConfig.enabled) return;
+
         console.log('Initializing socket connection...');
 
         // Kết nối WebSocket server

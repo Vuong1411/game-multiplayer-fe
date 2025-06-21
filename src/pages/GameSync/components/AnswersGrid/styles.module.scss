@@ -1,0 +1,382 @@
+.answersContainer {
+  max-width: 1800px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+// Answer card styles
+.answerCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 80px;
+  width: 100%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+
+  &:hover:not(.disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  &.selected {
+    transform: scale(1.05);
+    border: 3px solid white;
+    z-index: 10;
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+  }
+
+  &.correct {
+    background: linear-gradient(135deg, #27ae60, #229954) !important;
+    color: white !important;
+    border: 2px solid #2ecc71 !important;
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.4) !important;
+    animation: correctPulse 0.8s ease;
+
+    .answerText {
+      color: white !important;
+    }
+
+    .symbolText {
+      color: white !important;
+    }
+  }
+
+  &.incorrect {
+    background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+    color: white !important;
+    border: 2px solid #e74c3c !important;
+    box-shadow: 0 0 20px rgba(231, 76, 60, 0.4) !important;
+    animation: incorrectShake 0.6s ease;
+    opacity: 0.9;
+
+    .answerText {
+      color: white !important;
+    }
+
+    .symbolText {
+      color: white !important;
+    }
+  }
+}
+
+// Answer Colors
+.answerRed {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+
+  &.selected {
+    background: linear-gradient(135deg, #c0392b, #a93226);
+    box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+  }
+}
+
+.answerBlue {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+
+  &.selected {
+    background: linear-gradient(135deg, #2980b9, #1f618d);
+    box-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
+  }
+}
+
+.answerYellow {
+  background: linear-gradient(135deg, #f39c12, #d68910);
+  color: white;
+
+  &.selected {
+    background: linear-gradient(135deg, #d68910, #b7950b);
+    box-shadow: 0 0 20px rgba(243, 156, 18, 0.5);
+  }
+}
+
+.answerGreen {
+  background: linear-gradient(135deg, #27ae60, #229954);
+  color: white;
+
+  &.selected {
+    background: linear-gradient(135deg, #229954, #1e8449);
+    box-shadow: 0 0 20px rgba(39, 174, 96, 0.5);
+  }
+}
+
+.answerPurple {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  color: white;
+
+  &.selected {
+    background: linear-gradient(135deg, #8e44ad, #7d3c98);
+    box-shadow: 0 0 20px rgba(155, 89, 182, 0.5);
+  }
+}
+
+.answerOrange {
+  background: linear-gradient(135deg, #e67e22, #d35400);
+  color: white;
+
+  &.selected {
+    background: linear-gradient(135deg, #d35400, #ba4a00);
+    box-shadow: 0 0 20px rgba(230, 126, 34, 0.5);
+  }
+}
+
+// Choice answer elements
+.symbolContainer {
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.symbolText {
+  margin: 0 !important;
+  color: white !important;
+
+}
+
+.answerText {
+  flex: 1;
+  font-weight: 600 !important;
+  font-size: 1.1rem !important;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.textAnswerCard {
+  background: linear-gradient(135deg, #7c7c7c, #bbbbbb);
+  color: white;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+:global(.MuiInputBase-input) {
+  &.textAnswerInput {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 8px !important;
+    border: none !important;
+    color: #2c3e50 !important;
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    padding: 1rem !important;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.95) !important;
+    }
+
+    &::placeholder {
+      color: rgba(44, 62, 80, 0.6) !important;
+      opacity: 1 !important;
+    }
+  }
+}
+
+:global(.MuiButton-root) {
+  &.textSubmitButton {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 8px !important;
+    padding: 0.75rem 1.5rem !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+    backdrop-filter: blur(10px);
+    min-width: 120px;
+
+    &:hover:not(.Mui-disabled) {
+      background: rgba(255, 255, 255, 0.3) !important;
+      border-color: rgba(255, 255, 255, 0.5) !important;
+      transform: translateY(-2px);
+    }
+
+    &.Mui-disabled {
+      background: rgba(255, 255, 255, 0.1) !important;
+      color: rgba(255, 255, 255, 0.5) !important;
+      border-color: rgba(255, 255, 255, 0.2) !important;
+      transform: none;
+    }
+  }
+}
+
+.resultContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  margin-top: 20px;
+}
+
+.resultText {
+  color: white !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+}
+
+.correctAnswerText {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-weight: 500 !important;
+  font-style: italic;
+  font-size: 0.9rem !important;
+}
+
+// Animations
+@keyframes correctPulse {
+  0% {
+    background: linear-gradient(135deg, #27ae60, #229954);
+    transform: scale(1);
+  }
+
+  50% {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    transform: scale(1.05);
+  }
+
+  100% {
+    background: linear-gradient(135deg, #27ae60, #229954);
+    transform: scale(1);
+  }
+}
+
+@keyframes incorrectShake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-5px);
+  }
+
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .answersContainer {
+    padding: 0.5rem;
+  }
+
+  .answerCard {
+    padding: 1.25rem;
+    min-height: 70px;
+    gap: 0.75rem;
+    flex-direction: column;
+  }
+
+  .symbolContainer {
+    width: 45px;
+    height: 45px;
+  }
+
+  .symbolText {
+    font-size: 1.3rem !important;
+  }
+
+  .answerText {
+    font-size: 1rem !important;
+    text-align: center;
+  }
+
+  .answerTextField {
+    margin-right: 0;
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+
+  .submitButton {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .answerCard {
+    padding: 1rem;
+    min-height: 60px;
+    gap: 0.5rem;
+  }
+
+  .symbolContainer {
+    width: 40px;
+    height: 40px;
+  }
+
+  .symbolText {
+    font-size: 1.1rem !important;
+  }
+
+  .answerText {
+    font-size: 0.9rem !important;
+  }
+
+  .answerInput {
+    font-size: 1rem !important;
+    padding: 0.75rem !important;
+  }
+
+  .submitButton {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.9rem !important;
+  }
+}
+
+// Text-specific layouts for different answer card types
+.answerCard:has(.answerTextField) {
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 120px;
+
+  @media (min-width: 769px) {
+    flex-direction: row;
+    align-items: center;
+    min-height: 80px;
+  }
+}
+
+// Special styling for text input cards
+.answerCard:has(.answerTextField) {
+  .answerTextField {
+    .MuiOutlinedInput-input {
+      color: white !important;
+    }
+  }
+}
+
+// Dark text on light backgrounds for better readability in text fields
+.answerRed .answerTextField .MuiOutlinedInput-input,
+.answerBlue .answerTextField .MuiOutlinedInput-input,
+.answerYellow .answerTextField .MuiOutlinedInput-input,
+.answerGreen .answerTextField .MuiOutlinedInput-input,
+.answerPurple .answerTextField .MuiOutlinedInput-input,
+.answerOrange .answerTextField .MuiOutlinedInput-input {
+  color: #2c3e50 !important;
+}
+
+// Placeholder colors for different themes
+.answerRed .answerTextField .MuiOutlinedInput-input::placeholder,
+.answerBlue .answerTextField .MuiOutlinedInput-input::placeholder,
+.answerYellow .answerTextField .MuiOutlinedInput-input::placeholder,
+.answerGreen .answerTextField .MuiOutlinedInput-input::placeholder,
+.answerPurple .answerTextField .MuiOutlinedInput-input::placeholder,
+.answerOrange .answerTextField .MuiOutlinedInput-input::placeholder {
+  color: rgba(44, 62, 80, 0.6) !important;
+}

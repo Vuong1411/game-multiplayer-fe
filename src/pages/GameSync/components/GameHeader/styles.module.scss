@@ -1,0 +1,56 @@
+.gameHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
+
+.questionProgress {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.timerSection {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 200px;
+}
+
+.scoreSection {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .gameHeader {
+    padding: 15px 20px;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+  }
+
+  .questionProgress,
+  .timerSection,
+  .scoreSection {
+    flex: none;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .timerSection {
+    order: -1;
+  }
+}
