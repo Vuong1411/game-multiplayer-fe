@@ -6,6 +6,9 @@ export const API_CONFIG = {
             login: '/api/auth/login',
             register: '/api/auth/register',
             me: '/api/auth/me',
+            googleLogin: '/api/auth/google-login',
+            forgotPassword: '/api/auth/forgot-password', 
+            resetPassword: '/api/auth/reset-password',   
         },
         user: {
             getAll: '/api/users',
