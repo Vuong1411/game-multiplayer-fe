@@ -111,6 +111,7 @@ const Report = () => {
             field: 'total_players',
             headerName: 'Người tham gia',
             width: 140,
+            align: 'center',
             renderCell: (params) => (
                 <Box className={styles.participantsCell}>
                     <Typography variant="body2">{params.value}</Typography>
@@ -208,7 +209,7 @@ const Report = () => {
             </Box>
 
             {/* DataGrid Table */}
-            <div style={{ height: 600, width: '100%', background: '#fff', borderRadius: 10 }}>
+            <div style={{ height: 520, width: '100%', background: '#fff', borderRadius: 10 }}>
                 <DataGrid
                     rows={filteredReports}
                     columns={columns}

@@ -1,6 +1,7 @@
-import { publicApi } from './api';
+import { publicApi, privateApi } from './api';
 import { User } from '@project/types/user';
 import { API_CONFIG } from '@project/config/api.config';
+import axios from 'axios';
 
 interface UsersResponse {
     success: boolean;
@@ -55,5 +56,92 @@ export const userService = {
         }
     },
 
-    
+    /**
+     * Tạo mới người dùng
+     * @param user Dữ liệu người dùng mới
+     * @returns Thông tin người dùng đã tạo
+     */
+    create: async (user: Partial<User>): Promise<User> => {
+        try {
+            const response = await privateApi.post<UserResponse>(API_CONFIG.endpoints.user.create, user);
+
+            if (response.data?.success) {
+                return response.data.user;
+            }
+
+            throw new Error(response.data.message);
+        } catch (error) {
+            console.error('Failed to create user!', error);
+            throw new Error('Failed to create user!');
+        }
+    },
+
+    /**
+     * Cập nhật thông tin người dùng (admin)
+     * @param user Thông tin người dùng cần cập nhật
+     * @returns Thông tin người dùng đã cập nhật
+     */
+    update: async (id: number, user: Partial<User>) => {
+        try {
+            const response = await privateApi.put<UserResponse>(API_CONFIG.endpoints.user.update(id), user);
+
+            if (response.data?.success) {
+                return response.data.message;
+            }
+
+            throw new Error(response.data.message);
+        } catch (error) {
+            if (axios.isAxiosError(error) && error.response?.data?.message) {
+                throw new Error(error.response.data.message);
+            }
+            console.error('Failed to update user!', error);
+            throw new Error('Failed to update user!');
+        }
+    },
+
+    /**
+     * Cập nhật thông tin người dùng hiện tại
+     * @param user Thông tin người dùng cần cập nhật
+     * @returns Thông tin người dùng hiện tại
+     */
+    profile: async (user: User) => {
+        try {
+            const response = await privateApi.put<UserResponse>(API_CONFIG.endpoints.user.profile, user);
+            if (response.data?.success) {
+                return response.data.message;
+            }
+
+            throw new Error(response.data.message);
+        } catch (error) {
+            if (axios.isAxiosError(error) && error.response?.data?.message) {
+                throw new Error(error.response.data.message);
+            }
+            console.error('Failed to fetch user profile!', error);
+            throw new Error('Failed to fetch user profile!');
+        }
+    },
+
+    /**
+     * Xoá người dùng theo ID
+     * @param id ID của người dùng cần xoá
+     * @returns Thông tin người dùng đã xoá
+     */
+    delete: async (id: number) => {
+        try {
+            const response = await privateApi.delete<UserResponse>(API_CONFIG.endpoints.user.delete(id));
+
+            if (response.data?.success) {
+                return response.data.message;
+            }
+
+            throw new Error(response.data.message);
+        } catch (error) {
+            if (axios.isAxiosError(error) && error.response?.data?.message) {
+                throw new Error(error.response.data.message);
+            }
+            console.error(`Failed to delete user with id: ${id}!`, error);
+            throw new Error(`Failed to delete user with id: ${id}!`);
+        }
+    },
+
 };

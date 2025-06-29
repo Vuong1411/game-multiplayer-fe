@@ -15,6 +15,10 @@ export const API_CONFIG = {
             getById: (id: number) => `/api/users/${id}`,
             getByUsername: (username: string) => `/api/users/by-username?username=${username}`,
             getByEmail: (email: string) => `/api/users/by-email?email=${email}`,
+            create: '/api/users',
+            profile: `/api/users/profile`,
+            update: (id: number) => `/api/users/${id}`,
+            delete: (id: number) => `/api/users/${id}`,
         },
         questionSet: {
             getAll: '/api/question-sets',

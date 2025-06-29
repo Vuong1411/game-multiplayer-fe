@@ -16,12 +16,14 @@ import Report from '@project/pages/Report';
 import ReportDetail from '@project/pages/ReportDetail';
 import ForgotpasswordPage from '@project/pages/Forgotpassword/ForgotpasswordPage';
 import ResetpasswordPage from '@project/pages/Forgotpassword/ResetpasswordPage';
+import UserManagement from '@project/pages/Admin/UserManagement';
 
 export interface RouteConfig {
     path: string;
     component: ComponentType;
     layout?: ComponentType<{ children: React.ReactNode }> | null;
     requiresAuth?: boolean;
+    requiresAdmin?: boolean;
     requiresSocket?: boolean;
 }
 
@@ -29,6 +31,8 @@ const PublicRoutes: RouteConfig[] = [
     // Authentication routes
     { path: '/login', component: Login, layout: null, requiresAuth: false },
     { path: '/register', component: Register, layout: null, requiresAuth: false },
+    { path: '/forgot-password', component: ForgotpasswordPage, layout: null, requiresAuth: false },
+    { path: '/reset-password', component: ResetpasswordPage, layout: null, requiresAuth: false },
     // Main routes
     { path: '/', component: Home, layout: MainLayout, requiresAuth: false },
     { path: '/details/:id', component: Detail, layout: MainLayout, requiresAuth: false },
@@ -43,10 +47,8 @@ const PublicRoutes: RouteConfig[] = [
     { path: '/lobby/live/:id', component: LobbySync, layout: GameLayout, requiresAuth: false, requiresSocket: true },
     { path: '/game/solo/:id', component: GameAsync, layout: GameLayout, requiresAuth: false, requiresSocket: false },
     { path: '/game/live/:id', component: GameSync, layout: GameLayout, requiresAuth: false, requiresSocket: true },
-
-    // Quên mật khẩu
-    { path: '/forgot-password', component: ForgotpasswordPage, layout: null, requiresAuth: false },
-    { path: '/reset-password', component: ResetpasswordPage, layout: null, requiresAuth: false },
+    // Admin routes
+    {path: '/admin/users', component: UserManagement, layout: MainLayout, requiresAuth: true, requiresAdmin: true, requiresSocket: false },
 ]
 
 export default PublicRoutes;
