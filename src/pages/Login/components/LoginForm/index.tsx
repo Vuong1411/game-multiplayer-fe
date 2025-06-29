@@ -61,6 +61,10 @@ const LoginForm = () => {
             <button type="submit" disabled={loading}>
                 {loading ? 'Đang xử lý...' : 'Đăng nhập'}
             </button>
+            <p style={{ marginTop: '1rem', textAlign: 'center' }}>
+                Bạn chưa có tài khoản?{' '}
+                <a href="/register">Đăng ký ngay</a>
+            </p>
         </form>
     );
 };
