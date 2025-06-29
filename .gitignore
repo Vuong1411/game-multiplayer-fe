@@ -80,3 +80,4 @@ storybook-static/
 # Optional: Ignore local images/uploads
 uploads/
 public/uploads/
+node_modules
