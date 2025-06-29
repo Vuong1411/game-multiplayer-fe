@@ -2,6 +2,7 @@ import { publicApi, privateApi } from './api';
 import { Question } from '@project/types/question';
 import { API_CONFIG } from '@project/config/api.config';
 import { getImageUrl } from '@project/utils/Image';
+import { uploadToCloudinary } from '@project/utils/Cloudinary';
 
 interface QuestionsResponse {
     success: boolean;
@@ -65,19 +66,16 @@ export const questionService = {
      */
     create: async (data: Partial<Question>, image?: File): Promise<number | null> => {
         try {
-            const formData = new FormData();
-
-            Object.keys(data).forEach(key => {
-                const value = data[key as keyof Question];
-                if (value !== undefined && value !== null) {
-                    formData.append(key, String(value));
+            if(image) {
+                const imageUrl = await uploadToCloudinary(image, 'questions');
+                if (imageUrl) {
+                    data.image_url = imageUrl;
+                } else {
+                    throw new Error('Failed to upload image!');
                 }
-            });
-            if (image) {
-                formData.append('image', image);
             }
             
-            const response = await privateApi.post<QuestionResponse>(API_CONFIG.endpoints.question.create,formData);
+            const response = await privateApi.post<QuestionResponse>(API_CONFIG.endpoints.question.create, data);
             if (response.data?.success) {
                 return response.data.question_id;
             }
@@ -96,20 +94,16 @@ export const questionService = {
      */
     update: async (id: number, data: Partial<Question>, image?: File): Promise<string | null> => {
         try {
-            const formData = new FormData();
-
-            Object.keys(data).forEach(key => {
-                const value = data[key as keyof Question];
-                if (value !== undefined && value !== null) {
-                    formData.append(key, String(value));
-                }
-            });
-
             if (image) {
-                formData.append('image', image);
+                const imageUrl = await uploadToCloudinary(image, 'questions');
+                if (imageUrl) {
+                    data.image_url = imageUrl;
+                } else {
+                    throw new Error('Failed to upload image!');
+                }
             }
 
-            const response = await privateApi.put<QuestionResponse>(API_CONFIG.endpoints.question.update(id), formData);
+            const response = await privateApi.put<QuestionResponse>(API_CONFIG.endpoints.question.update(id), data);
             if (response.data?.success) {
                 return response.data.message;
             }

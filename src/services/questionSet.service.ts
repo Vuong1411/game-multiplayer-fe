@@ -2,6 +2,7 @@ import { publicApi, privateApi } from './api';
 import { QuestionSet } from '@project/types/question';
 import { API_CONFIG } from '@project/config/api.config';
 import { getImageUrl } from '@project/utils/Image';
+import { uploadToCloudinary } from '@project/utils/Cloudinary';
 
 interface QuestionSetsResponse {
     success: boolean;
@@ -110,20 +111,17 @@ export const questionSetService = {
      */
     create: async (data: Partial<QuestionSet>, image?: File) => {
         try {
-            const formData = new FormData();
-
-            Object.keys(data).forEach(key => {
-                const value = data[key as keyof QuestionSet];
-                if (value !== undefined && value !== null) {
-                    formData.append(key, String(value));
-                }
-            });
-
+            // Nếu có ảnh, upload lên Cloudinary trước
             if (image) {
-                formData.append('image', image);
+                const imageUrl = await uploadToCloudinary(image, 'question-sets');
+                if (imageUrl) {
+                    data.image_url = imageUrl;
+                } else {
+                    throw new Error('Failed to upload image!');
+                }
             }
 
-            const response = await privateApi.post<QuestionSetResponse>(API_CONFIG.endpoints.questionSet.create, formData);
+            const response = await privateApi.post<QuestionSetResponse>(API_CONFIG.endpoints.questionSet.create, data);
             if (response.data?.success) {
                 return response.data.question_set_id;
             }
@@ -144,20 +142,17 @@ export const questionSetService = {
      */
     update: async (id: number, data: Partial<QuestionSet>, image?: File) => {
         try {
-            const formData = new FormData();
-
-            Object.keys(data).forEach(key => {
-                const value = data[key as keyof QuestionSet];
-                if (value !== undefined && value !== null) {
-                    formData.append(key, String(value));
-                }
-            });
-
+            // Nếu có ảnh, upload lên Cloudinary trước
             if (image) {
-                formData.append('image', image);
+                const imageUrl = await uploadToCloudinary(image, 'question-sets');
+                if (imageUrl) {
+                    data.image_url = imageUrl;
+                } else {
+                    throw new Error('Failed to upload image!');
+                }
             }
 
-            const response = await privateApi.put<QuestionSetResponse>(API_CONFIG.endpoints.questionSet.update(id), formData);
+            const response = await privateApi.put<QuestionSetResponse>(API_CONFIG.endpoints.questionSet.update(id), data);
             if (response.data?.success) {
                 return response.data.message;
             }

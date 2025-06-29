@@ -9,7 +9,6 @@ import Sidebar from './components/Sidebar';
 import QuestionView from './components/QuestionView';
 import ConfigurationBar from './components/ConfigurationBar';
 import { QuestionSet, Question, Answer } from '@project/types/question';
-// import { mockQuestions, mockAnswers } from '../../mocks/Question';
 import { questionSetService, questionService, answerService } from '@project/services';
 
 
@@ -377,10 +376,10 @@ const Creator = () => {
                 severity: 'success'
             });
 
-            // Chờ 2 giây để người dùng thấy thông báo trước khi chuyển hướng
+            // Chờ 1,5 giây để người dùng thấy thông báo trước khi chuyển hướng
             setTimeout(() => {
                 navigate(`/details/${questionSet.id}`);
-            }, 2000);
+            }, 1500);
 
         } catch (err) {
             console.error('Failed to save quiz:', err);

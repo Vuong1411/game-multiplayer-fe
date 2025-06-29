@@ -19,6 +19,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PersonIcon from '@mui/icons-material/Person';
 import GridViewIcon from '@mui/icons-material/GridView';
+import DeleteIcon from '@mui/icons-material/Delete';
 // @project
 import styles from './styles.module.scss';
 import ActionBar from './components/ActionBar';
@@ -39,9 +40,17 @@ const Detail = () => {
     }[]>([]);
     const [playCount, setPlayCount] = useState(0);
     const [playerCount, setPlayerCount] = useState(0);
-    const [showAlert, setShowAlert] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 1000);
     const [showMobileActionBar, setShowMobileActionBar] = useState(false);
+    const [notification, setNotification] = useState<{
+        open: boolean;
+        message: string;
+        severity: 'success' | 'error' | 'warning' | 'info';
+    }>({
+        open: false,
+        message: '',
+        severity: 'success'
+    });
 
     const toggleMobileActionBar = () => {
         setShowMobileActionBar(prev => !prev);
@@ -82,29 +91,78 @@ const Detail = () => {
         navigate(path);
     };
 
-    const handleEditClick = () => {
-        // Kiểm tra quyền edit
+    const handleCloseNotification = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') return;
+        setNotification(prev => ({ ...prev, open: false }));
+    };
+
+    // Xử lý sự kiện khi người dùng chỉnh sửa
+    const handleEdit = () => {
         if (!currentUser) {
-            setShowAlert(true);
+            setNotification({
+                open: true,
+                message: "Bạn cần đăng nhập để thực hiện thao tác này!",
+                severity: 'warning'
+            });
             return;
         }
 
-        // Kiểm tra nếu user hiện tại là tác giả
+        // Kiểm tra quyền tác giả
         if (questionSet?.created_by && Number(currentUser.id) !== questionSet.created_by) {
-            setShowAlert(true);
+            setNotification({
+                open: true,
+                message: "Chỉ tác giả mới có thể thực hiện này!",
+                severity: 'warning'
+            });
             return;
         }
-
         handleNavigation(`/creator/${id}`);
     };
 
-    const handleCloseAlert = () => {
-        setShowAlert(false);
+    // Xử lý sự kiện khi người dùng xóa
+    const handleDelete = async () => {
+        if (!currentUser) {
+            setNotification({
+                open: true,
+                message: "Bạn cần đăng nhập để thực hiện thao tác này!",
+                severity: 'warning'
+            });
+            return;
+        }
+        if (questionSet?.created_by && Number(currentUser.id) !== questionSet.created_by) {
+            setNotification({
+                open: true,
+                message: "Chỉ tác giả mới có thể thực hiện này!",
+                severity: 'warning'
+            });
+            return;
+        }
+        if (!window.confirm('Bạn có chắc chắn muốn xóa bộ câu hỏi này?')) return;
+        try {
+            await questionSetService.delete(Number(id));
+            setNotification({
+                open: true,
+                message: "Xóa bộ câu hỏi thành công! Đang chuyển hướng...",
+                severity: 'success'
+            });
+            setTimeout(() => navigate('/'), 1500);
+        } catch (error) {
+            setNotification({
+                open: true,
+                message: "Xóa bộ câu hỏi thất bại!",
+                severity: 'error'
+            });
+        }
     };
 
+    // Xử lý sự kiện tạo phòng
     const handleCreateRoom = async (type: 'sync' | 'async' = 'async') => {
         if (!id || !currentUser) {
-            setShowAlert(true);
+            setNotification({
+                open: true,
+                message: "Bạn cần đăng nhập để thực hiện thao tác này!",
+                severity: 'warning'
+            });
             return;
         }
 
@@ -137,7 +195,11 @@ const Detail = () => {
             }
         } catch (error) {
             console.error('Failed to create room:', error);
-            setShowAlert(true);
+            setNotification({
+                open: true,
+                message: "Tạo phòng thất bại!",
+                severity: 'error'
+            });
         }
     };
     const handleCreateLiveRoom = () => handleCreateRoom('sync');
@@ -147,22 +209,21 @@ const Detail = () => {
         <>
             {/* Thông báo lỗi */}
             <Snackbar
-                open={showAlert}
-                autoHideDuration={3000}
-                onClose={handleCloseAlert}
+                open={notification.open}
+                autoHideDuration={4000}
+                onClose={handleCloseNotification}
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             >
                 <Alert
-                    onClose={handleCloseAlert}
-                    severity="warning"
+                    onClose={handleCloseNotification}
+                    severity={notification.severity}
+                    variant="filled"
                     sx={{ width: '100%' }}
                 >
-                    {!currentUser
-                        ? "Bạn cần đăng nhập để thực hiện thao tác này!"
-                        : "Chỉ tác giả mới có thể thực hiện này!"
-                    }
+                    {notification.message}
                 </Alert>
             </Snackbar>
+
             {/* Navbar: toàn màn hình ở trên top */}
             <AppBar className={styles.navbar}>
                 <Container maxWidth={false}>
@@ -179,9 +240,14 @@ const Detail = () => {
                         </Box>
 
                         <Box className={styles.navbarRight}>
-                            <Tooltip title="Chỉnh sửa" onClick={handleEditClick}>
+                            <Tooltip title="Chỉnh sửa" onClick={handleEdit}>
                                 <IconButton className={styles.navButton}>
                                     <EditIcon />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Xóa bộ câu hỏi" onClick={handleDelete}>
+                                <IconButton className={styles.navButton} color="error">
+                                    <DeleteIcon />
                                 </IconButton>
                             </Tooltip>
 
