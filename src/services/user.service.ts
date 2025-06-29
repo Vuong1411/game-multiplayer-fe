@@ -54,4 +54,6 @@ export const userService = {
             throw new Error(`Failed to fetch user with id: ${id}!`);
         }
     },
+
+    
 };
