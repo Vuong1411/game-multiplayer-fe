@@ -25,9 +25,6 @@ const GameAsync = () => {
     }>(); // Câu hỏi và đáp án hiện tại
 
     const [currentIndex, setCurrentIndex] = useState(0); // Chỉ số câu hỏi hiện tại
-    const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null); // Đáp án đã chọn
-    const [textAnswer, setTextAnswer] = useState<string>(''); // Đáp án dạng text
-
     const [timeLeft, setTimeLeft] = useState(30); // Thời gian còn lại cho câu hỏi
     const [showResults, setShowResults] = useState(false); // Hiển thị kết quả câu hỏi
     const [showLeaderboard, setShowLeaderboard] = useState(false); // Hiển thị bảng xếp hạng
@@ -35,11 +32,12 @@ const GameAsync = () => {
 
     // Player states
     const [player, setPlayer] = useState<Player>(initialPlayer || null);
+    const [players, setPlayers] = useState<Player[]>(mockPlayers(Number(id)));
+    const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null); // Đáp án đã chọn
+    const [textAnswer, setTextAnswer] = useState<string>(''); // Đáp án dạng text
     const [playerAnswers, setPlayerAnswers] = useState<PlayerAnswer[]>([]); // Lưu trữ đáp án của người chơi
     const [correctAnswers, setCorrectAnswers] = useState(0); // Số câu trả lời đúng
     const [gameStartTime, setGameStartTime] = useState<Date | null>(null); // Thời gian bắt đầu game
-    const [players, setPlayers] = useState<Player[]>(mockPlayers(Number(id)));
-
     const [submit, setSubmit] = useState(false); // Trạng thái submit câu trả lời
 
     // Load question set và questions

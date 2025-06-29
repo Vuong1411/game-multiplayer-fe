@@ -12,12 +12,12 @@ import styles from './styles.module.scss';
 interface ActionBarProps {
     onCreateLiveRoom?: () => void;
     onCreateSoloRoom?: () => void;
-
 }
 
 const ActionBar = ({ onCreateLiveRoom, onCreateSoloRoom }: ActionBarProps) => {
     return (
         <Box className={styles.actionBarContainer}>
+
             {/* Phiên kahoot */}
             <Typography variant="subtitle1" className={styles.sectionTitle}>
                 Phiên kahoot

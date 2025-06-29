@@ -14,7 +14,6 @@ import {
     Alert,
 } from '@mui/material';
 // Icons
-import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -38,7 +37,16 @@ const Detail = () => {
         question: Question;
         answers: Answer[];
     }[]>([]);
+    const [playCount, setPlayCount] = useState(0);
+    const [playerCount, setPlayerCount] = useState(0);
     const [showAlert, setShowAlert] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 1000);
+    const [showMobileActionBar, setShowMobileActionBar] = useState(false);
+
+    const toggleMobileActionBar = () => {
+        setShowMobileActionBar(prev => !prev);
+    };
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -60,6 +68,15 @@ const Detail = () => {
 
         fetchData();
     }, [id]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 1000);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleNavigation = (path: string) => {
         navigate(path);
@@ -108,7 +125,7 @@ const Detail = () => {
                             isHost: true
                         }
                     });
-                } 
+                }
                 else {
                     navigate(`/lobby/live/${room_id}`, {
                         state: {
@@ -168,17 +185,23 @@ const Detail = () => {
                                 </IconButton>
                             </Tooltip>
 
-                            <Tooltip title="Yêu thích">
+                            {/* <Tooltip title="Yêu thích">
                                 <IconButton className={styles.navButton}>
                                     <StarOutlineIcon />
                                 </IconButton>
-                            </Tooltip>
+                            </Tooltip> */}
 
-                            <Tooltip title="Tùy chọn">
-                                <IconButton className={styles.navButton}>
-                                    <MoreVertIcon />
-                                </IconButton>
-                            </Tooltip>
+                            {isMobile && (
+                                <Tooltip title="Tùy chọn">
+                                    <IconButton
+                                        className={styles.navButton}
+                                        onClick={toggleMobileActionBar}
+                                    >
+                                        <MoreVertIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            )}
+
                         </Box>
                     </Toolbar>
                 </Container>
@@ -253,7 +276,7 @@ const Detail = () => {
                     </Box>
                 </Box>
                 {/* Action Bar */}
-                <Box className={styles.actionBarContainer}>
+                <Box className={`${styles.actionBarContainer} ${showMobileActionBar ? styles.mobileShow : ''}`}>
                     <ActionBar
                         onCreateLiveRoom={handleCreateLiveRoom}
                         onCreateSoloRoom={handleCreateSoloRoom}

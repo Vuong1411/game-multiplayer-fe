@@ -1,5 +1,5 @@
 import { publicApi, privateApi } from './api';
-import { Room } from '@project/types/room';
+import { Room, RoomReport, RoomReportDetails, PlayerReport } from '@project/types';
 import { API_CONFIG } from '@project/config/api.config';
 
 interface RoomsResponse {
@@ -13,6 +13,24 @@ interface RoomResponse {
     room: Room;
     room_id: number;
     pin: string;
+    message: string;
+}
+
+interface RoomReportsResponse {
+    success: boolean;
+    reports: RoomReport[];
+    message: string;
+}
+
+interface RoomReportResponse {
+    success: boolean;
+    report: RoomReportDetails;
+    message: string;
+}
+
+interface PlayerReportResponse {
+    success: boolean;
+    reports: PlayerReport[];
     message: string;
 }
 
@@ -33,6 +51,24 @@ export const roomService = {
         } catch (error) {
             console.error('Failed to fetch rooms!', error);
             throw new Error('Failed to fetch rooms!');
+        }
+    },
+
+    /**
+     * Lấy danh sách phòng sử dụng bộ câu hỏi
+     * @param question_set_id ID của bộ câu hỏi
+     * @returns Danh sách phòng sử dụng bộ câu hỏi
+     */
+    getByQuestionSetId: async (question_set_id: number) => {
+        try {
+            const response = await publicApi.get<RoomsResponse>(`${API_CONFIG.endpoints.room.getBySetId(question_set_id)}`);
+            if (response.data?.success) {
+                return response.data.rooms;
+            }
+            return [];
+        } catch (error) {
+            console.error(`Failed to fetch rooms for question set id: ${question_set_id}!`, error);
+            throw new Error(`Failed to fetch rooms for question set id: ${question_set_id}!`);
         }
     },
 
@@ -130,5 +166,59 @@ export const roomService = {
             console.error(`Failed to delete room with id: ${id}!`, error);
             throw new Error(`Failed to delete room with id: ${id}!`);
         }
+    },
+    /**
+     * Xoá nhiều phòng/báo cáo theo danh sách ID
+     * @param ids Mảng ID của phòng/báo cáo
+     * @returns Thông báo thành công hoặc lỗi
+     */
+    deleteMany: async (ids: number[]) => {
+        try {
+            const response = await privateApi.post<RoomsResponse>(API_CONFIG.endpoints.room.deleteMany, { ids });
+            if (response.data?.success) {
+                return response.data.message;
+            }
+            throw new Error(response.data.message || 'Failed to delete multiple rooms/reports!');
+        } catch (error) {
+            console.error('Failed to delete multiple rooms/reports!', error);
+            throw new Error('Failed to delete multiple rooms/reports!');
+        }
+    },
+    reports: async (type: string) => {
+        try {
+            const response = await privateApi.get<RoomReportsResponse>(API_CONFIG.endpoints.room.reports(type));
+            if (response.data?.success) {
+                return response.data.reports;
+            }
+            throw new Error(response.data.message || 'Failed to fetch room reports!');
+        } catch (error) {
+            console.error('Failed to fetch room reports!', error);
+            throw new Error('Failed to fetch room reports!');
+        }
+    },
+    report: async (id: number) => {
+        try {
+            const response = await privateApi.get<RoomReportResponse>(API_CONFIG.endpoints.room.report(id));
+            if (response.data?.success) {
+                return response.data.report;
+            }
+            throw new Error(response.data.message || `Failed to fetch report with id: ${id}!`);
+        } catch (error) {
+            console.error(`Failed to fetch report with id: ${id}!`, error);
+            throw new Error(`Failed to fetch report with id: ${id}!`);
+        }
+    },
+    getPlayerReports: async (room_id: number) => {
+        try {
+            const response = await privateApi.get<PlayerReportResponse>(API_CONFIG.endpoints.room.getPlayerReports(room_id));
+            if (response.data?.success) {
+                return response.data.reports;
+            }
+            throw new Error(response.data.message || `Failed to fetch player reports for room id: ${room_id}!`);
+        } catch (error) {
+            console.error(`Failed to fetch player reports for room id: ${room_id}!`, error);
+            throw new Error(`Failed to fetch player reports for room id: ${room_id}!`);
+        }
     }
+
 };

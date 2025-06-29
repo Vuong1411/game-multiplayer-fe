@@ -192,4 +192,12 @@
   @media screen and (max-width: 1000px) {
     display: none;
   }
+  
+  // Thêm class mobileShow để hiển thị trên mobile
+  &.mobileShow {
+    @media screen and (max-width: 1000px) {
+      display: block !important;
+      animation: slideInRight 0.3s ease-in-out;
+    }
+  }
 }

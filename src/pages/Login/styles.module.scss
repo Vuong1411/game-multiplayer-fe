@@ -1,0 +1,120 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 24px 16px;
+  box-sizing: border-box;
+}
+
+.paper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 24px;
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.form {
+  width: 100%;
+  margin: 24px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.submit {
+  margin: 8px 0 0 !important;
+  height: 42px;
+  text-transform: none;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  
+  &.Mui-disabled {
+    background-color: rgba(0, 0, 0, 0.12) !important;
+    color: rgba(0, 0, 0, 0.26) !important;
+  }
+}
+
+.googleButton {
+  width: 100%;
+  background-color: #fff !important;
+  color: #5f6368 !important;
+  border: 1px solid #dadce0 !important;
+  border-radius: 4px !important;
+  text-transform: none !important;
+  font-weight: 500 !important;
+  padding: 10px 16px !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.1);
+  transition: background-color 0.2s, box-shadow 0.2s;
+  
+  &:hover {
+    background-color: #f8f9fa !important;
+    box-shadow: 0 1px 3px 1px rgba(60, 64, 67, 0.2);
+  }
+}
+
+.googleIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  
+  svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+  }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  width: 100%;
+  color: #757575;
+  font-size: 14px;
+  
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  span {
+    padding: 0 16px;
+  }
+}
+
+.error {
+  color: #d32f2f;
+  margin: 0 0 8px 0;
+  text-align: center;
+  font-size: 14px;
+  min-height: 20px;
+  line-height: 1.4;
+}
+
+.link {
+  margin-top: 16px;
+  text-align: center;
+  
+  a {
+    color: #1976d2;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

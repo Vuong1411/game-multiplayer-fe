@@ -6,6 +6,9 @@ export const API_CONFIG = {
             login: '/api/auth/login',
             register: '/api/auth/register',
             me: '/api/auth/me',
+            googleLogin: '/api/auth/google-login',
+            forgotPassword: '/api/auth/forgot-password', 
+            resetPassword: '/api/auth/reset-password',   
         },
         user: {
             getAll: '/api/users',
@@ -14,12 +17,16 @@ export const API_CONFIG = {
             getByEmail: (email: string) => `/api/users/by-email?email=${email}`,
             updateProfile: '/api/users/update-profile',
             changePassword: '/api/users/change-password',
+            create: '/api/users',
+            profile: `/api/users/profile`,
+            update: (id: number) => `/api/users/${id}`,
+            delete: (id: number) => `/api/users/${id}`,
         },
         questionSet: {
             getAll: '/api/question-sets',
+            getMe: `/api/question-sets/me`,
             getById: (id: number) => `/api/question-sets/${id}`,
             getByUserId: (userId: number) => `/api/question-sets/by-user?user_id=${userId}`,
-            getMe: `/api/question-sets/my-sets`,
             create: '/api/question-sets',
             update: (id: number) => `/api/question-sets/${id}`,
             delete: (id: number) => `/api/question-sets/${id}`
@@ -41,9 +48,14 @@ export const API_CONFIG = {
             getAll: '/api/rooms',
             getById: (id: number) => `/api/rooms/${id}`,
             getByPin: (pin: string) => `/api/rooms/by-pin?pin=${pin}`,
+            getBySetId: (question_set_id: number) => `/api/rooms/by-set?question_set_id=${question_set_id}`,
             create: '/api/rooms',
             update: (id: number) => `/api/rooms/${id}`,
-            delete: (id: number) => `/api/rooms/${id}`
+            delete: (id: number) => `/api/rooms/${id}`,
+            deleteMany: '/api/rooms/delete-many',
+            report: (room_id: number) => `/api/rooms/report/${room_id}`,
+            reports: (type: string) => `/api/rooms/reports?type=${type}`,
+            getPlayerReports: (room_id: number) => `/api/rooms/player-reports/${room_id}`,
         },
         player: {
             getAll: (room_id: number) => `/api/players?room_id=${room_id}`,
@@ -61,6 +73,13 @@ export const API_CONFIG = {
             create: '/api/player-answers',
             update: (id: number) => `/api/player-answers/${id}`,
             delete: (id: number) => `/api/player-answers/${id}`
+        },
+        report: {
+            getAll: (type: string) =>  `/api/reports/all?type=${type}`,
+            getRoomReport: (room_id: number) => `/api/reports/room/${room_id}`,
+            getPlayerReports: (room_id: number) => `/api/reports/players/${room_id}`,
+            getQuestionReport: (room_id: number) => `/api/reports/questions/${room_id}`,
+            getPlayerReport: (player_id: number) => `/api/reports/player/${player_id}`,
         },
 
     }

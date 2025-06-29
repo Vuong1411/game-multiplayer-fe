@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { SocketProvider } from '@project/contexts/SocketContext';
+import { GameProvider } from '@project/contexts/GameContext';
 
 interface SocketWrapperProps {
     children: ReactNode;
@@ -11,7 +12,9 @@ const SocketWrapper = ({ children, requiresSocket = false }: SocketWrapperProps)
     if (requiresSocket) {
         return (
             <SocketProvider>
-                {children}
+                <GameProvider>
+                    {children}
+                </GameProvider>
             </SocketProvider>
         );
     }
