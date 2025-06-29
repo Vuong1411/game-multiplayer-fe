@@ -155,7 +155,7 @@ const Profile = () => {
       <Box sx={{ mt: 4 }}>
         <Typography variant="h6" gutterBottom>Thành tích</Typography>
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <Box sx={{ p: 2, bgcolor: '#f5f5f5', borderRadius: 2 }}>
               <Typography variant="h4">{myQuiz.length}</Typography>
               <Typography>Bộ quiz đã tạo</Typography>

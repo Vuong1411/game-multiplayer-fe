@@ -59,7 +59,7 @@ export const userService = {
     /**
      * Cập nhật thông tin user (username, email)
      */
-    updateProfile: async (data: { userId: string; email?: string; username?: string }): Promise<boolean> => {
+    updateProfile: async (data: { userId: number; email?: string; username?: string }): Promise<boolean> => {
         try {
             const response = await privateApi.put(API_CONFIG.endpoints.user.updateProfile, data);
             return response.data?.success ?? false;
@@ -82,6 +82,7 @@ export const userService = {
         }
     },
 
+    /**
      * Tạo mới người dùng
      * @param user Dữ liệu người dùng mới
      * @returns Thông tin người dùng đã tạo
