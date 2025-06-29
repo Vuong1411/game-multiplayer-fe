@@ -1,0 +1,145 @@
+// Danh sách báo cáo
+.reportsContainer {
+  padding: 32px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 12px;
+}
+
+.reportsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.pageTitle {
+  font-weight: 700;
+  color: #222;
+  font-size: 2rem;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.searchField {
+  width: 220px;
+  background: #f7f7f7;
+  border-radius: 6px;
+  input {
+    padding: 8px 12px;
+    font-size: 15px;
+  }
+}
+
+.filterTabs {
+  margin-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.tabs {
+  min-height: 40px;
+}
+
+.tab {
+  text-transform: none;
+  font-size: 15px;
+  min-height: 40px;
+  color: #666;
+  opacity: 1;
+  font-weight: 500;
+  &.activeTab {
+    color: #1976d2;
+    font-weight: 700;
+    background: #f0f7ff;
+    border-radius: 8px 8px 0 0;
+  }
+}
+
+.sortContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.sortButton {
+  text-transform: none;
+  color: #222;
+  border-color: #e0e0e0;
+  font-weight: 500;
+  background: #fafbfc;
+  border-radius: 6px;
+  padding: 4px 18px;
+}
+
+.tableContainer {
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.tableHead {
+  background-color: #f6f8fa;
+  th {
+    font-weight: 700;
+    color: #444;
+    font-size: 15px;
+    background: #f6f8fa;
+  }
+}
+
+.tableRow {
+  cursor: pointer;
+  transition: background 0.15s;
+  &:hover {
+    background-color: #f0f7ff;
+  }
+  &.Mui-selected {
+    background: #e3f2fd !important;
+  }
+}
+
+.statusChip {
+  border-radius: 14px;
+  font-size: 13px;
+  height: 22px;
+  padding: 0 10px;
+  &.completed {
+    background-color: #e6f4ea;
+    color: #219653;
+    font-weight: 600;
+  }
+}
+
+.participantsCell {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  gap: 5px;
+  svg {
+    color: #1976d2;
+  }
+  .MuiTypography-root {
+    font-weight: 500;
+    font-size: 15px;
+  }
+}
+
+// Menu
+.MuiMenu-paper {
+  border-radius: 10px !important;
+  min-width: 180px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+}
+.MuiMenuItem-root {
+  font-size: 15px !important;
+  padding: 10px 18px !important;
+  &:hover {
+    background: #f0f7ff !important;
+    color: #1976d2 !important;
+  }
+}

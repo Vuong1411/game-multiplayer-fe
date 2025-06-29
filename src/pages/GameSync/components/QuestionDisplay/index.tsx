@@ -12,6 +12,7 @@ interface QuestionDisplayProps {
     onNextQuestion?: () => void;
     onViewLeaderboard?: () => void;
     showResults?: boolean;
+    isHost: boolean;
 }
 
 const QuestionDisplay = ({ 
@@ -22,6 +23,7 @@ const QuestionDisplay = ({
     onNextQuestion,
     onViewLeaderboard,
     showResults = false,
+    isHost = false
 }: QuestionDisplayProps) => {
     
     // Determine timer state for styling
@@ -84,7 +86,7 @@ const QuestionDisplay = ({
 
                 {/* Right side - Question Progress */}
                 <Box className={styles.rightSection}>
-                    {showResults ? (
+                    {showResults && isHost ? (
                         <Button
                             variant="contained"
                             onClick={onNextQuestion}

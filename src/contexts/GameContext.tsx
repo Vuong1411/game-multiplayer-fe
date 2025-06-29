@@ -1,11 +1,58 @@
-import { useEffect, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useSocket } from '@project/contexts/SocketContext';
 import { socketConfig } from '@project/config/socket.config';
 import { Player, Question, Answer, PlayerAnswer } from '@project/types';
 import { playerService } from '@project/services';
 
-export const useGameRoom = (pin: string, isHost: boolean) => {
+// Định nghĩa type cho GameContext
+interface GameContextType {
+    // Loading & Error states
+    isConnected: boolean;
+    isLoading: boolean;
+    error: string | null;
+
+    // Game states
+    pin: string | null;
+    isHost: boolean;
+    gameStarted: boolean;
+    gameFinished: boolean;
+    gameStartTime: Date | null;
+    timeLeft: number;
+    showLeaderboard: boolean;
+    isLoadingQuestion: boolean;
+
+    // Data states
+    players: Player[];
+    playerAnswers: PlayerAnswer[];
+    totalQuestions: number;
+    questionIds: number[];
+    question: Question | null;
+    answers: Answer[];
+    currentIndex: number;
+
+    // Methods
+    setPin: (pin: string) => void;
+    setIsHost: (isHost: boolean) => void;
+    joinRoom: (player: { nickname: string }) => void;
+    leaveRoom: () => void;
+    startGame: () => void;
+    getGameData: () => void;
+    submitAnswer: (playerAnswer: Partial<PlayerAnswer>) => void;
+    nextQuestion: () => Promise<void>;
+    setShowLeaderboard: (show: boolean) => void;
+    gameOver: () => void;
+}
+
+// Tạo context
+const GameContext = createContext<GameContextType | undefined>(undefined);
+
+// Game Provider component
+export const GameProvider = ({ children }: { children: ReactNode }) => {
     const { socket, isConnected } = useSocket();
+
+    // Local state
+    const [pin, setPin] = useState<string | null>(null);
+    const [isHost, setIsHost] = useState(false);
 
     // Loading & Error states
     const [isLoading, setIsLoading] = useState(false);
@@ -28,9 +75,11 @@ export const useGameRoom = (pin: string, isHost: boolean) => {
     const [question, setQuestion] = useState<Question | null>(null);
     const [answers, setAnswers] = useState<Answer[]>([]);
 
+    // Fetch players from API
     useEffect(() => {
-        const fecthDB = async () => {
+        const fetchPlayers = async () => {
             if (!pin) return;
+
             try {
                 setIsLoading(true);
                 setError(null);
@@ -42,15 +91,16 @@ export const useGameRoom = (pin: string, isHost: boolean) => {
             } finally {
                 setIsLoading(false);
             }
-        }
-        fecthDB();
-    }, [pin, playerAnswers]);
+        };
 
-    // Handler cho các sự kiện socket
-    const handleSocketError = useCallback((error: any) => {
+        fetchPlayers();
+    }, [pin, playerAnswers, players.length]);
+
+    // Socket event handlers
+    const handleSocketError = (error: any) => {
         console.error('Socket error:', error);
         setError(error.message);
-    }, []);
+    };
 
     const handlePlayerJoined = (data: { player: Player }) => {
         setPlayers(prev => [...prev, data.player]);
@@ -67,10 +117,8 @@ export const useGameRoom = (pin: string, isHost: boolean) => {
     };
 
     const handleGameData = (data: { questionIds: number[], question: Question; answers: Answer[] }) => {
-        setGameStarted(true);
         setGameStartTime(new Date());
 
-        // Xử lý dữ liệu game
         setQuestion(data.question);
         setAnswers(data.answers);
         setQuestionIds(data.questionIds);
@@ -81,18 +129,19 @@ export const useGameRoom = (pin: string, isHost: boolean) => {
         setQuestionEndTime(Date.now() + timeLimit * 1000);
     };
 
-
     const handlePlayerAnswered = (data: { playerAnswers: PlayerAnswer[] }) => {
         console.log('Player answered:', data);
         setPlayerAnswers(data.playerAnswers);
     };
 
     const handleNextQuestion = (data: { question: Question; answers: Answer[], index: number }) => {
+        
         setQuestion(data.question);
         setAnswers(data.answers);
         setCurrentIndex(data.index);
         setShowLeaderboard(false);
         setIsLoadingQuestion(false);
+
         const timeLimit = data.question.time_limit || 30;
         setTimeLeft(timeLimit);
         setQuestionEndTime(Date.now() + timeLimit * 1000);
@@ -102,7 +151,7 @@ export const useGameRoom = (pin: string, isHost: boolean) => {
         setGameFinished(true);
     };
 
-    // Nghe sự kiện từ server
+    // Set up socket event listeners
     useEffect(() => {
         if (!socket || !isConnected) return;
 
@@ -135,7 +184,7 @@ export const useGameRoom = (pin: string, isHost: boolean) => {
     // Tính thời gian đếm ngược
     useEffect(() => {
         if (!questionEndTime || gameFinished || isLoadingQuestion) return;
-        // Tính thời gian
+
         const intervalId = setInterval(() => {
             const remaining = Math.max(0, Math.floor((questionEndTime - Date.now()) / 1000));
             setTimeLeft(remaining);
@@ -144,6 +193,7 @@ export const useGameRoom = (pin: string, isHost: boolean) => {
                 clearInterval(intervalId);
             }
         }, 200);
+
         return () => clearInterval(intervalId);
     }, [questionEndTime, gameFinished, isLoadingQuestion]);
 
@@ -180,7 +230,7 @@ export const useGameRoom = (pin: string, isHost: boolean) => {
     };
 
     /**
-     * Yêu cầu dữ liệu game từ server
+     * Lấy dữ liệu trò chơi
      */
     const getGameData = () => {
         if (socket && isConnected && pin) {
@@ -192,8 +242,8 @@ export const useGameRoom = (pin: string, isHost: boolean) => {
     };
 
     /**
-     * Nộp câu trả lời của người chơi
-     * @param playerAnswer Dữ liệu câu trả lời
+     * Gửi câu trả lời của người chơi
+     * @param playerAnswer Đáp án của người chơi
      */
     const submitAnswer = (playerAnswer: Partial<PlayerAnswer>) => {
         if (socket && isConnected && pin) {
@@ -204,10 +254,10 @@ export const useGameRoom = (pin: string, isHost: boolean) => {
                 }
             });
         }
-    }
+    };
 
     /**
-     * Câu hỏi tiếp theo
+     * Chuyển sang câu hỏi tiếp theo
      */
     const nextQuestion = async () => {
         if (socket && isConnected && pin && isHost) {
@@ -226,32 +276,39 @@ export const useGameRoom = (pin: string, isHost: boolean) => {
     };
 
     /**
-     * Kết thúc game
+     * Kết thúc trò chơi
      */
     const gameOver = () => {
         if (socket && isConnected && pin && isHost) {
             socket.emit(socketConfig.events.GAME_OVER, { pin });
         }
-    }
+    };
 
-
-
-    return {
+    // Context value
+    const contextValue: GameContextType = {
+        // State values
         isConnected,
         isLoading,
         error,
-        players,
-        playerAnswers,
+        pin,
+        isHost,
         gameStarted,
         gameFinished,
         gameStartTime,
+        timeLeft,
+        showLeaderboard,
+        isLoadingQuestion,
+        players,
+        playerAnswers,
         totalQuestions: questionIds.length,
         questionIds,
         question,
         answers,
         currentIndex,
-        timeLeft,
-        showLeaderboard,
+
+        // Methods
+        setPin,
+        setIsHost,
         joinRoom,
         leaveRoom,
         startGame,
@@ -261,4 +318,19 @@ export const useGameRoom = (pin: string, isHost: boolean) => {
         setShowLeaderboard,
         gameOver
     };
+
+    return (
+        <GameContext.Provider value={contextValue}>
+            {children}
+        </GameContext.Provider>
+    );
+};
+
+// Hook để sử dụng GameContext
+export const useGame = () => {
+    const context = useContext(GameContext);
+    if (context === undefined) {
+        throw new Error('useGame must be used within a GameProvider');
+    }
+    return context;
 };

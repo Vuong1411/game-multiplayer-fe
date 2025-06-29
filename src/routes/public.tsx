@@ -11,6 +11,8 @@ import LobbyAsync from '@project/pages/LobbyAsync';
 import LobbySync from '@project/pages/LobbySync';
 import GameAsync from '@project/pages/GameAsync';
 import GameSync from '@project/pages/GameSync';
+import Report from '@project/pages/Report';
+import ReportDetail from '@project/pages/ReportDetail';
 
 export interface RouteConfig {
     path: string;
@@ -29,6 +31,8 @@ const PublicRoutes: RouteConfig[] = [
     { path: '/library', component: Library, layout: MainLayout, requiresAuth: true },
     { path: '/creator', component: Creator, layout: null, requiresAuth: true },
     { path: '/creator/:id', component: Creator, layout: null, requiresAuth: true },
+    { path: '/reports', component: Report, layout: MainLayout, requiresAuth: true },
+    { path: '/reports/:id', component: ReportDetail, layout: MainLayout, requiresAuth: true },
     // Game routes
     { path: '/join', component: Join, layout: GameLayout, requiresAuth: false, requiresSocket: false },
     { path: '/lobby/solo/:id', component: LobbyAsync, layout: GameLayout, requiresAuth: false, requiresSocket: false },

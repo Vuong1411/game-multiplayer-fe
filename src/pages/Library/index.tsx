@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 // @project
 import styles from './styles.module.scss';
-import MyQuizList from './components/QuizList';
+import QuizList from './components/QuizList';
 import TabFilter from '@project/components/common/Tab';
 import SearchBar from '@project/components/common/SearchBar';
 import { QuestionSet } from '@project/types/question';
@@ -16,15 +16,25 @@ const Library = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await questionSetService.getAll();
+                let data;
+                switch (activeTab) {
+                    case 0: // Tất cả
+                        data = await questionSetService.getAll();
+                        break;
+                    case 1: // Của tôi
+                        data = await questionSetService.getMe();
+                        break;
+                    default:
+                        data = await questionSetService.getAll();
+                }
                 setQuestionSets(data);
             } catch (error) {
-                console.error('Failed to fetch question sets:', error);
+                console.error(`Failed to fetch question sets for tab ${activeTab}:`, error);
+                setQuestionSets([]);
             }
         };
         fetchData();
-    }, []);
-
+    }, [activeTab])
 
     return (
         <>
@@ -40,7 +50,7 @@ const Library = () => {
             </Box>
 
             <Box className={styles.content}>
-                <MyQuizList
+                <QuizList
                     questionSets={questionSets.filter(item =>
                         item.title.toLowerCase().includes(searchQuery.toLowerCase())
                     )}

@@ -19,7 +19,7 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import DoNotDisturbAltIcon from '@mui/icons-material/DoNotDisturbAlt';
 // @project
 import styles from './styles.module.scss';
-import { useGameRoom } from '@project/hooks/useGameRoom';
+import { useGame } from '@project/contexts/GameContext';
 import { QuestionSet, User } from '@project/types';
 import { roomService, questionSetService, userService } from '@project/services';
 import CommonDialog from '@project/components/common/Dialog';
@@ -36,8 +36,11 @@ const LobbySync = () => {
         gameStarted,
         joinRoom,
         leaveRoom,
-        startGame
-    } = useGameRoom(pin, isHost);
+        startGame,
+        setPin,
+        setIsHost
+    } = useGame();
+    
 
     const [questionSet, setQuestionSet] = useState<QuestionSet | null>(null);
     const [host, setHost] = useState<User | null>(null);
@@ -70,6 +73,11 @@ const LobbySync = () => {
             return;
         }
 
+        if (pin) {
+            setPin(pin);
+            setIsHost(isHost);
+        }
+        
         const fetchData = async () => {
             try {
                 if (!id) return;
@@ -120,7 +128,7 @@ const LobbySync = () => {
                 clearTimeout(navigateTimeout);
             };
         }
-    }, [gameStarted, id, nickName, pin, isHost, navigate]);
+    }, [gameStarted]);
 
     const handleJoinGame = () => {
         const trimmedName = nickName.trim();

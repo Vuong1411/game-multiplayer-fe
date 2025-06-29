@@ -7,3 +7,4 @@ export * from './player.service';
 export * from './playerAnswer.service';
 export * from './auth.service';
 export * from './user.service';
+export * from './report.service';

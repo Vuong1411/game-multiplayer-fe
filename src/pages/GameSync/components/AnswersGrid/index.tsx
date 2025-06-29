@@ -23,6 +23,7 @@ interface AnswersGridProps {
     showResults: boolean;
     onAnswerSelect: (answerId: number) => void;
     onTextSubmit: (text: string) => void;
+    isHost: boolean;
 }
 
 const AnswersGrid = ({
@@ -33,6 +34,7 @@ const AnswersGrid = ({
     showResults,
     onAnswerSelect,
     onTextSubmit,
+    isHost = false
 }: AnswersGridProps) => {
     const [inputText, setInputText] = useState('');
 
@@ -95,8 +97,10 @@ const AnswersGrid = ({
                                 ${showResults && isCorrect ? styles.correct : ''}
                                 ${showResults && !isCorrect ? styles.incorrect : ''}
                                 ${isSelected ? styles.selected : ''}
+                                ${isHost ? styles.disabled : ''}
                             `}
                             onClick={() => onAnswerSelect?.(answer.id)}
+                            style={{ cursor: isHost ? 'default' : 'pointer' }}
                         >
                             <Box className={styles.symbolContainer}>
                                 <Typography className={styles.symbolText}>
@@ -108,11 +112,6 @@ const AnswersGrid = ({
                             <Typography variant="body1" className={styles.answerText}>
                                 {answer.content}
                             </Typography>
-                            {isSelected && (
-                                <Box className={styles.resultIcon}>
-                                    R
-                                </Box>
-                            )}
                         </Box>
                     </Grid>
                 );
@@ -127,7 +126,7 @@ const AnswersGrid = ({
                                 onChange={handleInputChange}
                                 onKeyPress={handleKeyPress}
                                 placeholder={'Viết câu trả lời chi tiết...'}
-                                disabled={showResults || textAnswer !== ''}
+                                disabled={showResults || textAnswer !== '' || isHost}
                                 fullWidth
                                 inputProps={{
                                     className: styles.textAnswerInput
@@ -137,7 +136,7 @@ const AnswersGrid = ({
                                 <Button
                                     variant="contained"
                                     onClick={() => onTextSubmit(inputText.trim())}
-                                    disabled={!inputText.trim()}
+                                    disabled={!inputText.trim() || isHost}
                                     className={styles.textSubmitButton}
                                     size="large"
                                 >

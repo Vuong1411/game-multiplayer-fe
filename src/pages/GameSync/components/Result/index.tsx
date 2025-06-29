@@ -27,7 +27,7 @@ const Result = ({
     totalQuestions, 
     totalTime,
     onRestart, 
-    onBackToHome 
+    onBackToHome
 }: ResultProps) => {
     const accuracy = totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0;
 

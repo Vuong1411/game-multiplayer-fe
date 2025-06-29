@@ -9,7 +9,7 @@ type SocketConfig = {
 
 export const socketConfig: SocketConfig = {
   url: import.meta.env.VITE_WS_URL,
-  
+
   options: {
     transports: ['websocket', 'polling'],
     timeout: 20000,
@@ -21,9 +21,9 @@ export const socketConfig: SocketConfig = {
     rememberUpgrade: true,
     timestampRequests: true,
   },
-  
+
   enabled: import.meta.env.VITE_ENABLE_SOCKET !== 'false',
-  
+
   events: {
     // Connection events
     CONNECT: 'connect',
@@ -41,7 +41,7 @@ export const socketConfig: SocketConfig = {
     SHOW_LEADERBOARD: 'show-leaderboard',
     GAME_OVER: 'game-over',
     TEST_EVENT: 'test-event',
-    SYNC_TIME: 'sync-time',
+    GET_GAME_DATA: 'get-game-data',
 
     // Server to Client events
     PLAYER_JOINED: 'player-joined',
@@ -51,6 +51,7 @@ export const socketConfig: SocketConfig = {
     GAME_FINISHED: 'game-finished',
     TEST_RESPONSE: 'test-response',
     TIME_SYNCED: 'time-synced',
-  
+    GAME_DATA: 'game-data',
+
   },
 };

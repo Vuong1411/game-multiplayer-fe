@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
 import styles from './styles.module.scss';
 import { Player } from '@project/types'
 import { QuestionDisplay, Leaderboard, AnswersGrid, Result } from './components';
-import { useGameRoom } from '@project/hooks/useGameRoom';
+import { useGame } from '@project/contexts/GameContext';
 
 const GameSync = () => {
     const location = useLocation();
@@ -15,6 +15,7 @@ const GameSync = () => {
         isConnected,
         players,
         playerAnswers,
+        gameStarted,
         gameFinished,
         gameStartTime,
         totalQuestions,
@@ -23,39 +24,32 @@ const GameSync = () => {
         currentIndex,
         timeLeft,
         showLeaderboard,
-        startGame,
+        getGameData,
         submitAnswer,
         nextQuestion,
         setShowLeaderboard,
-    } = useGameRoom(pin, isHost);
+    } = useGame();
 
     // Player states
     const [player, setPlayer] = useState<Player>();
     const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
     const [textAnswer, setTextAnswer] = useState<string>('');
     const [submit, setSubmit] = useState(false);
+    const [answeredQuestions, setAnsweredQuestions] = useState<Set<number>>(new Set());
     const [showResults, setShowResults] = useState(false);
     const [correctAnswers, setCorrectAnswers] = useState(0);
+    const [countedQuestionIds, setCountedQuestionIds] = useState<number[]>([]);
 
     useEffect(() => {
-    if (!player || !playerAnswers.length) return;
-    
-    // Tìm câu trả lời của người chơi hiện tại trong các câu trả lời mới
-    const playerAnswer = playerAnswers.find(answer => answer.player_id === player.id);
-
-    if (playerAnswer && playerAnswer.points > 0) {
-        setCorrectAnswers(prev => prev + 1);
-    }
-}, [playerAnswers]);
-    
-    useEffect(() => {
-        if (!pin) return;
-        startGame();
-    }, []);
+        if (!pin || !gameStarted || gameFinished) return;
+        console.log('Game state:', gameStarted, gameFinished);
+        getGameData();
+    }, [pin, isConnected]);
 
     // Load player
     useEffect(() => {
-        if (!pin || !nickName) return;
+        if (!pin || !nickName || !players) return;
+
         console.log('Correct:', correctAnswers);
         const fetchData = async () => {
             if (!pin) return;
@@ -69,10 +63,11 @@ const GameSync = () => {
         };
 
         fetchData();
-    }, [pin, players, nickName]);
+    }, [pin, players]);
 
+    // Hiển thị đáp án và tự động submit khi hết thời gian
     useEffect(() => {
-        if (timeLeft === 0 && !submit) {
+        if (timeLeft === 0 && !submit && question && !answeredQuestions.has(question.id)) {
             if (question?.type === 'choice') {
                 handleAnswerSelect(null);
             } else {
@@ -83,8 +78,9 @@ const GameSync = () => {
         if (timeLeft === 0) {
             setShowResults(true);
         }
-    });
+    }, [timeLeft, submit, question]);
 
+    // Reset trạng thái khi chuyển sang câu hỏi mới
     useEffect(() => {
         setSelectedAnswer(null);
         setTextAnswer('');
@@ -92,12 +88,29 @@ const GameSync = () => {
         setShowResults(false);
     }, [question?.id]);
 
+    // Cập nhật số câu trả lời đúng của người chơi
+    useEffect(() => {
+        if (!player || !playerAnswers.length) return;
+
+        const playerAnswer = playerAnswers.find(answer =>
+            answer.player_id === player.id &&
+            answer.points > 0 &&
+            !countedQuestionIds.includes(answer.question_id)
+        );
+
+        if (playerAnswer) {
+            setCountedQuestionIds(prev => [...prev, playerAnswer.question_id]);
+            setCorrectAnswers(prev => prev + 1);
+        }
+    }, [player?.id, playerAnswers, countedQuestionIds]);
+
     // Player answer functions
     const handleAnswerSelect = async (answerId: number | null) => {
         if (!question || isHost || !player || selectedAnswer !== null || submit) return;
 
         setSelectedAnswer(answerId);
         setSubmit(true);
+        setAnsweredQuestions(prev => new Set(prev).add(question.id));
 
         try {
             const responseTime = (question.time_limit || 30) - timeLeft;
@@ -110,8 +123,6 @@ const GameSync = () => {
 
         } catch (error) {
             console.error('Error submitting answer:', error);
-        } finally {
-            setSubmit(false);
         }
     };
 
@@ -120,6 +131,7 @@ const GameSync = () => {
 
         setTextAnswer(text);
         setSubmit(true);
+        setAnsweredQuestions(prev => new Set(prev).add(question.id));
 
         try {
             const responseTime = (question.time_limit || 30) - timeLeft;
@@ -132,8 +144,6 @@ const GameSync = () => {
 
         } catch (error) {
             console.error('Error submitting text answer:', error);
-        } finally {
-            setSubmit(false);
         }
     };
 
@@ -154,9 +164,13 @@ const GameSync = () => {
         setShowLeaderboard(false);
     };
 
-    const handleRestartGame = () => {
+    const handleBackToDetails = () => {
         const questionSetId = question?.question_set_id;
-        navigate(`/details/${questionSetId}`);
+        navigate(`/details/${questionSetId}`, { state: { pin, nickName } });
+    }
+
+    const handleRestartGame = () => {
+        navigate(`/join`);
     };
 
     const handleBackToHome = () => {
@@ -175,6 +189,21 @@ const GameSync = () => {
     // Render game finished
     if (gameFinished) {
         const totalTime = gameStartTime ? Math.floor((new Date().getTime() - gameStartTime.getTime()) / 1000) : 0;
+
+        if (isHost) {
+            return (
+                <Box className={styles.gameContainer}>
+                    <Leaderboard
+                        players={players}
+                        playerAnswers={playerAnswers}
+                        questionNumber={totalQuestions}
+                        totalQuestions={totalQuestions}
+                        onBack={handleBackToDetails}
+                    />
+                </Box>
+            );
+        }
+
         return (
             <Result
                 totalScore={player?.score}
@@ -210,6 +239,7 @@ const GameSync = () => {
                                 onNextQuestion={handleNextQuestion}
                                 onViewLeaderboard={handleViewLeaderboard}
                                 showResults={showResults}
+                                isHost={isHost}
                             />
                             <AnswersGrid
                                 type={question.type}
@@ -219,6 +249,7 @@ const GameSync = () => {
                                 showResults={showResults}
                                 onAnswerSelect={handleAnswerSelect}
                                 onTextSubmit={handleTextSubmit}
+                                isHost={isHost}
                             />
                         </>
                     ) : (
