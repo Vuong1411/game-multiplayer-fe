@@ -57,6 +57,31 @@ export const userService = {
     },
 
     /**
+     * Cập nhật thông tin user (username, email)
+     */
+    updateProfile: async (data: { userId: string; email?: string; username?: string }): Promise<boolean> => {
+        try {
+            const response = await privateApi.put(API_CONFIG.endpoints.user.updateProfile, data);
+            return response.data?.success ?? false;
+        } catch (error) {
+            console.error('Failed to update profile!', error);
+            return false;
+        }
+    },
+
+    /**
+     * Đổi mật khẩu
+     */
+    changePassword: async (oldPassword: string, newPassword: string): Promise<boolean> => {
+        try {
+            const response = await privateApi.post(API_CONFIG.endpoints.user.changePassword, { oldPassword, newPassword });
+            return response.data?.success ?? false;
+        } catch (error) {
+            console.error('Failed to change password!', error);
+            return false;
+        }
+    },
+
      * Tạo mới người dùng
      * @param user Dữ liệu người dùng mới
      * @returns Thông tin người dùng đã tạo
@@ -143,5 +168,4 @@ export const userService = {
             throw new Error(`Failed to delete user with id: ${id}!`);
         }
     },
-
 };

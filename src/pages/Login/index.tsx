@@ -1,4 +1,4 @@
-  import { useState } from 'react';
+import { useState } from 'react';
   import { useNavigate, useLocation, Link as RouterLink } from 'react-router-dom';
   import {
     Button,
@@ -25,7 +25,7 @@
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const from = (location.state as any)?.from?.pathname || '/';
+    const from = (location.state)?.from?.pathname || '/';
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setUser({
@@ -66,7 +66,7 @@
       try {
         const credential = credentialResponse.credential;
         if (!credential) throw new Error('Không nhận được Google Credential');
-
+        
         const result = await authService.googleLogin(credential);
         if (result) {
           const { user, token } = result;

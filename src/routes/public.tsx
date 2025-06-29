@@ -11,6 +11,7 @@ import Join from '@project/pages/Join';
 import LobbyAsync from '@project/pages/LobbyAsync';
 import LobbySync from '@project/pages/LobbySync';
 import GameAsync from '@project/pages/GameAsync';
+import Profile from '@project/pages/Profile';
 import GameSync from '@project/pages/GameSync';
 import Report from '@project/pages/Report';
 import ReportDetail from '@project/pages/ReportDetail';
@@ -39,6 +40,7 @@ const PublicRoutes: RouteConfig[] = [
     { path: '/library', component: Library, layout: MainLayout, requiresAuth: true },
     { path: '/creator', component: Creator, layout: null, requiresAuth: true },
     { path: '/creator/:id', component: Creator, layout: null, requiresAuth: true },
+    { path: '/profile', component: Profile, layout: null, requiresAuth: true },
     { path: '/reports', component: Report, layout: MainLayout, requiresAuth: true },
     { path: '/reports/:id', component: ReportDetail, layout: MainLayout, requiresAuth: true },
     // Game routes
