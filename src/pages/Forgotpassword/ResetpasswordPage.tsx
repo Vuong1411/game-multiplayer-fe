@@ -16,7 +16,6 @@ const ResetPasswordPage = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
 
   // Kiểm tra token khi component mount
@@ -45,7 +44,6 @@ const ResetPasswordPage = () => {
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setMessage('');
 
     if (!validatePassword(password)) return;
 
@@ -57,7 +55,6 @@ const ResetPasswordPage = () => {
     setLoading(true);
     try {
       await authService.resetPassword(token || '', password);
-      setMessage('Đặt lại mật khẩu thành công!');
       setShowSuccess(true);
       setTimeout(() => navigate('/login'), 3000);
     } catch (err: any) {

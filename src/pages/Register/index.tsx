@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Button, TextField, Container, Typography, Box, CircularProgress, Link } from '@mui/material';
 // @project
 import styles from './styles.module.scss';
-import { User } from '@project/types/user';
 import { authService } from '@project/services/auth.service';
 
 type RegisterFormData = {

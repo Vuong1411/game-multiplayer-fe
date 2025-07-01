@@ -102,7 +102,7 @@ const Detail = () => {
         navigate(path);
     };
 
-    const handleCloseNotification = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    const handleCloseNotification = (_?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') return;
         setNotification(prev => ({ ...prev, open: false }));
     };

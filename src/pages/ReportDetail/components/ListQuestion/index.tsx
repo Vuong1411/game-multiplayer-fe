@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DataGrid, GridColDef, GridPaginationModel, GridValueGetter } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridPaginationModel } from '@mui/x-data-grid';
 import { QuestionReport } from '@project/types';
 import { Box, Typography } from '@mui/material';
 
