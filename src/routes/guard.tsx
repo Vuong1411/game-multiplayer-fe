@@ -11,14 +11,7 @@ const RouteGuard = ({ children, requiresAuth = false }: RouteGuardProps) => {
     const { isAuthenticated, isLoading } = useAuth();
     const location = useLocation();
 
-    // Debug logs
-    // console.log('=== RouteGuard Debug ===');
-    // console.log('Path:', location.pathname);
-    // console.log('requiresAuth:', requiresAuth);
-    // console.log('isAuthenticated:', isAuthenticated);
-    // console.log('Should redirect:', requiresAuth && !isAuthenticated);
-
-    if (requiresAuth && !isAuthenticated && !isLoading) {
+    if (requiresAuth && isAuthenticated === false && isLoading === false) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
