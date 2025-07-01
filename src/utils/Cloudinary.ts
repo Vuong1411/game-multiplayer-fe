@@ -11,6 +11,5 @@ export const uploadToCloudinary = async (file: File, folder: string): Promise<st
         { method: "POST", body: formData }
     );
     const data = await res.json();
-    console.log("Cloudinary response:", data);
     return data.secure_url as string | undefined;
 };

@@ -15,7 +15,6 @@ import {
 import {
     Menu as MenuIcon,
     Create as CreateIcon,
-    Person,
     Login,
     PersonAdd,
     Logout,
@@ -34,7 +33,7 @@ interface TopbarProps {
 const Topbar = ({ handleDrawerToggle }: TopbarProps) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const navigate = useNavigate();
-    const { currentUser, isAuthenticated , logout } = useAuth();
+    const { currentUser, isAuthenticated, logout } = useAuth();
     const handleOpenMenu = (event: MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -82,7 +81,9 @@ const Topbar = ({ handleDrawerToggle }: TopbarProps) => {
 
                     {/* Search bar */}
                     <SearchBar onSearch={(value) => {
-                        console.log('Searching:', value);
+                        if (value && value.trim()) {
+                            navigate(`/discover?search=${encodeURIComponent(value.trim())}`);
+                        }
                     }} />
                 </Box>
 
@@ -101,7 +102,11 @@ const Topbar = ({ handleDrawerToggle }: TopbarProps) => {
 
                     {/* Profile menu */}
                     <IconButton onClick={handleOpenMenu}>
-                        <Avatar className={styles.avatar} />
+                        <Avatar
+                            className={styles.avatar}
+                            src={currentUser?.avatar_url || undefined}
+                            alt={currentUser?.username || 'avatar'}
+                        />
                     </IconButton>
                     <Menu
                         anchorEl={anchorEl}
@@ -117,13 +122,7 @@ const Topbar = ({ handleDrawerToggle }: TopbarProps) => {
                         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                     >
                         {isAuthenticated ? [
-                            <MenuItem key="profile" onClick={() => navigate('/profile')}>
-                                <ListItemIcon>
-                                    <Person fontSize="small" />
-                                </ListItemIcon>
-                                Hồ sơ cá nhân
-                            </MenuItem>,
-                            <MenuItem key="settings" onClick={() => navigate('/settings')}>
+                            <MenuItem key="settings" onClick={() => navigate('/profile')}>
                                 <ListItemIcon>
                                     <Settings fontSize="small" />
                                 </ListItemIcon>

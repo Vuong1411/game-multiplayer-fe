@@ -1,5 +1,5 @@
 import { publicApi, privateApi } from './api';
-import { Room, RoomReport, RoomReportDetails, PlayerReport } from '@project/types';
+import { Room, RoomReport, RoomReportDetails, PlayerReport, QuestionReport, PlayerAnswerReport } from '@project/types';
 import { API_CONFIG } from '@project/config/api.config';
 
 interface RoomsResponse {
@@ -31,6 +31,18 @@ interface RoomReportResponse {
 interface PlayerReportResponse {
     success: boolean;
     reports: PlayerReport[];
+    message: string;
+}
+
+interface QuestionReportResponse {
+    success: boolean;
+    reports: QuestionReport[];
+    message: string;
+}
+
+interface PlayerAnswerReportResponse {
+    success: boolean;
+    reports: PlayerAnswerReport[];
     message: string;
 }
 
@@ -184,6 +196,11 @@ export const roomService = {
             throw new Error('Failed to delete multiple rooms/reports!');
         }
     },
+    /**
+     * Lấy danh sách báo cáo của phòng
+     * @param type Loại báo cáo ('sync', 'async')
+     * @returns Danh sách báo cáo
+     */
     reports: async (type: string) => {
         try {
             const response = await privateApi.get<RoomReportsResponse>(API_CONFIG.endpoints.room.reports(type));
@@ -196,6 +213,11 @@ export const roomService = {
             throw new Error('Failed to fetch room reports!');
         }
     },
+    /**
+     * Lấy chi tiết báo cáo của phòng
+     * @param id ID của báo cáo
+     * @returns Chi tiết báo cáo
+     */
     report: async (id: number) => {
         try {
             const response = await privateApi.get<RoomReportResponse>(API_CONFIG.endpoints.room.report(id));
@@ -208,6 +230,11 @@ export const roomService = {
             throw new Error(`Failed to fetch report with id: ${id}!`);
         }
     },
+    /**
+     * Lấy danh sách báo cáo của người chơi trong phòng
+     * @param room_id ID của phòng
+     * @returns Danh sách báo cáo người chơi
+     */
     getPlayerReports: async (room_id: number) => {
         try {
             const response = await privateApi.get<PlayerReportResponse>(API_CONFIG.endpoints.room.getPlayerReports(room_id));
@@ -219,6 +246,41 @@ export const roomService = {
             console.error(`Failed to fetch player reports for room id: ${room_id}!`, error);
             throw new Error(`Failed to fetch player reports for room id: ${room_id}!`);
         }
-    }
+    },
+    /**
+     * Lấy chi tiết báo cáo của người chơi
+     * @param player_id ID của người chơi
+     * @returns Danh sách báo cáo chi tiết của người chơi
+     */
+    getPlayerAnswerReports: async (player_id: number) => {
+        try {
+            const response = await privateApi.get<PlayerAnswerReportResponse>(API_CONFIG.endpoints.room.getPlayerAnswerReports(player_id));
+            console.log('Player Answer Reports Response:', response.data);
+            if (response.data?.success) {
+                return response.data.reports;
+            }
+            throw new Error(response.data.message || `Failed to fetch player report details for player id: ${player_id}!`);
+        } catch (error) {
+            console.error(`Failed to fetch player report details for player id: ${player_id}!`, error);
+            throw new Error(`Failed to fetch player report details for player id: ${player_id}!`);
+        }
+    },
+    /**
+     * Lấy danh sách báo cáo câu hỏi trong phòng
+     * @param room_id ID của phòng
+     * @returns Danh sách báo cáo câu hỏi
+     */
+    getQuestionReports: async (room_id: number) => {
+        try {
+            const response = await privateApi.get<QuestionReportResponse>(API_CONFIG.endpoints.room.getQuestionReports(room_id));
+            if (response.data?.success) {
+                return response.data.reports;
+            }
+            throw new Error(response.data.message || `Failed to fetch question reports for room id: ${room_id}!`);
+        } catch (error) {
+            console.error(`Failed to fetch question reports for room id: ${room_id}!`, error);
+            throw new Error(`Failed to fetch question reports for room id: ${room_id}!`);
+        }
+    },
 
 };

@@ -26,19 +26,19 @@ const features = [
         title: 'Lecture Mode',
         description: 'Chế độ trình chiếu bài giảng',
         icon: <PresentToAll />,
-        path: '/lecture-mode'
+        path: '/creator'
     },
     {
         title: 'Trình tạo AI',
         description: 'Tạo câu hỏi tự động với AI',
         icon: <SmartToy />,
-        path: '/creator/ai'
+        path: '/creator'
     },
     {
         title: 'Google Slides',
         description: 'Tích hợp với Google Slides',
         icon: <Slideshow />,
-        path: '/google-slides'
+        path: '/creator'
     }
 ];
 

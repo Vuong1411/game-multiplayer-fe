@@ -74,8 +74,19 @@ const Detail = () => {
                 console.error('Failed to fetch quiz:', err);
             }
         };
+        const fetchStats = async () => {
+        if (!id) return;
+        try {
+            const stats = await questionSetService.getStats(Number(id));
+            setPlayCount(stats.total_rooms);
+            setPlayerCount(stats.total_players);
+        } catch (err) {
+            console.error('Failed to fetch stats:', err);
+        }
+    };
 
         fetchData();
+        fetchStats();
     }, [id]);
 
     useEffect(() => {
@@ -251,12 +262,6 @@ const Detail = () => {
                                 </IconButton>
                             </Tooltip>
 
-                            {/* <Tooltip title="Yêu thích">
-                                <IconButton className={styles.navButton}>
-                                    <StarOutlineIcon />
-                                </IconButton>
-                            </Tooltip> */}
-
                             {isMobile && (
                                 <Tooltip title="Tùy chọn">
                                     <IconButton
@@ -307,14 +312,14 @@ const Detail = () => {
                                 <Box className={styles.statItem}>
                                     <PlayArrowIcon fontSize="small" />
                                     <Typography variant="body2">
-                                        {4} lượt chơi
+                                        {playCount} lượt chơi
                                     </Typography>
                                 </Box>
 
                                 <Box className={styles.statItem}>
                                     <PersonIcon fontSize="small" />
                                     <Typography variant="body2">
-                                        {4} người tham gia
+                                        {playerCount} người tham gia
                                     </Typography>
                                 </Box>
                             </Box>

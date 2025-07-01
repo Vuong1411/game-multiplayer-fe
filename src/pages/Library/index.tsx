@@ -18,14 +18,14 @@ const Library = () => {
             try {
                 let data;
                 switch (activeTab) {
-                    case 0: // Tất cả
-                        data = await questionSetService.getAll();
+                    case 0: // Của tôi 
+                        data = await questionSetService.getMe();
                         break;
-                    case 1: // Của tôi
+                    case 1: //Bản nháp
                         data = await questionSetService.getMe();
                         break;
                     default:
-                        data = await questionSetService.getAll();
+                        data = await questionSetService.getMe();
                 }
                 setQuestionSets(data);
             } catch (error) {

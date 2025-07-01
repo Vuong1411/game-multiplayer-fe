@@ -4,6 +4,6 @@ export interface User {
     password: string;
     email: string;
     role: 'user' | 'admin';
+    avatar_url?: string;
     created_at: Date;
-    avatar?: string;
 }

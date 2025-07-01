@@ -4,9 +4,7 @@ import styles from './styles.module.scss';
 
 const LIBRARY_TABS = [
     { label: 'Tất cả', value: 0 },
-    { label: 'Của tôi', value: 1 },
-    { label: 'Bản nháp', value: 2 },
-    { label: 'Yêu thích', value: 3 }
+    { label: 'Bản nháp', value: 1 },
 ]
 
 interface TabFilterProps {

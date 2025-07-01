@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     Box, Typography, Tabs, Tab, TextField, InputAdornment,
-    IconButton, Menu, MenuItem, Button,
+    IconButton, Menu, MenuItem, Button, Snackbar, Alert
 } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import SearchIcon from '@mui/icons-material/Search';
@@ -24,6 +24,12 @@ const Report = () => {
     const [loadingReports, setLoadingReports] = useState(true);
     const [reports, setReports] = useState<RoomReport[]>([]);
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
+    const [notification, setNotification] = useState<{ open: boolean, message: string, severity: 'success' | 'error' | 'warning' | 'info' }>({
+        open: false,
+        message: '',
+        severity: 'success'
+    });
+    const handleCloseNotification = () => setNotification(prev => ({ ...prev, open: false }));
 
     useEffect(() => {
         const fetchReports = async () => {
@@ -60,11 +66,11 @@ const Report = () => {
     const handleDeleteReport = async (roomId: number) => {
         if (!window.confirm('Bạn có chắc chắn muốn xoá báo cáo này?')) return;
         try {
-            const message = await roomService.delete(roomId);
+            await roomService.delete(roomId);
             setReports((prev) => prev.filter((r) => r.room_id !== roomId));
-            alert(message);
+            setNotification({ open: true, message: 'Xoá báo cáo thành công!', severity: 'success' });
         } catch (error) {
-            alert('Xoá báo cáo thất bại!');
+            setNotification({ open: true, message: 'Xoá báo cáo thất bại!', severity: 'error' });
         }
     };
 
@@ -75,9 +81,9 @@ const Report = () => {
             const message = await roomService.deleteMany(selectedReports);
             setReports((prev) => prev.filter((r) => !selectedReports.includes(r.room_id)));
             setSelectedReports([]);
-            alert(message);
+            setNotification({ open: true, message, severity: 'success' });
         } catch (error) {
-            alert('Xoá báo cáo thất bại!');
+            setNotification({ open: true, message: 'Xoá báo cáo thất bại!', severity: 'error' });
         }
     };
 
@@ -225,6 +231,11 @@ const Report = () => {
                         const ids = Array.from(selection.ids ?? []);
                         setSelectedReports(ids as number[]);
                     }}
+                    sx={{
+                        '& .MuiDataGrid-row': {
+                            cursor: 'pointer',
+                        },
+                    }}
                 />
             </div>
 
@@ -247,7 +258,23 @@ const Report = () => {
                     Xoá báo cáo
                 </MenuItem>
             </Menu>
+            <Snackbar
+                open={notification.open}
+                autoHideDuration={3500}
+                onClose={handleCloseNotification}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert
+                    onClose={handleCloseNotification}
+                    severity={notification.severity}
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    {notification.message}
+                </Alert>
+            </Snackbar>
         </Box>
+
     );
 };
 

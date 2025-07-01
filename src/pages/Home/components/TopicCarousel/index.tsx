@@ -15,25 +15,25 @@ const topics = [
         title: 'Toán học',
         description: 'Các bài tập và câu hỏi về toán',
         image: mathImg,
-        path: '/create-question'
+        path: '/creator'
     },
     {
         title: 'Vật lý',
         description: 'Khám phá thế giới vật lý',
         image: mathImg,
-        path: '/create-question'
+        path: '/creator'
     },
     {
         title: 'Hóa học',
         description: 'Thế giới của phản ứng hóa học',
         image: mathImg,
-        path: '/create-question'
+        path: '/creator'
     },
     {
         title: 'Sinh học',
         description: 'Khoa học về sự sống',
         image: mathImg,
-        path: '/create-question'
+        path: '/creator'
     },
 ];
 

@@ -1,0 +1,84 @@
+.overviewGrid {
+  margin-top: 24px;
+  .MuiCard-root {
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(25, 118, 210, 0.07);
+    background: #fff;
+    border: 1px solid #e3e8ee;
+    transition: box-shadow 0.2s;
+    &:hover {
+      box-shadow: 0 8px 32px rgba(25, 118, 210, 0.13);
+    }
+  }
+}
+
+.overviewCard {
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 4px 24px rgba(25, 118, 210, 0.07);
+  border-radius: 18px;
+  border: 1px solid #e3e8ee;
+  background: #fff;
+  transition: box-shadow 0.2s;
+  &:hover {
+    box-shadow: 0 8px 32px rgba(25, 118, 210, 0.13);
+  }
+}
+
+.advancedCard {
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 24px rgba(25, 118, 210, 0.07);
+  border-radius: 18px;
+  border: 1px solid #e3e8ee;
+  background: #fff;
+  transition: box-shadow 0.2s;
+  &:hover {
+    box-shadow: 0 8px 32px rgba(25, 118, 210, 0.13);
+  }
+  :global(.MuiCardContent-root) {
+    flex: 1 1 auto;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 4px;
+  }
+}
+
+.circlePercent {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e8f5e9 0%, #fff 100%);
+  border: 5px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 28px;
+  font-weight: 700;
+  font-size: 2rem;
+  color: #43a047;
+  position: relative;
+  box-shadow: 0 2px 12px rgba(67, 160, 71, 0.10);
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .overviewGrid, .advancedReport {
+    flex-direction: column;
+    .MuiGrid-item {
+      width: 100%;
+      margin-bottom: 16px;
+    }
+  }
+  .reportDetailContainer {
+    padding: 16px 0 32px 0;
+  }
+  .reportHeader .title {
+    font-size: 1.5rem;
+  }
+}

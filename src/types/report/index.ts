@@ -31,3 +31,25 @@ export interface PlayerReport {
     correct_answers: number;
     wrong_answers: number;
 }
+
+export interface PlayerAnswerReport {
+    question_id: number;
+    question_content: string;
+    answer_id: number | null;
+    answer_content?: string | null;
+    answer_text?: string | null;
+    is_correct: boolean;
+    response_time: number | null;
+    points: number | null;
+}
+
+export interface QuestionReport {
+    question_id: number;
+    question_content: string;
+    question_image: string | null;
+    correct_count: number;
+    total_count: number;
+    correct_percent: number;
+}
+
+

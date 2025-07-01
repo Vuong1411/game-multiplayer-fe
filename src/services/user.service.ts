@@ -1,7 +1,8 @@
+import axios from 'axios';
 import { publicApi, privateApi } from './api';
 import { User } from '@project/types/user';
 import { API_CONFIG } from '@project/config/api.config';
-import axios from 'axios';
+import { uploadToCloudinary } from '@project/utils/Cloudinary';
 
 interface UsersResponse {
     success: boolean;
@@ -57,32 +58,6 @@ export const userService = {
     },
 
     /**
-     * Cập nhật thông tin user (username, email)
-     */
-    updateProfile: async (data: { userId: number; email?: string; username?: string }): Promise<boolean> => {
-        try {
-            const response = await privateApi.put(API_CONFIG.endpoints.user.updateProfile, data);
-            return response.data?.success ?? false;
-        } catch (error) {
-            console.error('Failed to update profile!', error);
-            return false;
-        }
-    },
-
-    /**
-     * Đổi mật khẩu
-     */
-    changePassword: async (oldPassword: string, newPassword: string): Promise<boolean> => {
-        try {
-            const response = await privateApi.post(API_CONFIG.endpoints.user.changePassword, { oldPassword, newPassword });
-            return response.data?.success ?? false;
-        } catch (error) {
-            console.error('Failed to change password!', error);
-            return false;
-        }
-    },
-
-    /**
      * Tạo mới người dùng
      * @param user Dữ liệu người dùng mới
      * @returns Thông tin người dùng đã tạo
@@ -130,9 +105,20 @@ export const userService = {
      * @param user Thông tin người dùng cần cập nhật
      * @returns Thông tin người dùng hiện tại
      */
-    profile: async (user: User) => {
+    updateProfile: async (data: Partial<User> & { avatarFile?: File }) => {
         try {
-            const response = await privateApi.put<UserResponse>(API_CONFIG.endpoints.user.profile, user);
+            // Nếu có file ảnh mới, upload lên Cloudinary trước
+            if (data.avatarFile) {
+                const imageUrl = await uploadToCloudinary(data.avatarFile, 'avatars');
+                if (imageUrl) {
+                    data.avatar_url = imageUrl;
+                } else {
+                    throw new Error('Failed to upload avatar!');
+                }
+                delete data.avatarFile;
+            }
+            
+            const response = await privateApi.put(API_CONFIG.endpoints.user.updateProfile, data);
             if (response.data?.success) {
                 return response.data.message;
             }
@@ -142,8 +128,31 @@ export const userService = {
             if (axios.isAxiosError(error) && error.response?.data?.message) {
                 throw new Error(error.response.data.message);
             }
-            console.error('Failed to fetch user profile!', error);
-            throw new Error('Failed to fetch user profile!');
+            console.error('Failed to update profile!', error);
+            return false;
+        }
+    },
+
+    /**
+     * Thay đổi mật khẩu người dùng
+     * @param oldPassword Mật khẩu cũ
+     * @param newPassword Mật khẩu mới
+     * @returns Trạng thái thành công của việc thay đổi mật khẩu
+     */
+    changePassword: async (oldPassword: string, newPassword: string) => {
+        try {
+            const response = await privateApi.post(API_CONFIG.endpoints.user.changePassword, { oldPassword, newPassword });
+            if (response.data?.success) {
+                return response.data.message;
+            }
+
+            throw new Error(response.data.message);
+        } catch (error) {
+            if (axios.isAxiosError(error) && error.response?.data?.message) {
+                throw new Error(error.response.data.message);
+            }
+            console.error('Failed to change password!', error);
+            return false;
         }
     },
 

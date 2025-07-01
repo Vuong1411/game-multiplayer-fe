@@ -102,7 +102,23 @@ export const questionSetService = {
             throw new Error('Failed to fetch my question sets!');
         }
     },
-    
+
+    search: async (query: string) => {
+        try {
+            const response = await privateApi.get<QuestionSetsResponse>(API_CONFIG.endpoints.questionSet.search(query));
+            if (response.data?.success) {
+                response.data.question_sets.forEach(item => {
+                    item.image_url = getImageUrl(item.image_url);
+                });
+                return response.data.question_sets;
+            }
+            return [];
+        } catch (error) {
+            console.error('Failed to search question sets:', error);
+            throw new Error('Failed to search question sets!');
+        }
+    },
+
     /**
      * Tạo mới bộ câu hỏi
      * @param data Dữ liệu bộ câu hỏi mới
@@ -125,7 +141,7 @@ export const questionSetService = {
             if (response.data?.success) {
                 return response.data.question_set_id;
             }
-            
+
             throw new Error(response.data.message || 'Failed to create question set!');
         } catch (error) {
             console.error('Error creating question set:', error);
@@ -180,5 +196,22 @@ export const questionSetService = {
             throw new Error(`Failed to delete question set with id: ${id}!`);
         }
     },
+    /**
+     * Lấy thống kê bộ câu hỏi
+     * @param id ID của bộ câu hỏi
+     * @returns Thống kê bộ câu hỏi
+     */
+    getStats: async (id: number) => {
+        try {
+            const response = await publicApi.get<{ success: boolean; stats: { total_rooms: number; total_players: number } }>(API_CONFIG.endpoints.questionSet.getStats(id));
+            if (response.data?.success && response.data.stats) {
+                return response.data.stats;
+            }
+            throw new Error(`Failed to fetch stats for question set with id: ${id}!`);
+        } catch (error) {
+            console.error(`Failed to fetch stats for question set with id: ${id}`, error);
+            throw new Error(`Failed to fetch stats for question set with id: ${id}!`);
+        }
+    }
 
 };

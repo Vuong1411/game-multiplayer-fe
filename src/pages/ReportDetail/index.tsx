@@ -1,22 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Box, Typography, Tabs, Tab, Card, CardContent, Button, Grid, Divider, Menu, MenuItem, ListItemIcon } from '@mui/material';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Box, Typography, Tabs, Tab, Button, Divider, Menu, MenuItem, ListItemIcon, Snackbar, Alert } from '@mui/material';
 // Icons
-import PersonIcon from '@mui/icons-material/Person';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ShareIcon from '@mui/icons-material/Share';
+import DownloadIcon from '@mui/icons-material/Download';
 // @project
 import styles from './styles.module.scss';
+import { PlayerReport, QuestionReport } from '@project/types';
 import { RoomReportDetails } from '@project/types';
-import { roomService, reportService } from '@project/services';
+import { roomService } from '@project/services';
+
+import Overview from './components/Overview';
+import ListPlayer from './components/ListPlayer';
+import ListQuestion from './components/ListQuestion';
+import ExportReports from '@project/features/export/ExportReports';
 
 const ReportDetail = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [report, setReport] = useState<RoomReportDetails | null>(null);
+    const [players, setPlayers] = useState<PlayerReport[]>();
+    const [questions, setQuestions] = useState<QuestionReport[]>([]);
     const [tab, setTab] = useState(0);
+    const [notification, setNotification] = useState<{ open: boolean, message: string, severity: 'success' | 'error' | 'warning' | 'info' }>({
+        open: false,
+        message: '',
+        severity: 'success'
+    });
+    const handleCloseNotification = () => setNotification(prev => ({ ...prev, open: false }));
 
     useEffect(() => {
         if (!id) return;
@@ -24,8 +36,10 @@ const ReportDetail = () => {
             try {
                 const roomReportData = await roomService.report(Number(id));
                 setReport(roomReportData);
-                const playerReportsData = await reportService.getPlayerReports(Number(id));
-                console.log('Player Reports:', playerReportsData);
+                const playerReportsData = await roomService.getPlayerReports(Number(id));
+                setPlayers(playerReportsData);
+                const questionReportsData = await roomService.getQuestionReports(Number(id));
+                setQuestions(questionReportsData);
             } catch (error) {
                 console.error('Error fetching report:', error);
             }
@@ -41,6 +55,20 @@ const ReportDetail = () => {
     };
     const handleMenuClose = () => {
         setAnchorEl(null);
+    };
+
+    const handleDeleteReport = async () => {
+        if (!id) return;
+        if (!window.confirm('Bạn có chắc chắn muốn xoá báo cáo này?')) return;
+        try {
+            await roomService.delete(Number(id));
+            setNotification({ open: true, message: 'Xoá báo cáo thành công! Đang chuyển hướng...', severity: 'success' });
+            setTimeout(() => {
+                navigate('/reports');
+            }, 1500);
+        } catch (error) {
+            setNotification({ open: true, message: 'Xoá báo cáo thất bại!', severity: 'error' });
+        }
     };
 
     // Calculate
@@ -80,15 +108,28 @@ const ReportDetail = () => {
                     >
                         <MenuItem onClick={handleMenuClose}>
                             <ListItemIcon>
-                                <DeleteIcon fontSize="small" />
+                                <DeleteIcon fontSize="small" color="error" />
                             </ListItemIcon>
-                            Xoá
+                            <Typography
+                                variant="inherit"
+                                color="error"
+                                sx={{ fontWeight: 500 }}
+                                onClick={handleDeleteReport}
+                            >
+                                Xóa
+                            </Typography>
                         </MenuItem>
                         <MenuItem onClick={handleMenuClose}>
                             <ListItemIcon>
-                                <ShareIcon fontSize="small" />
+                                <DownloadIcon fontSize="small" color="success" />
                             </ListItemIcon>
-                            Chia sẻ
+                            {report && (
+                                <ExportReports
+                                    report={report}
+                                    players={players || []}
+                                    questions={questions || []}
+                                />
+                            )}
                         </MenuItem>
                     </Menu>
                 </Box>
@@ -117,98 +158,34 @@ const ReportDetail = () => {
             <Divider sx={{ my: 2 }} />
 
             {/* Tổng quan */}
-            <Grid container spacing={2} className={styles.overviewGrid}>
-                <Grid size={8}>
-                    <Card className={styles.overviewCard}>
-                        <CardContent>
-                            <Box display="flex" alignItems="center">
-                                <Box className={styles.circlePercent}>
-                                    <Typography variant="h5" fontWeight={700}>{correctPercent}%</Typography>
-                                </Box>
-                                <Box>
-                                    <Typography variant="h3" fontWeight={700} mb={2}>Có công mài sắt, có ngày nên kim!</Typography>
-                                    <Typography variant="body1" color="text.secondary" mb={2}>
-                                        Hãy chơi lại để nhóm hiện tại cải thiện điểm số hoặc xem liệu người tham gia mới có thể vượt qua kết quả này không nhé.
-                                    </Typography>
-                                    <Button variant="contained">Chơi lại</Button>
-                                </Box>
-                            </Box>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid size={4}>
-                    <Card className={styles.overviewCard}>
-                        <CardContent>
-                            <Box display="flex" alignItems="center" justifyContent="space-between" mt={2}>
-                                <Box display="flex" alignItems="center">
-                                    <PersonIcon color="primary" sx={{ mr: 1 }} />
-                                    <Typography>
-                                        Người tham gia:
-                                    </Typography>
-                                </Box>
-                                <Typography>{report?.total_players}</Typography>
-                            </Box>
-                            <Box display="flex" alignItems="center" justifyContent="space-between" mt={2}>
-                                <Box display="flex" alignItems="center">
-                                    <HelpOutlineIcon color="info" sx={{ mr: 1 }} />
-                                    <Typography>Câu hỏi:</Typography>
-                                </Box>
-                                <Typography>{report?.total_questions}</Typography>
-                            </Box>
-                            <Box display="flex" alignItems="center" justifyContent="space-between" mt={2}>
-                                <Box display="flex" alignItems="center">
-                                    <AccessTimeIcon color="success" sx={{ mr: 1 }} />
-                                    <Typography>Thời gian:</Typography>
-                                </Box>
-                                <Typography>{report?.avg_response_time}s</Typography>
-                            </Box>
-                            <Divider sx={{ my: 2 }} />
-                            <Typography className={styles.tips} variant="caption" color="text.secondary" mt={2} display="block">
-                                Mẹo hay: Thu hút tương tác của người tham gia bằng cách chia sẻ bục vinh danh.
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            </Grid>
+            {tab === 0 && (
+                <Overview correctPercent={correctPercent} report={report} players={players} questions={questions} />
+            )}
+            {/* Người tham gia */}
+            {tab === 1 && (
+                <ListPlayer players={players || []} />
+            )}
+            {/* Câu hỏi */}
+            {tab === 2 && (
+                <ListQuestion questions={questions || []} />
+            )}
 
-            {/* Báo cáo nâng cao */}
-            <Typography variant="h6" mt={4} mb={2}>Báo cáo nâng cao</Typography>
-            <Grid container spacing={2} className={styles.advancedReport}>
-                <Grid size={4}>
-                    <Card className={styles.advancedCard}>
-                        <CardContent>
-                            <Typography fontWeight={700}>Câu hỏi khó (0)</Typography>
-                            <Typography color="text.secondary" mt={2}>Tuyệt vời! Không ai thấy câu hỏi nào quá khó.</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid size={4}>
-                    <Card className={styles.advancedCard}>
-                        <CardContent>
-                            <Typography fontWeight={700}>Người tham gia (1)</Typography>
-                            <Box display="flex" alignItems="center" justifyContent="space-between" mt={2}>
-                                <Typography>Nok</Typography>
-                                <Typography>10%</Typography>
-                            </Box>
-                            <Box display="flex" alignItems="center" justifyContent="space-between" mt={2}>
-                                <Typography>Vijf</Typography>
-                                <Typography>0%</Typography>
-                            </Box>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid size={4}>
-                    <Card className={styles.advancedCard}>
-                        <CardContent>
-                            <Typography fontWeight={700}>Chưa hoàn thành (1)</Typography>
-                            <Box display="flex" alignItems="center" justifyContent="space-between" mt={2}>
-                                <Typography>KSK</Typography>
-                                <Typography>0%</Typography>
-                            </Box>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            </Grid>
+            <Snackbar
+                open={notification.open}
+                autoHideDuration={3500}
+                onClose={handleCloseNotification}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert
+                    onClose={handleCloseNotification}
+                    severity={notification.severity}
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    {notification.message}
+                </Alert>
+            </Snackbar>
+
         </Box>
     );
 };

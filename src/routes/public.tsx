@@ -4,6 +4,7 @@ import { MainLayout, GameLayout } from '@project/components/layout';
 import Login from '@project/pages/Login';
 import Register from '@project/pages/Register';
 import Home from '@project/pages/Home';
+import Discover from '@project/pages/Discover';
 import Library from '@project/pages/Library';
 import Creator from '@project/pages/Creator';
 import Detail from '@project/pages/Detail';
@@ -17,7 +18,9 @@ import Report from '@project/pages/Report';
 import ReportDetail from '@project/pages/ReportDetail';
 import ForgotpasswordPage from '@project/pages/Forgotpassword/ForgotpasswordPage';
 import ResetpasswordPage from '@project/pages/Forgotpassword/ResetpasswordPage';
+
 import UserManagement from '@project/pages/Admin/UserManagement';
+import Dashboard from '@project/pages/Admin/Dashboard';
 
 export interface RouteConfig {
     path: string;
@@ -37,6 +40,7 @@ const PublicRoutes: RouteConfig[] = [
     // Main routes
     { path: '/', component: Home, layout: MainLayout, requiresAuth: false },
     { path: '/details/:id', component: Detail, layout: MainLayout, requiresAuth: false },
+    { path: '/discover', component: Discover, layout: MainLayout, requiresAuth: false },
     { path: '/library', component: Library, layout: MainLayout, requiresAuth: true },
     { path: '/creator', component: Creator, layout: null, requiresAuth: true },
     { path: '/creator/:id', component: Creator, layout: null, requiresAuth: true },
@@ -50,6 +54,7 @@ const PublicRoutes: RouteConfig[] = [
     { path: '/game/solo/:id', component: GameAsync, layout: GameLayout, requiresAuth: false, requiresSocket: false },
     { path: '/game/live/:id', component: GameSync, layout: GameLayout, requiresAuth: false, requiresSocket: true },
     // Admin routes
+    {path: '/admin/dashboard', component: Dashboard, layout: MainLayout, requiresAuth: true, requiresAdmin: true, requiresSocket: false },
     {path: '/admin/users', component: UserManagement, layout: MainLayout, requiresAuth: true, requiresAdmin: true, requiresSocket: false },
 ]
 

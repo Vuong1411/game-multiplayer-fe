@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '@project/services/auth.service';
+import { userService, authService } from '@project/services';
 import { User } from '@project/types/user';
 import { setCookie, getCookie, deleteCookie } from '@project/utils/Cookie';
 
@@ -10,6 +10,7 @@ interface AuthContextType {
     isLoading: boolean;
     login: (userData: User, token: string) => void;
     logout: () => void;
+    reloadUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -95,8 +96,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
+    const reloadUser = async () => {
+        try {
+            const userData = await userService.getById(currentUser?.id || 0);
+            if (userData) {
+                setCookie('authUser', JSON.stringify(userData), 7);
+                setCurrentUser(userData);
+                setIsAuthenticated(true);
+            }
+        } catch (error) {
+            console.error('Failed to reload user:', error);
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ currentUser, isAuthenticated, isLoading, login, logout }}>
+        <AuthContext.Provider value={{ currentUser, isAuthenticated, isLoading, login, logout, reloadUser }}>
             {children}
         </AuthContext.Provider>
     );

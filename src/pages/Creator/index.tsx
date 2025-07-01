@@ -103,7 +103,7 @@ const Creator = () => {
             content: '',
             type: 'choice',
             time_limit: 20,
-            points: 10,
+            points: 1000,
             image_url: '',
         };
 
