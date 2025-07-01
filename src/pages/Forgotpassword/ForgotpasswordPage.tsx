@@ -5,7 +5,7 @@ import {
   TextField,
   Typography,
   Button,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
 import { authService } from '@project/services/auth.service';
 
@@ -38,42 +38,65 @@ const ForgotPasswordPage = () => {
 
   return (
     <Container component="main" maxWidth="xs">
-      <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Typography component="h1" variant="h5">
-          Quên mật khẩu
-        </Typography>
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            label="Email"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            error={!!error}
-          />
-          {error && (
-            <Typography color="error" variant="body2">
-              {error}
-            </Typography>
-          )}
-          {message && (
-            <Typography color="primary" variant="body2">
-              {message}
-            </Typography>
-          )}
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 2, mb: 2 }}
-            disabled={loading}
-          >
-            {loading ? <CircularProgress size={24} /> : 'Gửi yêu cầu'}
-          </Button>
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        {/* Khung trắng bao phủ toàn bộ nội dung */}
+        <Box
+          sx={{
+            mt: 3,
+            p: 3,
+            width: '100%',
+            borderRadius: 2,
+            boxShadow: 3,
+            bgcolor: 'background.paper',
+          }}
+        >
+          <Typography component="h1" variant="h5" sx={{ textAlign: 'center', mb: 2 }}>
+            Quên mật khẩu
+          </Typography>
+
+          <Box component="form" onSubmit={handleSubmit} noValidate>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Email"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              error={!!error}
+            />
+
+            {error && (
+              <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                {error}
+              </Typography>
+            )}
+
+            {message && (
+              <Typography color="primary" variant="body2" sx={{ mt: 1 }}>
+                {message}
+              </Typography>
+            )}
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3 }}
+              disabled={loading}
+            >
+              {loading ? <CircularProgress size={24} /> : 'Gửi yêu cầu'}
+            </Button>
+          </Box>
         </Box>
       </Box>
     </Container>
