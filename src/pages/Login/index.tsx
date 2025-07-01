@@ -79,89 +79,112 @@ import { useState } from 'react';
       }
     };
 
-    return (
-      <Container component="main" maxWidth="xs">
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
+   return (
+  <Container component="main" maxWidth="xs">
+    <Box
+      sx={{
+        marginTop: 8,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
+      {/* Khung trắng bao toàn bộ cả tiêu đề và form */}
+      <Box
+        sx={{
+          mt: 3,
+          p: 3,
+          width: '100%',
+          borderRadius: 2,
+          boxShadow: 3,
+          bgcolor: 'background.paper',
+        }}
+      >
+        {/* Tiêu đề Đăng nhập */}
+        <Typography
+          component="h1"
+          variant="h5"
+          sx={{ textAlign: 'center', mb: 2 }}
         >
-          <Typography component="h1" variant="h5">
-            Đăng nhập
-          </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Địa chỉ Email"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              value={user.email}
-              onChange={handleChange}
-              error={!!error}
+          Đăng nhập
+        </Typography>
+
+        {/* Form */}
+        <Box component="form" onSubmit={handleSubmit} noValidate>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Địa chỉ Email"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            value={user.email}
+            onChange={handleChange}
+            error={!!error}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Mật khẩu"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            value={user.password}
+            onChange={handleChange}
+            error={!!error}
+          />
+
+          {/* Link Quên mật khẩu */}
+          <Box sx={{ textAlign: 'right', mt: 1 }}>
+            <Link component={RouterLink} to="/forgot-password" variant="body2">
+              Quên mật khẩu?
+            </Link>
+          </Box>
+
+          {error && (
+            <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+              {error}
+            </Typography>
+          )}
+
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={24} /> : 'Đăng nhập'}
+          </Button>
+
+          {/* Google Login */}
+          <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
+            <GoogleLogin
+              onSuccess={handleGoogleLoginSuccess}
+              onError={() => setError('Google Login thất bại')}
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Mật khẩu"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              value={user.password}
-              onChange={handleChange}
-              error={!!error}
-            />
-            {/* Link "Quên mật khẩu?" */}
-            <Box sx={{ textAlign: 'right', mt: 1 }}>
-              <Link component={RouterLink} to="/forgot-password" variant="body2">
-                Quên mật khẩu?
+          </Box>
+
+          {/* Link đến đăng ký */}
+          <Box sx={{ mt: 3, textAlign: 'center' }}>
+            <Typography variant="body2">
+              Bạn chưa có tài khoản?{' '}
+              <Link component={RouterLink} to="/register" variant="body2">
+                Đăng ký ngay
               </Link>
-            </Box>
-
-            {error && (
-              <Typography color="error" variant="body2" sx={{ mt: 1 }}>
-                {error}
-              </Typography>
-            )}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={loading}
-            >
-              {loading ? <CircularProgress size={24} /> : 'Đăng nhập'}
-            </Button>
-
-            {/* Google Login */}
-            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
-              <GoogleLogin
-                onSuccess={handleGoogleLoginSuccess}
-                onError={() => setError('Google Login thất bại')}
-              />
-            </Box>
-            
-            {/*Dẫn tới trang đăng ký */}
-             <Box sx={{ mt: 2, textAlign: 'center' }}>
-               <Typography variant="body2">
-                  Bạn chưa có tài khoản?{' '}
-               <Link component={RouterLink} to="/register" variant="body2">
-                  Đăng ký ngay
-               </Link>
-              </Typography>
-            </Box>
+            </Typography>
           </Box>
         </Box>
-      </Container>
-    );
+      </Box>
+    </Box>
+  </Container>
+);
+
+
   };
 
   export default Login;
